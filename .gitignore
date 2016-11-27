@@ -1,4 +1,8 @@
 *.py[cod]
+__pycache__/
+
+# click?
+.cache
 
 # C extensions
 *.so
