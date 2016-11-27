@@ -2,6 +2,18 @@
 League
 ===============================
 
+.. image:: https://travis-ci.org/massgo/league.svg?branch=master
+    :target: https://travis-ci.org/massgo/league
+    :alt: Build Status
+
+.. image:: https://pyup.io/repos/github/massgo/league/shield.svg
+    :target: https://pyup.io/repos/github/massgo/league/
+    :alt: Updates
+
+.. image:: https://pyup.io/repos/github/massgo/league/python-3-shield.svg
+    :target: https://pyup.io/repos/github/massgo/league/
+    :alt: Python 3
+
 A go league app.
 
 
