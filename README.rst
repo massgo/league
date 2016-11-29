@@ -25,7 +25,7 @@ Install system deps ::
     brew install pyenv pyenv-virtualenv npm
     pyenv install 3.4.5
     pyenv virtualenv 3.4.5 league
-    npm install bower
+    npm install -g bower
 
 Set your app's secret key as an environment variable. For example,
 add the following to ``.bashrc`` or ``.bash_profile``.
