@@ -61,13 +61,3 @@ def about():
     """About page."""
     form = LoginForm(request.form)
     return render_template('public/about.html', form=form)
-
-
-@blueprint.route('/dashboard/')
-def dashboard():
-    """Dashboard."""
-    headers = ['White', 'Black', 'Winner', 'Handicap', 'Komi']
-    data = [
-                ['Andrew Hall', 'Milan Mladenovic', 'White', 5, 0]
-            ]
-    return render_template('public/dashboard.html', headers=headers, data=data)
