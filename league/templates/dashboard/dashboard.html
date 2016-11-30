@@ -6,22 +6,22 @@
   <div class="row">
     <div class="main">
       <h1 class="page-header">Dashboard</h1>
-      <h2 class="sub-header">Games</h2>
+      <h2 class="sub-header">Players</h2>
       <div class="table-responsive">
         <table class="table table-striped">
           <thead>
             <tr>
-              {% for header in headers -%}
-              <th>{{ header }}</th>
-              {%- endfor %}
+              <th>AGA ID</th>
+              <th>Name</th>
+              <th>Rank</th>
             </tr>
           </thead>
           <tbody>
-            {% for row in data -%}
+            {% for player in players -%}
             <tr>
-              {% for column in row -%}
-              <td>{{ column }}</td>
-              {%- endfor %}
+              <td>{{ player.aga_id }}</td>
+              <td>{{ player.full_name }}</td>
+              <td>{{ player.rank }}</td>
             </tr>
             {%- endfor %}
           </tbody>

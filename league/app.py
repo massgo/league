@@ -4,7 +4,8 @@ from flask import Flask, render_template
 
 from league import commands, dashboard, public, user
 from league.assets import assets
-from league.extensions import bcrypt, cache, csrf_protect, db, debug_toolbar, login_manager, migrate
+from league.extensions import (bcrypt, cache, csrf_protect, db, debug_toolbar,
+                               login_manager, migrate)
 from league.settings import ProdConfig
 
 

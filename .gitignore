@@ -32,11 +32,6 @@ nosetests.xml
 # Translations
 *.mo
 
-# Mr Developer
-.mr.developer.cfg
-.project
-.pydevproject
-
 # Complexity
 output/*.html
 output/*/index.html
@@ -48,3 +43,6 @@ docs/_build
 
 # Virtualenvs
 env/
+
+# SQLite DB
+dev.db
