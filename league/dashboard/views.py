@@ -19,18 +19,20 @@ def dashboard():
 
 
 @csrf_protect.exempt
-@blueprint.route('/player/', methods=['GET', 'POST'])
-def create_player():
+@blueprint.route('/players/', methods=['GET', 'POST'])
+def players():
     """Create a new player."""
     form = PlayerCreateForm(request.form, csrf_enabled=False)
-    if form.validate_on_submit():
-        Player.create(
-            first_name=form.first_name.data,
-            last_name=form.last_name.data,
-            aga_id=form.aga_id.data,
-            rank=form.rank.data
-        )
-        flash('Player created!', 'success')
-    else:
-        flash_errors(form)
-    return redirect(url_for('dashboard.dashboard'))
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            Player.create(
+                first_name=form.first_name.data,
+                last_name=form.last_name.data,
+                aga_id=form.aga_id.data,
+                rank=form.rank.data
+            )
+            flash('Player created!', 'success')
+        else:
+            flash_errors(form)
+    players = Player.query.all()
+    return render_template('dashboard/players.html', players=players, player_create_form=form)
