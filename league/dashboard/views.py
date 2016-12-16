@@ -44,8 +44,6 @@ def games():
     """Create a new game."""
     form = GameCreateForm(request.form, csrf_enabled=False)
     if request.method == 'POST':
-        print(form.handicap.data)
-        print(form.komi.data)
         if form.validate_on_submit():
             Game.create(
                 white_id=form.white_id.data,
