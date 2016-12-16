@@ -7,8 +7,7 @@ from league.dashboard.models import Game, Player
 from league.extensions import csrf_protect
 from league.utils import flash_errors
 
-blueprint = Blueprint('dashboard', __name__, url_prefix='/dashboard',
-                      static_folder='../static')
+blueprint = Blueprint('dashboard', __name__, static_folder='../static')
 
 
 @blueprint.route('/')
