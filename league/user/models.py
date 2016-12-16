@@ -4,7 +4,8 @@ import datetime as dt
 
 from flask_login import UserMixin
 
-from league.database import Column, Model, SurrogatePK, db, reference_col, relationship
+from league.database import (Column, Model, SurrogatePK, db, reference_col,
+                             relationship)
 from league.extensions import bcrypt
 
 

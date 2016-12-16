@@ -1,0 +1,33 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="main">
+      <h1 class="page-header">Dashboard</h1>
+      <h2 class="sub-header">Players</h2>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>AGA ID</th>
+              <th>Name</th>
+              <th>Rank</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for player in players -%}
+            <tr>
+              <td>{{ player.aga_id }}</td>
+              <td>{{ player.full_name }}</td>
+              <td>{{ player.rank }}</td>
+            </tr>
+            {%- endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

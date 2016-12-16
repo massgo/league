@@ -22,7 +22,7 @@ Quickstart
 
 Install system deps ::
 
-    brew install pyenv pyenv-virtualenv npm
+    brew install pyenv pyenv-virtualenv npm postgresql
     pyenv install 3.4.5
     pyenv virtualenv 3.4.5 league
     npm install -g bower

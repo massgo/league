@@ -1,0 +1,48 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="main">
+      <h1 class="page-header">Games</h1>
+      <form id="gameCreateForm" method="POST" class="form-inline" action="/dashboard/games/"
+       role="login">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <div class="form-group">
+          {{ game_create_form.white_id(placeholder="White's AGA ID", class_="form-control") }}
+          {{ game_create_form.black_id(placeholder="Black's AGA ID", class_="form-control") }}
+          {{ game_create_form.winner(placeholder="Winner", class_="form-control") }}
+          {{ game_create_form.handicap(placeholder="Handicap", class_="form-control") }}
+          {{ game_create_form.komi(placeholder="Komi", class_="form-control") }}
+        </div>
+        <button type="submit" class="btn btn-default">Add Game</button>
+      </form>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>White ID</th>
+              <th>Black ID</th>
+              <th>Winner</th>
+              <th>Handicap</th>
+              <th>Komi</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for game in games -%}
+            <tr>
+              <td>{{ game.white_id }}</td>
+              <td>{{ game.black_id }}</td>
+              <td>{{ game.winner.name }}</td>
+              <td>{{ game.handicap }}</td>
+              <td>{{ game.komi }}</td>
+            </tr>
+            {%- endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

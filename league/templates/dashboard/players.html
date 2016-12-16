@@ -1,0 +1,43 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="main">
+      <h1 class="page-header">Players</h1>
+      <form id="playerCreateForm" method="POST" class="form-inline" action="/dashboard/players/"
+       role="login">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <div class="form-group">
+          {{ player_create_form.first_name(placeholder="First name", class_="form-control") }}
+          {{ player_create_form.last_name(placeholder="Last name", class_="form-control") }}
+          {{ player_create_form.aga_id(placeholder="AGA ID", class_="form-control") }}
+          {{ player_create_form.rank(placeholder="Rank", class_="form-control") }}
+        </div>
+        <button type="submit" class="btn btn-default">Add Player</button>
+      </form>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>AGA ID</th>
+              <th>Name</th>
+              <th>Rank</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for player in players -%}
+            <tr>
+              <td>{{ player.aga_id }}</td>
+              <td>{{ player.full_name }}</td>
+              <td>{{ player.rank }}</td>
+            </tr>
+            {%- endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

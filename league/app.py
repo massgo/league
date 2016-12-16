@@ -2,14 +2,18 @@
 """The app module, containing the app factory function."""
 from flask import Flask, render_template
 
-from league import commands, public, user
+from league import commands, dashboard, user
 from league.assets import assets
-from league.extensions import bcrypt, cache, csrf_protect, db, debug_toolbar, login_manager, migrate
+from league.extensions import (bcrypt, cache, csrf_protect, db, debug_toolbar,
+                               login_manager, migrate)
 from league.settings import ProdConfig
 
 
 def create_app(config_object=ProdConfig):
-    """An application factory, as explained here: http://flask.pocoo.org/docs/patterns/appfactories/.
+    """
+    An application factory.
+
+    See: http://flask.pocoo.org/docs/patterns/appfactories/.
 
     :param config_object: The configuration object to use.
     """
@@ -38,8 +42,7 @@ def register_extensions(app):
 
 def register_blueprints(app):
     """Register Flask blueprints."""
-    app.register_blueprint(public.views.blueprint)
-    app.register_blueprint(user.views.blueprint)
+    app.register_blueprint(dashboard.views.blueprint)
     return None
 
 
