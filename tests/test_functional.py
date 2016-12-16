@@ -4,12 +4,17 @@
 See: http://webtest.readthedocs.org/
 """
 from flask import url_for
+import pytest
 
 from league.user.models import User
 
 from .factories import UserFactory
 
 
+skip_public = pytest.mark.skip(reason='Public pages disabled')
+
+
+@skip_public
 class TestLoggingIn:
     """Login."""
 
@@ -65,6 +70,7 @@ class TestLoggingIn:
         assert 'Unknown user' in res
 
 
+@skip_public
 class TestRegistering:
     """Register a user."""
 
