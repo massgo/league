@@ -2,7 +2,7 @@
 """Public forms."""
 from flask_wtf import Form
 from wtforms import IntegerField, StringField
-from wtforms.validators import DataRequired, NumberRange, AnyOf
+from wtforms.validators import AnyOf, DataRequired, NumberRange
 
 from league.dashboard.models import Color
 

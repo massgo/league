@@ -3,9 +3,7 @@
 
 from enum import Enum
 
-from league.database import (Column, Model, SurrogatePK, db, reference_col,
-                             relationship)
-
+from league.database import Column, Model, SurrogatePK, db, reference_col
 
 Color = Enum('Color', 'white black')
 
@@ -16,10 +14,7 @@ class Game(SurrogatePK, Model):
     __tablename__ = 'games'
 
     white_id = reference_col('players')
-    # white = relationship('Player')
-
     black_id = reference_col('players')
-    # black = relationship('Player')
 
     winner = Column(db.Enum(Color))
     handicap = Column(db.SmallInteger)

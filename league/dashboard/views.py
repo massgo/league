@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """Dashboard."""
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, flash, render_template, request
 
-from league.dashboard.forms import PlayerCreateForm, GameCreateForm
-from league.dashboard.models import Player, Game
+from league.dashboard.forms import GameCreateForm, PlayerCreateForm
+from league.dashboard.models import Game, Player
 from league.extensions import csrf_protect
 from league.utils import flash_errors
 
