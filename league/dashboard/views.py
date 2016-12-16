@@ -2,8 +2,8 @@
 """Dashboard."""
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 
-from league.dashboard.forms import PlayerCreateForm
-from league.dashboard.models import Player
+from league.dashboard.forms import PlayerCreateForm, GameCreateForm
+from league.dashboard.models import Player, Game
 from league.extensions import csrf_protect
 from league.utils import flash_errors
 
@@ -35,4 +35,29 @@ def players():
         else:
             flash_errors(form)
     players = Player.query.all()
-    return render_template('dashboard/players.html', players=players, player_create_form=form)
+    return render_template('dashboard/players.html', players=players,
+                           player_create_form=form)
+
+
+@csrf_protect.exempt
+@blueprint.route('/games/', methods=['GET', 'POST'])
+def games():
+    """Create a new game."""
+    form = GameCreateForm(request.form, csrf_enabled=False)
+    if request.method == 'POST':
+        print(form.handicap.data)
+        print(form.komi.data)
+        if form.validate_on_submit():
+            Game.create(
+                white_id=form.white_id.data,
+                black_id=form.black_id.data,
+                winner=form.winner.data,
+                handicap=form.handicap.data,
+                komi=form.komi.data
+            )
+            flash('Game added!', 'success')
+        else:
+            flash_errors(form)
+    games = Game.query.all()
+    return render_template('dashboard/games.html', games=games,
+                           game_create_form=form)

@@ -1,30 +1,29 @@
 # -*- coding: utf-8 -*-
 """Dashboard models."""
+
+from enum import Enum
+
 from league.database import (Column, Model, SurrogatePK, db, reference_col,
                              relationship)
 
 
-# class Color(db.Enum):
-#     """Player color enum."""
-#
-#     white = 'white'
-#     black = 'black'
-#
-#
-# class Game(SurrogatePK, Model):
-#     """A game record."""
-#
-#     __tablename__ = 'games'
-#
-#     white_id = reference_col('players')
-#     white = relationship('Player', backref='games')
-#
-#     black_id = reference_col('players')
-#     black = relationship('Player', backref='games')
-#
-#     winner = Column(db.Enum(Color))
-#     handicap = Column(db.SmallInteger)
-#     komi = Column(db.SmallInteger)
+Color = Enum('Color', 'white black')
+
+
+class Game(SurrogatePK, Model):
+    """A game record."""
+
+    __tablename__ = 'games'
+
+    white_id = reference_col('players')
+    # white = relationship('Player')
+
+    black_id = reference_col('players')
+    # black = relationship('Player')
+
+    winner = Column(db.Enum(Color))
+    handicap = Column(db.SmallInteger)
+    komi = Column(db.SmallInteger)
 
 
 class Player(SurrogatePK, Model):
