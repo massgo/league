@@ -123,3 +123,17 @@ class TestRegistering:
         res = form.submit()
         # sees error
         assert 'Username already registered' in res
+
+
+class TestPlayer:
+    """Players."""
+
+    def test_list_players(self, testapp, players):
+        """Check that we can list players."""
+        res = testapp.get(url_for('dashboard.players'))
+        assert res.status_int == 200
+
+        found_players = []
+        for row in res.html.find('table').find('tbody').find_all('tr'):
+            found_players.append([col.text for col in row.find_all('td')])
+        assert len(players) == 2

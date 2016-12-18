@@ -8,7 +8,7 @@ from league.app import create_app
 from league.database import db as _db
 from league.settings import TestConfig
 
-from .factories import UserFactory
+from .factories import PlayerFactory, UserFactory
 
 
 @pytest.yield_fixture(scope='function')
@@ -49,3 +49,11 @@ def user(db):
     user = UserFactory(password='myprecious')
     db.session.commit()
     return user
+
+
+@pytest.fixture
+def players(db):
+    """Some players for the tests."""
+    players = [PlayerFactory(), PlayerFactory()]
+    db.session.commit()
+    return players
