@@ -137,3 +137,17 @@ class TestPlayer:
         for row in res.html.find('table').find('tbody').find_all('tr'):
             found_players.append([col.text for col in row.find_all('td')])
         assert len(players) == 2
+
+
+class TestGame:
+    """Games."""
+
+    def test_list_games(self, testapp, games):
+        """Check that we can list games."""
+        res = testapp.get(url_for('dashboard.games'))
+        assert res.status_int == 200
+
+        found_games = []
+        for row in res.html.find('table').find('tbody').find_all('tr'):
+            found_games.append([col.text for col in row.find_all('td')])
+        assert len(games) == 2

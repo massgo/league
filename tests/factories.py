@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """Factories to help in tests."""
-from factory import PostGenerationMethodCall, Sequence
+from factory import PostGenerationMethodCall, Sequence, SubFactory
 from factory.alchemy import SQLAlchemyModelFactory
 
-from league.dashboard.models import Player
+from league.dashboard.models import Color, Game, Player
 from league.database import db
 from league.user.models import User
 
@@ -43,3 +43,18 @@ class PlayerFactory(BaseFactory):
         """Factory configuration."""
 
         model = Player
+
+
+class GameFactory(BaseFactory):
+    """Game factory."""
+
+    white = SubFactory(PlayerFactory)
+    black = SubFactory(PlayerFactory)
+    winner = Color.white
+    handicap = 0
+    komi = 7
+
+    class Meta:
+        """Factory configuration."""
+
+        model = Game

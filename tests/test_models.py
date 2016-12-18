@@ -4,9 +4,10 @@ import datetime as dt
 
 import pytest
 
+from league.dashboard.models import Color, Game, Player
 from league.user.models import Role, User
 
-from .factories import UserFactory
+from .factories import PlayerFactory, UserFactory
 
 
 @pytest.mark.usefixtures('db')
@@ -65,3 +66,16 @@ class TestUser:
         user.roles.append(role)
         user.save()
         assert role in user.roles
+
+
+class TestGame:
+    """Game model tests."""
+
+    def test_create(self, db):
+        """Test game creation."""
+        game = Game(PlayerFactory(), PlayerFactory(), Color.white, 0, 7)
+        game.save()
+        games = Game.query.all()
+        players = Player.query.all()
+        assert len(games) == 1
+        assert len(players) == 2
