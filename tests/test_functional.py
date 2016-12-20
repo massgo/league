@@ -157,11 +157,11 @@ class TestGame:
             games.append([col.text for col in row.find_all('td')])
 
         assert len(games) == 2
-        assert games[0] == [str(first_game.black.aga_id),
-                            str(first_game.white.aga_id),
+        assert games[0] == [str(first_game.white.aga_id),
+                            str(first_game.black.aga_id),
                             first_game.winner.name, str(first_game.handicap),
                             str(first_game.komi)]
-        assert games[1] == [str(second_game.black.aga_id),
-                            str(second_game.white.aga_id),
+        assert games[1] == [str(second_game.white.aga_id),
+                            str(second_game.black.aga_id),
                             second_game.winner.name, str(second_game.handicap),
                             str(second_game.komi)]

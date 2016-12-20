@@ -3,8 +3,8 @@
 
 from enum import Enum
 
-from league.database import (Column, Model, SurrogatePK, association_proxy,
-                             backref, db, reference_col, relationship)
+from league.database import (Column, Model, SurrogatePK, association_proxy, db,
+                             reference_col, relationship)
 
 Color = Enum('Color', 'white black')
 
