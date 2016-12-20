@@ -27,8 +27,7 @@ def players():
             Player.create(
                 first_name=form.first_name.data,
                 last_name=form.last_name.data,
-                aga_id=form.aga_id.data,
-                rank=form.rank.data
+                aga_id=form.aga_id.data
             )
             flash('Player created!', 'success')
         else:
