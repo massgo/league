@@ -38,7 +38,17 @@ def players():
 
 
 @csrf_protect.exempt
-@blueprint.route('/games/', methods=['GET', 'POST'])
+@blueprint.route('/games/', methods=['GET'])
+def list_games():
+    """List all games."""
+    form = GameCreateForm(request.form, csrf_enabled=False)
+    games = Game.query.all()
+    return render_template('dashboard/games.html', games=games,
+                           game_create_form=form)
+
+
+@csrf_protect.exempt
+@blueprint.route('/games/', methods=['POST'])
 def games():
     """Create a new game."""
     form = GameCreateForm(request.form, csrf_enabled=False)

@@ -145,9 +145,9 @@ class TestGame:
 
     def test_list_games(self, testapp, db):
         """Check that we can list games."""
-
         first_game = GameFactory(winner=Color.white, handicap=3, komi=0)
         second_game = GameFactory(winner=Color.black, handicap=0, komi=7)
+        db.session.commit()
 
         res = testapp.get(url_for('dashboard.games'))
         assert res.status_int == 200
