@@ -46,3 +46,7 @@ env/
 
 # SQLite DB
 dev.db
+
+# Generated CSS/JS
+league/static/public/css/common.css
+league/static/public/js/common.js
