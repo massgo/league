@@ -6,9 +6,10 @@ See: http://webtest.readthedocs.org/
 import pytest
 from flask import url_for
 
+from league.dashboard.models import Color
 from league.user.models import User
 
-from .factories import UserFactory
+from .factories import GameFactory, UserFactory
 
 skip_public = pytest.mark.skip(reason='Public pages disabled')
 
@@ -142,12 +143,25 @@ class TestPlayer:
 class TestGame:
     """Games."""
 
-    def test_list_games(self, testapp, games):
+    def test_list_games(self, testapp, db):
         """Check that we can list games."""
+
+        first_game = GameFactory(winner=Color.white, handicap=3, komi=0)
+        second_game = GameFactory(winner=Color.black, handicap=0, komi=7)
+
         res = testapp.get(url_for('dashboard.games'))
         assert res.status_int == 200
 
-        found_games = []
+        games = []
         for row in res.html.find('table').find('tbody').find_all('tr'):
-            found_games.append([col.text for col in row.find_all('td')])
+            games.append([col.text for col in row.find_all('td')])
+
         assert len(games) == 2
+        assert games[0] == [str(first_game.black.aga_id),
+                            str(first_game.white.aga_id),
+                            first_game.winner.name, str(first_game.handicap),
+                            str(first_game.komi)]
+        assert games[1] == [str(second_game.black.aga_id),
+                            str(second_game.white.aga_id),
+                            second_game.winner.name, str(second_game.handicap),
+                            str(second_game.komi)]
