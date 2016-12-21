@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """Dashboard."""
-from flask import Blueprint, flash, render_template, request
+from flask import Blueprint, flash, render_template, request, url_for
 
 from league.dashboard.forms import GameCreateForm, PlayerCreateForm
 from league.dashboard.models import Game, Player
 from league.extensions import csrf_protect
 from league.utils import flash_errors
 
-blueprint = Blueprint('dashboard', __name__, static_folder='../static')
+blueprint = Blueprint('dashboard', __name__, url_prefix='/dashboard',
+                      static_folder='../static')
 
 
 @blueprint.route('/')
@@ -49,21 +50,22 @@ def list_games():
 
 @csrf_protect.exempt
 @blueprint.route('/games/', methods=['POST'])
-def games():
+def create_game():
     """Create a new game."""
     form = GameCreateForm(request.form, csrf_enabled=False)
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            white_id = Player.get_by_aga_id(form.white.aga_id.data).id
-            Game.create(
-                white_id=white_id,
-                winner=form.winner,
-                handicap=form.handicap.data,
-                komi=form.komi.data,
-            )
-            flash('Player created!', 'success')
-        else:
-            flash_errors(form)
+    if form.validate_on_submit():
+        white = Player.get_by_aga_id(form.white_id.data)
+        black = Player.get_by_aga_id(form.black_id.data)
+        Game.create(
+            white=white,
+            black=black,
+            winner=form.winner.data,
+            handicap=form.handicap.data,
+            komi=form.komi.data,
+        )
+        flash('Game created!', 'success')
+    else:
+        flash_errors(form)
     games = Game.query.all()
     return render_template('dashboard/games.html', games=games,
                            game_create_form=form)

@@ -32,7 +32,7 @@ class Player(SurrogatePK, Model):
     @classmethod
     def get_by_aga_id(cls, aga_id):
         """Get player by AGA ID."""
-        return cls.query.filter_by(aga_id=aga_id)
+        return cls.query.filter_by(aga_id=aga_id)[0]
 
     def __init__(self, first_name, last_name, aga_id):
         """Initialize player."""

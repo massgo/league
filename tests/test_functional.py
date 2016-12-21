@@ -149,7 +149,7 @@ class TestGame:
         second_game = GameFactory(winner=Color.black, handicap=0, komi=7)
         db.session.commit()
 
-        res = testapp.get(url_for('dashboard.games'))
+        res = testapp.get(url_for('dashboard.list_games'))
         assert res.status_int == 200
 
         games = []
@@ -165,25 +165,25 @@ class TestGame:
                             second_game.winner.name, str(second_game.handicap),
                             str(second_game.komi)]
 
-    @pytest.mark.parametrize('winner', ['white', 'W'])
+    @pytest.mark.parametrize('winner', ['white'])
     @pytest.mark.parametrize('handicap', [0, 8])
     @pytest.mark.parametrize('komi', [0, 7])
     def test_create_game(self, testapp, players, winner, handicap, komi):
         """Check that we can create a game."""
-        res = testapp.get(url_for('dashboard.games'))
-        form = res.forms['gameCreateForm']
+        get_res = testapp.get(url_for('dashboard.create_game'))
+        form = get_res.forms['gameCreateForm']
         form['white_id'] = players[0].aga_id
         form['black_id'] = players[1].aga_id
         form['winner'] = winner
         form['handicap'] = handicap
         form['komi'] = komi
-        res = form.submit()
-        assert res.status_code == 200
-        assert len(res.html.select("[class~=alert]")) == 0
+        post_res = form.submit()
+        assert post_res.status_code == 200
+        assert len(post_res.html.select("[class~=alert-error]")) == 0
 
         games = []
-        for row in res.html.find('table').find('tbody').find_all('tr'):
+        for row in post_res.html.find('table').find('tbody').find_all('tr'):
             games.append([col.text for col in row.find_all('td')])
-        assert len(games) == 2
+        assert len(games) == 1
         assert games[0] == [str(players[0].aga_id), str(players[1].aga_id),
                             str('white'), str(handicap), str(komi)]
