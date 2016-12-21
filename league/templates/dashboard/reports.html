@@ -11,7 +11,7 @@
 {{ player.aga_id }} {{ player.last_name }}, {{ player.first_name }} {{ player.aga_rank }}</p>
 {%- endfor %}
 GAMES </p>{% for game in games -%}
-{{ game.white.aga_id }} {{ game.black.aga_id }} {{ game.winner.name }} {{ game.handicap }} {{ game.komi }}</p>
+{{ game.white.aga_id }} {{ game.black.aga_id }} {{ game.winner.abbr }} {{ game.handicap }} {{ game.komi }}</p>
 {%- endfor %}
         </code></pre>
       </body>

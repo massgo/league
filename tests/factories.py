@@ -38,6 +38,7 @@ class PlayerFactory(BaseFactory):
     first_name = Sequence(lambda n: 'first{0}'.format(n))
     last_name = Sequence(lambda n: 'last{0}'.format(n))
     aga_id = Sequence(lambda n: n + 1000)
+    aga_rank = Sequence(lambda n: (n % 9) + 1)
 
     class Meta:
         """Factory configuration."""

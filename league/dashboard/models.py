@@ -6,7 +6,9 @@ from enum import Enum
 from league.database import (Column, Model, SurrogatePK, association_proxy, db,
                              reference_col, relationship)
 
-Color = Enum('Color', 'w b')
+Color = Enum('Color', 'white black')
+Color.white.abbr = 'w'
+Color.black.abbr = 'b'
 
 
 class Player(SurrogatePK, Model):
