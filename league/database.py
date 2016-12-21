@@ -7,7 +7,6 @@ Includes the SQLAlchemy database object and DB-related utilities
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import backref, relationship
 
-from .compat import basestring
 from .extensions import db
 
 # Alias common SQLAlchemy names

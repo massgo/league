@@ -179,7 +179,7 @@ class TestGame:
         form['komi'] = komi
         post_res = form.submit()
         assert post_res.status_code == 200
-        assert len(post_res.html.select("[class~=alert-error]")) == 0
+        assert len(post_res.html.select('[class~=alert-error]')) == 0
 
         games = []
         for row in post_res.html.find('table').find('tbody').find_all('tr'):
