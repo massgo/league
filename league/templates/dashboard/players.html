@@ -13,6 +13,7 @@
           {{ player_create_form.first_name(placeholder="First name", class_="form-control") }}
           {{ player_create_form.last_name(placeholder="Last name", class_="form-control") }}
           {{ player_create_form.aga_id(placeholder="AGA ID", class_="form-control") }}
+          {{ player_create_form.aga_rank(placeholder="AGA Rank", class_="form-control") }}
         </div>
         <button type="submit" class="btn btn-default">Add Player</button>
       </form>
@@ -23,6 +24,7 @@
               <th>AGA ID</th>
               <th>First Name</th>
               <th>Last Name</th>
+              <th>AGA Rank</th>
             </tr>
           </thead>
           <tbody>
@@ -31,6 +33,7 @@
               <td>{{ player.first_name }}</td>
               <td>{{ player.last_name }}</td>
               <td>{{ player.aga_id }}</td>
+              <td>{{ player.aga_rank }}</td>
             </tr>
             {%- endfor %}
           </tbody>
