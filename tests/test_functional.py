@@ -155,7 +155,6 @@ class TestGame:
         games = []
         for row in res.html.find('table').find('tbody').find_all('tr'):
             games.append([col.text for col in row.find_all('td')])
-
         assert len(games) == 2
         assert games[0] == [str(first_game.white.aga_id),
                             str(first_game.black.aga_id),
@@ -165,3 +164,26 @@ class TestGame:
                             str(second_game.black.aga_id),
                             second_game.winner.name, str(second_game.handicap),
                             str(second_game.komi)]
+
+    @pytest.mark.parametrize('winner', ['white', 'W'])
+    @pytest.mark.parametrize('handicap', [0, 8])
+    @pytest.mark.parametrize('komi', [0, 7])
+    def test_create_game(self, testapp, players, winner, handicap, komi):
+        """Check that we can create a game."""
+        res = testapp.get(url_for('dashboard.games'))
+        form = res.forms['gameCreateForm']
+        form['white_id'] = players[0].aga_id
+        form['black_id'] = players[1].aga_id
+        form['winner'] = winner
+        form['handicap'] = handicap
+        form['komi'] = komi
+        res = form.submit()
+        assert res.status_code == 200
+        assert len(res.html.select("[class~=alert]")) == 0
+
+        games = []
+        for row in res.html.find('table').find('tbody').find_all('tr'):
+            games.append([col.text for col in row.find_all('td')])
+        assert len(games) == 2
+        assert games[0] == [str(players[0].aga_id), str(players[1].aga_id),
+                            str('white'), str(handicap), str(komi)]

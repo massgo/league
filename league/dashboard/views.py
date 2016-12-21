@@ -54,14 +54,14 @@ def games():
     form = GameCreateForm(request.form, csrf_enabled=False)
     if request.method == 'POST':
         if form.validate_on_submit():
+            white_id = Player.get_by_aga_id(form.white.aga_id.data).id
             Game.create(
-                white_id=form.white_id.data,
-                black_id=form.black_id.data,
-                winner=form.winner.data,
+                white_id=white_id,
+                winner=form.winner,
                 handicap=form.handicap.data,
-                komi=form.komi.data
+                komi=form.komi.data,
             )
-            flash('Game added!', 'success')
+            flash('Player created!', 'success')
         else:
             flash_errors(form)
     games = Game.query.all()
