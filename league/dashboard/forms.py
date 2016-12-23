@@ -18,6 +18,12 @@ class PlayerCreateForm(Form):
         'aga_rank', validators=[NumberRange(-30, 9)])
 
 
+class PlayerDeleteForm(Form):
+    """Player deletion form."""
+
+    player_id = IntegerField('player_id', validators=[NumberRange(0, 50000)])
+
+
 class GameCreateForm(Form):
     """Game creation form."""
 

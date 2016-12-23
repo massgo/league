@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """Dashboard."""
-from flask import Blueprint, flash, render_template, request
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 
-from league.dashboard.forms import GameCreateForm, PlayerCreateForm
+from league.dashboard.forms import (GameCreateForm, PlayerCreateForm,
+                                    PlayerDeleteForm)
 from league.dashboard.models import Game, Player
 from league.extensions import csrf_protect
 from league.utils import flash_errors
@@ -46,6 +47,20 @@ def create_player():
     players = Player.query.all()
     return render_template('dashboard/players.html', players=players,
                            player_create_form=form)
+
+
+@csrf_protect.exempt
+@blueprint.route('/players/delete', methods=['POST'])
+def delete_player():
+    """Delete a player."""
+
+    form = PlayerDeleteForm(request.form, csrf_enabled=False)
+    if form.validate_on_submit():
+        Player.delete(Player.get_by_id(form.player_id.data))
+        flash('Player deleted!', 'success')
+    else:
+        flash_errors(form)
+    return redirect(url_for('dashboard.get_players'))
 
 
 @csrf_protect.exempt
