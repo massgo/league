@@ -54,6 +54,8 @@ class GameFactory(BaseFactory):
     winner = Color.white
     handicap = 0
     komi = 7
+    season = 1
+    episode = 1
 
     class Meta:
         """Factory configuration."""

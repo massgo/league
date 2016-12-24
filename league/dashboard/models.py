@@ -76,20 +76,36 @@ class Game(SurrogatePK, Model):
     winner = Column(db.Enum(Color))
     handicap = Column(db.SmallInteger)
     komi = Column(db.SmallInteger)
+    season = Column(db.Integer)
+    episode = Column(db.Integer)
 
-    def __init__(self, white, black, winner, handicap, komi):
+    db.Index('ix_games_season_episode', 'season', 'episode')
+
+    def __init__(self, white, black, winner, handicap, komi, season, episode):
         """Initialize game."""
         self.white = white
         self.black = black
         self.winner = winner
         self.handicap = handicap
         self.komi = komi
+        self.season = season
+        self.episode = episode
 
     def __repr__(self):
         """Represent instance as a unique string."""
         return ('<Game({white!r}, {black!r}, {winner}, {handicap}, {komi})>'.
                 format(white=self.white, black=self.black, winner=self.winner,
                        handicap=self.handicap, komi=self.komi))
+
+    @classmethod
+    def get_by_season_ep(cls, season, episode):
+        """Get games by season and episode."""
+        return cls.query.filter_by(season=season, episode=episode)
+
+    @property
+    def players(self):
+        """Get players in game as set."""
+        return frozenset((self.white, self.black))
 
 
 class WhitePlayerGame(Model):

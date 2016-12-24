@@ -50,9 +50,18 @@ class GameCreateForm(Form):
         'handicap', validators=[AnyOf([0, 2, 3, 4, 5, 6, 7, 8, 9])])
     komi = IntegerField(
         'komi', validators=[AnyOf([0, 5, 6, 7])])
+    season = IntegerField('season', validators=[NumberRange(0, 10000)])
+    episode = IntegerField('episode', validators=[NumberRange(0, 10000)])
 
     @staticmethod
     def validate_black_id(form, field):
         """Check that IDs are different."""
         if form.black_id.data == form.white_id.data:
             raise ValidationError('Players cannot play themselves')
+
+
+class ReportGenerateForm(Form):
+    """Report generation form."""
+
+    season = IntegerField('season', validators=[NumberRange(1, 10000)])
+    episode = IntegerField('episode', validators=[NumberRange(1, 10000)])

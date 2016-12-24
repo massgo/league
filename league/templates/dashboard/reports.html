@@ -6,14 +6,25 @@
   <div class="row">
     <div class="main">
       <h1 class="page-header">Reports</h1>
+      <form id="reportGenerateForm" method="POST" class="form-inline" action="/dashboard/reports/">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <div class="form-group">
+          {{ report_generate_form.season(placeholder="Season", class_="form-control") }}
+          {{ report_generate_form.episode(placeholder="Episode", class_="form-control") }}
+        </div>
+        <button type="submit" class="btn btn-default">Generate Report</button>
+      </form>
+      <br>
       <body>
-        <pre><code>PLAYERS </p>{% for player in players -%}
+        {% if report is defined %}
+        <pre><code>PLAYERS </p>{% for player in report.players -%}
 {{ player.aga_id }} {{ player.last_name }}, {{ player.first_name }} {{ player.aga_rank }}</p>
 {%- endfor %}
-GAMES </p>{% for game in games -%}
+GAMES </p>{% for game in report.games -%}
 {{ game.white.aga_id }} {{ game.black.aga_id }} {{ game.winner.abbr }} {{ game.handicap }} {{ game.komi }}</p>
 {%- endfor %}
         </code></pre>
+        {% endif %}
       </body>
     </div>
   </div>

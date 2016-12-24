@@ -73,7 +73,7 @@ class TestGame:
 
     def test_create(self, db):
         """Test game creation."""
-        game = Game(PlayerFactory(), PlayerFactory(), Color.white, 0, 7)
+        game = Game(PlayerFactory(), PlayerFactory(), Color.white, 0, 7, 1, 1)
         game.save()
         games = Game.query.all()
         players = Player.query.all()
