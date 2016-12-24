@@ -7,7 +7,8 @@ from league.dashboard.models import Game, Player
 from league.extensions import csrf_protect
 from league.utils import flash_errors
 
-blueprint = Blueprint('dashboard', __name__, static_folder='../static')
+blueprint = Blueprint('dashboard', __name__, url_prefix='/dashboard',
+                      static_folder='../static')
 
 
 @blueprint.route('/')
@@ -27,8 +28,7 @@ def players():
             Player.create(
                 first_name=form.first_name.data,
                 last_name=form.last_name.data,
-                aga_id=form.aga_id.data,
-                rank=form.rank.data
+                aga_id=form.aga_id.data
             )
             flash('Player created!', 'success')
         else:
@@ -39,24 +39,33 @@ def players():
 
 
 @csrf_protect.exempt
-@blueprint.route('/games/', methods=['GET', 'POST'])
-def games():
+@blueprint.route('/games/', methods=['GET'])
+def list_games():
+    """List all games."""
+    form = GameCreateForm(request.form, csrf_enabled=False)
+    games = Game.query.all()
+    return render_template('dashboard/games.html', games=games,
+                           game_create_form=form)
+
+
+@csrf_protect.exempt
+@blueprint.route('/games/', methods=['POST'])
+def create_game():
     """Create a new game."""
     form = GameCreateForm(request.form, csrf_enabled=False)
-    if request.method == 'POST':
-        print(form.handicap.data)
-        print(form.komi.data)
-        if form.validate_on_submit():
-            Game.create(
-                white_id=form.white_id.data,
-                black_id=form.black_id.data,
-                winner=form.winner.data,
-                handicap=form.handicap.data,
-                komi=form.komi.data
-            )
-            flash('Game added!', 'success')
-        else:
-            flash_errors(form)
+    if form.validate_on_submit():
+        white = Player.get_by_aga_id(form.white_id.data)
+        black = Player.get_by_aga_id(form.black_id.data)
+        Game.create(
+            white=white,
+            black=black,
+            winner=form.winner.data,
+            handicap=form.handicap.data,
+            komi=form.komi.data,
+        )
+        flash('Game created!', 'success')
+    else:
+        flash_errors(form)
     games = Game.query.all()
     return render_template('dashboard/games.html', games=games,
                            game_create_form=form)

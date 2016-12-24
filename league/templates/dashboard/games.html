@@ -32,8 +32,8 @@
           <tbody>
             {% for game in games -%}
             <tr>
-              <td>{{ game.white_id }}</td>
-              <td>{{ game.black_id }}</td>
+              <td>{{ game.white.aga_id }}</td>
+              <td>{{ game.black.aga_id }}</td>
               <td>{{ game.winner.name }}</td>
               <td>{{ game.handicap }}</td>
               <td>{{ game.komi }}</td>

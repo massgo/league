@@ -6,9 +6,10 @@ See: http://webtest.readthedocs.org/
 import pytest
 from flask import url_for
 
+from league.dashboard.models import Color
 from league.user.models import User
 
-from .factories import UserFactory
+from .factories import GameFactory, UserFactory
 
 skip_public = pytest.mark.skip(reason='Public pages disabled')
 
@@ -123,3 +124,66 @@ class TestRegistering:
         res = form.submit()
         # sees error
         assert 'Username already registered' in res
+
+
+class TestPlayer:
+    """Players."""
+
+    def test_list_players(self, testapp, players):
+        """Check that we can list players."""
+        res = testapp.get(url_for('dashboard.players'))
+        assert res.status_int == 200
+
+        found_players = []
+        for row in res.html.find('table').find('tbody').find_all('tr'):
+            found_players.append([col.text for col in row.find_all('td')])
+        assert len(players) == 2
+
+
+class TestGame:
+    """Games."""
+
+    def test_list_games(self, testapp, db):
+        """Check that we can list games."""
+        first_game = GameFactory(winner=Color.white, handicap=3, komi=0)
+        second_game = GameFactory(winner=Color.black, handicap=0, komi=7)
+        db.session.commit()
+
+        res = testapp.get(url_for('dashboard.list_games'))
+        assert res.status_int == 200
+
+        games = []
+        for row in res.html.find('table').find('tbody').find_all('tr'):
+            games.append([col.text for col in row.find_all('td')])
+        assert len(games) == 2
+        assert games[0] == [str(first_game.white.aga_id),
+                            str(first_game.black.aga_id),
+                            first_game.winner.name, str(first_game.handicap),
+                            str(first_game.komi)]
+        assert games[1] == [str(second_game.white.aga_id),
+                            str(second_game.black.aga_id),
+                            second_game.winner.name, str(second_game.handicap),
+                            str(second_game.komi)]
+
+    @pytest.mark.parametrize('winner', ['white'])
+    @pytest.mark.parametrize('handicap', [0, 8])
+    @pytest.mark.parametrize('komi', [0, 7])
+    def test_create_game(self, testapp, players, winner, handicap, komi):
+        """Check that we can create a game."""
+        get_res = testapp.get(url_for('dashboard.create_game'))
+        form = get_res.forms['gameCreateForm']
+        form['white_id'] = players[0].aga_id
+        form['black_id'] = players[1].aga_id
+        form['winner'] = winner
+        form['handicap'] = handicap
+        form['komi'] = komi
+        post_res = form.submit()
+        assert post_res.status_code == 200
+        assert len(post_res.html.select('[class~=alert-error]')) == 0
+
+        games = []
+        for row in post_res.html.find('table').find('tbody').find_all('tr'):
+            games.append([col.text for col in row.find_all('td')])
+        assert len(games) == 1
+        assert games[0] == [str(players[0].aga_id), str(players[1].aga_id),
+                            str('white'), str(handicap), str(komi)]

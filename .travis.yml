@@ -2,7 +2,7 @@
 sudo: false  # http://docs.travis-ci.com/user/migrating-from-legacy/
 language: python
 python:
-  - 3.4
+  - 3.4.5
 env:
   - FLASK_APP=autoapp.py
 install: pip install -r requirements/dev.txt

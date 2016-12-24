@@ -4,13 +4,15 @@ Database module.
 
 Includes the SQLAlchemy database object and DB-related utilities
 """
-from sqlalchemy.orm import relationship
+from sqlalchemy.ext.associationproxy import association_proxy
+from sqlalchemy.orm import backref, relationship
 
-from .compat import basestring
 from .extensions import db
 
 # Alias common SQLAlchemy names
 Column = db.Column
+association_proxy = association_proxy
+backref = backref
 relationship = relationship
 
 
@@ -65,12 +67,7 @@ class SurrogatePK(object):
     @classmethod
     def get_by_id(cls, record_id):
         """Get record by ID."""
-        if any(
-                (isinstance(record_id, basestring) and record_id.isdigit(),
-                 isinstance(record_id, (int, float))),
-        ):
-            return cls.query.get(int(record_id))
-        return None
+        return cls.query.get(int(record_id))
 
 
 def reference_col(tablename, nullable=False, pk_name='id', **kwargs):
