@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Public forms."""
 from flask_wtf import Form
-from wtforms import IntegerField, StringField
+from wtforms import IntegerField, StringField, ValidationError
 from wtforms.validators import AnyOf, DataRequired, NumberRange
 
 from league.dashboard.models import Color
@@ -41,6 +41,12 @@ class GameCreateForm(Form):
         'winner', validators=[AnyOf(
             [name for name, member in Color.__members__.items()])])
     handicap = IntegerField(
-        'handicap', validators=[NumberRange(0, 9)])
+        'handicap', validators=[AnyOf([0, 2, 3, 4, 5, 6, 7, 8, 9])])
     komi = IntegerField(
         'komi', validators=[AnyOf([0, 5, 6, 7])])
+
+    @staticmethod
+    def validate_black_id(form, field):
+        """Check that IDs are different."""
+        if form.black_id.data == form.white_id.data:
+            raise ValidationError('Players cannot play themselves')
