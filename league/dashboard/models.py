@@ -57,11 +57,13 @@ class Game(SurrogatePK, Model):
     __tablename__ = 'games'
 
     white_player_game = relationship('WhitePlayerGame', backref='game',
+                                     cascade='all, delete-orphan',
                                      uselist=False)
     white = association_proxy('white_player_game', 'player',
                               creator=lambda pl: WhitePlayerGame(player=pl))
 
     black_player_game = relationship('BlackPlayerGame', backref='game',
+                                     cascade='all, delete-orphan',
                                      uselist=False)
     black = association_proxy('black_player_game', 'player',
                               creator=lambda pl: BlackPlayerGame(player=pl))

@@ -24,6 +24,12 @@ class PlayerDeleteForm(Form):
     player_id = IntegerField('player_id', validators=[NumberRange(0, 50000)])
 
 
+class GameDeleteForm(Form):
+    """Game deletion form."""
+
+    game_id = IntegerField('game_id', validators=[NumberRange(0, 50000)])
+
+
 class GameCreateForm(Form):
     """Game creation form."""
 

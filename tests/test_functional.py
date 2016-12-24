@@ -154,9 +154,9 @@ class TestPlayer:
 
         post_raw_form = post_res.html.find('form', {'id': 'playerDeleteForm'})
         post_found_players = [int(inp.get('value')) for inp in
-                              post_raw_form.find_all('input', {'name': 'player_id'})]
+                              post_raw_form.find_all('input',
+                                                     {'name': 'player_id'})]
         assert len(post_found_players) == 1
-
 
 
 class TestGame:
@@ -175,11 +175,11 @@ class TestGame:
         for row in res.html.find('table').find('tbody').find_all('tr'):
             games.append([col.text for col in row.find_all('td')])
         assert len(games) == 2
-        assert games[0] == [str(first_game.white.aga_id),
+        assert games[0] == ['', str(first_game.white.aga_id),
                             str(first_game.black.aga_id),
                             first_game.winner.name, str(first_game.handicap),
                             str(first_game.komi)]
-        assert games[1] == [str(second_game.white.aga_id),
+        assert games[1] == ['', str(second_game.white.aga_id),
                             str(second_game.black.aga_id),
                             second_game.winner.name, str(second_game.handicap),
                             str(second_game.komi)]
@@ -204,5 +204,24 @@ class TestGame:
         for row in post_res.html.find('table').find('tbody').find_all('tr'):
             games.append([col.text for col in row.find_all('td')])
         assert len(games) == 1
-        assert games[0] == [str(players[0].aga_id), str(players[1].aga_id),
+        assert games[0] == ['', str(players[0].aga_id), str(players[1].aga_id),
                             str('white'), str(handicap), str(komi)]
+
+    def test_delete_game(self, testapp, games):
+        """Test game deletion."""
+        res = testapp.get(url_for('dashboard.get_games'))
+        raw_form = res.html.find('form', {'id': 'gameDeleteForm'})
+        found_games = [int(inp.get('value')) for inp in
+                       raw_form.find_all('input', {'name': 'game_id'})]
+        assert len(found_games) == 2
+
+        form = res.forms['gameDeleteForm']
+        form.fields['game_id'][0].checked = True
+        post_res = form.submit().follow()
+        assert post_res.status_code == 200
+
+        post_raw_form = post_res.html.find('form', {'id': 'gameDeleteForm'})
+        post_found_games = [int(inp.get('value')) for inp in
+                            post_raw_form.find_all('input',
+                                                   {'name': 'game_id'})]
+        assert len(post_found_games) == 1
