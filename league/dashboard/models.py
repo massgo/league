@@ -97,6 +97,11 @@ class Game(SurrogatePK, Model):
                 format(white=self.white, black=self.black, winner=self.winner,
                        handicap=self.handicap, komi=self.komi))
 
+    @classmethod
+    def get_by_season_ep(cls, season, episode):
+        """Get games by season and episode."""
+        return cls.query.filter_by(season=season, episode=episode)
+
 
 class WhitePlayerGame(Model):
     """A map between players and the games they've played as white."""

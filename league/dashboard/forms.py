@@ -58,3 +58,10 @@ class GameCreateForm(Form):
         """Check that IDs are different."""
         if form.black_id.data == form.white_id.data:
             raise ValidationError('Players cannot play themselves')
+
+
+class ReportGenerateForm(Form):
+    """Report generation form."""
+
+    season = IntegerField('season', validators=[NumberRange(1, 10000)])
+    episode = IntegerField('episode', validators=[NumberRange(1, 10000)])

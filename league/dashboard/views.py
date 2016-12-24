@@ -3,8 +3,10 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 
 from league.dashboard.forms import (GameCreateForm, GameDeleteForm,
-                                    PlayerCreateForm, PlayerDeleteForm)
+                                    PlayerCreateForm, PlayerDeleteForm,
+                                    ReportGenerateForm)
 from league.dashboard.models import Game, Player
+from league.dashboard.reports import Report
 from league.extensions import csrf_protect
 from league.utils import flash_errors
 
@@ -113,8 +115,20 @@ def delete_game():
 @csrf_protect.exempt
 @blueprint.route('/reports/', methods=['GET'])
 def get_reports():
-    """Get results report for submission to AGA."""
-    games = Game.query.all()
-    players = Player.query.all()
-    return render_template('dashboard/reports.html', games=games,
-                           players=players)
+    """Get reports page."""
+    form = ReportGenerateForm(request.form, csrf_enabled=False)
+    return render_template('dashboard/reports.html', report_generate_form=form)
+
+
+@csrf_protect.exempt
+@blueprint.route('/reports/', methods=['POST'])
+def generate_report():
+    """Generate results report for submission to AGA."""
+    form = ReportGenerateForm(request.form, csrf_enabled=False)
+    report = None
+    if form.validate_on_submit():
+        report = Report(form.season.data, form.episode.data)
+    else:
+        flash_errors(form)
+    return render_template('dashboard/reports.html', report=report,
+                           report_generate_form=form)
