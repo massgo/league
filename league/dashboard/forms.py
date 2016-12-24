@@ -4,7 +4,7 @@ from flask_wtf import Form
 from wtforms import IntegerField, StringField, ValidationError
 from wtforms.validators import AnyOf, DataRequired, NumberRange
 
-from league.dashboard.models import Color
+from league.dashboard.models import Color, Player
 
 
 class PlayerCreateForm(Form):
@@ -22,6 +22,12 @@ class PlayerDeleteForm(Form):
     """Player deletion form."""
 
     player_id = IntegerField('player_id', validators=[NumberRange(0, 50000)])
+
+    @staticmethod
+    def validate_player_id(form, field):
+        """Check that players are not in extant games."""
+        if len(Player.get_by_id(field.data).games) > 0:
+            raise ValidationError('Players with extant games cannot be deleted')
 
 
 class GameDeleteForm(Form):

@@ -28,6 +28,11 @@ class Player(SurrogatePK, Model):
     black_games = association_proxy('black_player_games', 'game')
 
     @property
+    def games(self):
+        """All games that player has played."""
+        return self.black_games + self.white_games
+
+    @property
     def full_name(self):
         """Full player name."""
         return '{0} {1}'.format(self.first_name, self.last_name)
