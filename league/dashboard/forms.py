@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """Public forms."""
 from flask_wtf import Form
-from wtforms import IntegerField, StringField
+from wtforms import IntegerField, StringField, ValidationError
 from wtforms.validators import AnyOf, DataRequired, NumberRange
 
-from league.dashboard.models import Color
+from league.dashboard.models import Color, Player
 
 
 class PlayerCreateForm(Form):
@@ -18,6 +18,24 @@ class PlayerCreateForm(Form):
         'aga_rank', validators=[NumberRange(-30, 9)])
 
 
+class PlayerDeleteForm(Form):
+    """Player deletion form."""
+
+    player_id = IntegerField('player_id', validators=[NumberRange(0, 50000)])
+
+    @staticmethod
+    def validate_player_id(form, field):
+        """Check that players are not in extant games."""
+        if len(Player.get_by_id(field.data).games) > 0:
+            raise ValidationError('Players with extant games cannot be deleted')
+
+
+class GameDeleteForm(Form):
+    """Game deletion form."""
+
+    game_id = IntegerField('game_id', validators=[NumberRange(0, 50000)])
+
+
 class GameCreateForm(Form):
     """Game creation form."""
 
@@ -29,6 +47,12 @@ class GameCreateForm(Form):
         'winner', validators=[AnyOf(
             [name for name, member in Color.__members__.items()])])
     handicap = IntegerField(
-        'handicap', validators=[NumberRange(0, 9)])
+        'handicap', validators=[AnyOf([0, 2, 3, 4, 5, 6, 7, 8, 9])])
     komi = IntegerField(
         'komi', validators=[AnyOf([0, 5, 6, 7])])
+
+    @staticmethod
+    def validate_black_id(form, field):
+        """Check that IDs are different."""
+        if form.black_id.data == form.white_id.data:
+            raise ValidationError('Players cannot play themselves')
