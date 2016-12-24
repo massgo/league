@@ -79,6 +79,8 @@ class Game(SurrogatePK, Model):
     season = Column(db.Integer)
     episode = Column(db.Integer)
 
+    db.Index('ix_games_season_episode', 'season', 'episode')
+
     def __init__(self, white, black, winner, handicap, komi, season, episode):
         """Initialize game."""
         self.white = white
