@@ -13,7 +13,9 @@ class PlayerCreateForm(Form):
     first_name = StringField('first_name', validators=[DataRequired()])
     last_name = StringField('last_name', validators=[DataRequired()])
     aga_id = IntegerField(
-        'aga_id', validators=[DataRequired(), NumberRange(0, 50000)])
+        'aga_id', validators=[NumberRange(0, 50000)])
+    aga_rank = IntegerField(
+        'aga_rank', validators=[NumberRange(-30, 9)])
 
 
 class GameCreateForm(Form):

@@ -7,6 +7,8 @@ from league.database import (Column, Model, SurrogatePK, association_proxy, db,
                              reference_col, relationship)
 
 Color = Enum('Color', 'white black')
+Color.white.abbr = 'w'
+Color.black.abbr = 'b'
 
 
 class Player(SurrogatePK, Model):
@@ -17,6 +19,7 @@ class Player(SurrogatePK, Model):
     first_name = Column(db.String(30))
     last_name = Column(db.String(30))
     aga_id = Column(db.Integer, index=True, unique=True)
+    aga_rank = Column(db.Integer)
 
     white_player_games = relationship('WhitePlayerGame', backref='player')
     white_games = association_proxy('white_player_games', 'game')
@@ -34,11 +37,12 @@ class Player(SurrogatePK, Model):
         """Get player by AGA ID."""
         return cls.query.filter_by(aga_id=aga_id)[0]
 
-    def __init__(self, first_name, last_name, aga_id):
+    def __init__(self, first_name, last_name, aga_id, aga_rank):
         """Initialize player."""
         self.first_name = first_name
         self.last_name = last_name
         self.aga_id = aga_id
+        self.aga_rank = aga_rank
 
     def __repr__(self):
         """Represent instance as a unique string."""

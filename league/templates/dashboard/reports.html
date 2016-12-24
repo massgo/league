@@ -1,0 +1,21 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="main">
+      <h1 class="page-header">Reports</h1>
+      <body>
+        <pre><code>PLAYERS </p>{% for player in players -%}
+{{ player.aga_id }} {{ player.last_name }}, {{ player.first_name }} {{ player.aga_rank }}</p>
+{%- endfor %}
+GAMES </p>{% for game in games -%}
+{{ game.white.aga_id }} {{ game.black.aga_id }} {{ game.winner.abbr }} {{ game.handicap }} {{ game.komi }}</p>
+{%- endfor %}
+        </code></pre>
+      </body>
+    </div>
+  </div>
+</div>
+{% endblock %}

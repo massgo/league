@@ -28,7 +28,8 @@ def players():
             Player.create(
                 first_name=form.first_name.data,
                 last_name=form.last_name.data,
-                aga_id=form.aga_id.data
+                aga_id=form.aga_id.data,
+                aga_rank=form.aga_rank.data
             )
             flash('Player created!', 'success')
         else:
@@ -69,3 +70,13 @@ def create_game():
     games = Game.query.all()
     return render_template('dashboard/games.html', games=games,
                            game_create_form=form)
+
+
+@csrf_protect.exempt
+@blueprint.route('/reports/', methods=['GET'])
+def get_reports():
+    """Get results report for submission to AGA."""
+    games = Game.query.all()
+    players = Player.query.all()
+    return render_template('dashboard/reports.html', games=games,
+                           players=players)
