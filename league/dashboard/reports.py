@@ -12,4 +12,5 @@ class Report(object):
         self.episode = episode
 
         self.games = Game.get_by_season_ep(season, episode)
-        self.players = []
+        player_sets = [game.players for game in self.games]
+        self.players = frozenset().union(*player_sets)

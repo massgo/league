@@ -102,6 +102,11 @@ class Game(SurrogatePK, Model):
         """Get games by season and episode."""
         return cls.query.filter_by(season=season, episode=episode)
 
+    @property
+    def players(self):
+        """Get players in game as set."""
+        return frozenset((self.white, self.black))
+
 
 class WhitePlayerGame(Model):
     """A map between players and the games they've played as white."""
