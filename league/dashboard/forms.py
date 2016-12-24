@@ -50,6 +50,8 @@ class GameCreateForm(Form):
         'handicap', validators=[AnyOf([0, 2, 3, 4, 5, 6, 7, 8, 9])])
     komi = IntegerField(
         'komi', validators=[AnyOf([0, 5, 6, 7])])
+    season = IntegerField('season', validators=[NumberRange(0, 10000)])
+    episode = IntegerField('episode', validators=[NumberRange(0, 10000)])
 
     @staticmethod
     def validate_black_id(form, field):

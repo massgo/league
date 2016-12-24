@@ -15,6 +15,8 @@
           {{ game_create_form.winner(placeholder="Winner", class_="form-control") }}
           {{ game_create_form.handicap(placeholder="Handicap", class_="form-control") }}
           {{ game_create_form.komi(placeholder="Komi", class_="form-control") }}
+          {{ game_create_form.season(placeholder="Season", class_="form-control") }}
+          {{ game_create_form.episode(placeholder="Episode", class_="form-control") }}
         </div>
         <button type="submit" class="btn btn-default">Add Game</button>
       </form>
@@ -29,6 +31,8 @@
                 <th>Winner</th>
                 <th>Handicap</th>
                 <th>Komi</th>
+                <th>Season</th>
+                <th>Episode</th>
               </tr>
             </thead>
             <tbody>
@@ -40,6 +44,8 @@
                 <td>{{ game.winner.name }}</td>
                 <td>{{ game.handicap }}</td>
                 <td>{{ game.komi }}</td>
+                <td>{{ game.season }}</td>
+                <td>{{ game.episode }}</td>
               </tr>
               {%- endfor %}
             </tbody>

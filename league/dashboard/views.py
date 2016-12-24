@@ -86,6 +86,8 @@ def create_game():
             winner=form.winner.data,
             handicap=form.handicap.data,
             komi=form.komi.data,
+            season=form.season.data,
+            episode=form.episode.data
         )
         flash('Game created!', 'success')
     else:

@@ -76,14 +76,18 @@ class Game(SurrogatePK, Model):
     winner = Column(db.Enum(Color))
     handicap = Column(db.SmallInteger)
     komi = Column(db.SmallInteger)
+    season = Column(db.Integer)
+    episode = Column(db.Integer)
 
-    def __init__(self, white, black, winner, handicap, komi):
+    def __init__(self, white, black, winner, handicap, komi, season, episode):
         """Initialize game."""
         self.white = white
         self.black = black
         self.winner = winner
         self.handicap = handicap
         self.komi = komi
+        self.season = season
+        self.episode = episode
 
     def __repr__(self):
         """Represent instance as a unique string."""

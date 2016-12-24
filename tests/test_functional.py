@@ -178,16 +178,21 @@ class TestGame:
         assert games[0] == ['', str(first_game.white.aga_id),
                             str(first_game.black.aga_id),
                             first_game.winner.name, str(first_game.handicap),
-                            str(first_game.komi)]
+                            str(first_game.komi), str(first_game.season),
+                            str(first_game.episode)]
         assert games[1] == ['', str(second_game.white.aga_id),
                             str(second_game.black.aga_id),
                             second_game.winner.name, str(second_game.handicap),
-                            str(second_game.komi)]
+                            str(second_game.komi), str(second_game.season),
+                            str(second_game.episode)]
 
     @pytest.mark.parametrize('winner', ['white'])
     @pytest.mark.parametrize('handicap', [0, 8])
     @pytest.mark.parametrize('komi', [0, 7])
-    def test_create_game(self, testapp, players, winner, handicap, komi):
+    @pytest.mark.parametrize('season', [1])
+    @pytest.mark.parametrize('episode', [1])
+    def test_create_game(self, testapp, players, winner, handicap, komi, season,
+                         episode):
         """Check that we can create a game."""
         get_res = testapp.get(url_for('dashboard.create_game'))
         form = get_res.forms['gameCreateForm']
@@ -196,6 +201,8 @@ class TestGame:
         form['winner'] = winner
         form['handicap'] = handicap
         form['komi'] = komi
+        form['season'] = season
+        form['episode'] = episode
         post_res = form.submit()
         assert post_res.status_code == 200
         assert len(post_res.html.select('[class~=alert-error]')) == 0
@@ -205,7 +212,8 @@ class TestGame:
             games.append([col.text for col in row.find_all('td')])
         assert len(games) == 1
         assert games[0] == ['', str(players[0].aga_id), str(players[1].aga_id),
-                            str('white'), str(handicap), str(komi)]
+                            str('white'), str(handicap), str(komi), str(season),
+                            str(episode)]
 
     def test_delete_game(self, testapp, games):
         """Test game deletion."""

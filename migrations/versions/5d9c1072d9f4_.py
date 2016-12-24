@@ -1,15 +1,16 @@
 """empty message
 
-Revision ID: 599da82435d3
+Revision ID: 5d9c1072d9f4
 Revises: 
-Create Date: 2016-12-22 18:35:59.738382
+Create Date: 2016-12-24 13:33:11.311088
 
 """
-import sqlalchemy as sa
 from alembic import op
+import sqlalchemy as sa
+
 
 # revision identifiers, used by Alembic.
-revision = '599da82435d3'
+revision = '5d9c1072d9f4'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,6 +23,8 @@ def upgrade():
     sa.Column('winner', sa.Enum('white', 'black', name='color'), nullable=True),
     sa.Column('handicap', sa.SmallInteger(), nullable=True),
     sa.Column('komi', sa.SmallInteger(), nullable=True),
+    sa.Column('season', sa.Integer(), nullable=True),
+    sa.Column('episode', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('players',
