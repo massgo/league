@@ -75,6 +75,7 @@ def create_game():
 @csrf_protect.exempt
 @blueprint.route('/reports/', methods=['GET'])
 def get_reports():
+    """Get results report for submission to AGA."""
     games = Game.query.all()
     players = Player.query.all()
     return render_template('dashboard/reports.html', games=games,
