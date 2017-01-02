@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """Dashboard."""
 from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask_login import login_required
 
 from league.dashboard.forms import (GameCreateForm, GameDeleteForm,
                                     PlayerCreateForm, PlayerDeleteForm,
                                     ReportGenerateForm)
 from league.dashboard.models import Game, Player
 from league.dashboard.reports import Report
-from league.extensions import csrf_protect
 from league.utils import flash_errors
 
 blueprint = Blueprint('dashboard', __name__, url_prefix='/dashboard',
@@ -15,14 +15,15 @@ blueprint = Blueprint('dashboard', __name__, url_prefix='/dashboard',
 
 
 @blueprint.route('/')
+@login_required
 def dashboard():
     """Dashboard."""
     players = Player.query.all()
     return render_template('dashboard/dashboard.html', players=players)
 
 
-@csrf_protect.exempt
 @blueprint.route('/players/', methods=['GET'])
+@login_required
 def get_players():
     """Get list of players."""
     form = PlayerCreateForm(request.form, csrf_enabled=False)
@@ -31,8 +32,8 @@ def get_players():
                            player_create_form=form)
 
 
-@csrf_protect.exempt
 @blueprint.route('/players/', methods=['POST'])
+@login_required
 def create_player():
     """Create a new player."""
     form = PlayerCreateForm(request.form, csrf_enabled=False)
@@ -51,8 +52,8 @@ def create_player():
                            player_create_form=form)
 
 
-@csrf_protect.exempt
-@blueprint.route('/players/delete', methods=['POST'])
+@blueprint.route('/players/delete/', methods=['POST'])
+@login_required
 def delete_player():
     """Delete a player."""
     form = PlayerDeleteForm(request.form, csrf_enabled=False)
@@ -64,8 +65,8 @@ def delete_player():
     return redirect(url_for('dashboard.get_players'))
 
 
-@csrf_protect.exempt
 @blueprint.route('/games/', methods=['GET'])
+@login_required
 def get_games():
     """Get list of games."""
     form = GameCreateForm(request.form, csrf_enabled=False)
@@ -74,8 +75,8 @@ def get_games():
                            game_create_form=form)
 
 
-@csrf_protect.exempt
 @blueprint.route('/games/', methods=['POST'])
+@login_required
 def create_game():
     """Create a new game."""
     form = GameCreateForm(request.form, csrf_enabled=False)
@@ -99,8 +100,8 @@ def create_game():
                            game_create_form=form)
 
 
-@csrf_protect.exempt
 @blueprint.route('/games/delete', methods=['POST'])
+@login_required
 def delete_game():
     """Delete a game."""
     form = GameDeleteForm(request.form, csrf_enabled=False)
@@ -112,16 +113,16 @@ def delete_game():
     return redirect(url_for('dashboard.get_games'))
 
 
-@csrf_protect.exempt
 @blueprint.route('/reports/', methods=['GET'])
+@login_required
 def get_reports():
     """Get reports page."""
     form = ReportGenerateForm(request.form, csrf_enabled=False)
     return render_template('dashboard/reports.html', report_generate_form=form)
 
 
-@csrf_protect.exempt
 @blueprint.route('/reports/', methods=['POST'])
+@login_required
 def generate_report():
     """Generate results report for submission to AGA."""
     form = ReportGenerateForm(request.form, csrf_enabled=False)

@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 """The app module, containing the app factory function."""
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 from league import commands, dashboard, public, user
 from league.assets import assets
 from league.extensions import (bcrypt, cache, csrf_protect, db, debug_toolbar,
                                login_manager, migrate)
+from league.public.forms import LoginForm
 from league.settings import ProdConfig
 
 
@@ -52,9 +53,12 @@ def register_errorhandlers(app):
     """Register error handlers."""
     def render_error(error):
         """Render error template."""
+        form = LoginForm(request.form)
+
         # If a HTTPException, pull the `code` attribute; default to 500
         error_code = getattr(error, 'code', 500)
-        return render_template('{0}.html'.format(error_code)), error_code
+        return render_template('{0}.html'.format(error_code),
+                               login_form=form), error_code
     for errcode in [401, 404, 500]:
         app.errorhandler(errcode)(render_error)
     return None
