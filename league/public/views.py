@@ -31,7 +31,7 @@ def home():
             return redirect(redirect_url)
         else:
             flash_errors(form)
-    return render_template('public/home.html', form=form)
+    return render_template('public/home.html', login_form=form)
 
 
 @blueprint.route('/logout/')
@@ -54,11 +54,11 @@ def register():
         return redirect(url_for('public.home'))
     else:
         flash_errors(form)
-    return render_template('public/register.html', form=form)
+    return render_template('public/register.html', register_form=form)
 
 
 @blueprint.route('/about/')
 def about():
     """About page."""
     form = LoginForm(request.form)
-    return render_template('public/about.html', form=form)
+    return render_template('public/about.html', login_form=form)

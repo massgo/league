@@ -2,7 +2,7 @@
 """The app module, containing the app factory function."""
 from flask import Flask, render_template
 
-from league import commands, dashboard, user
+from league import commands, dashboard, public, user
 from league.assets import assets
 from league.extensions import (bcrypt, cache, csrf_protect, db, debug_toolbar,
                                login_manager, migrate)
@@ -43,6 +43,8 @@ def register_extensions(app):
 def register_blueprints(app):
     """Register Flask blueprints."""
     app.register_blueprint(dashboard.views.blueprint)
+    app.register_blueprint(public.views.blueprint)
+    app.register_blueprint(user.views.blueprint)
     return None
 
 
