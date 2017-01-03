@@ -6,7 +6,7 @@
   <div class="row">
     <div class="main">
       <h1 class="page-header">Players</h1>
-      <form id="playerCreateForm" method="POST" class="form-inline" action="">
+      <form id="playerCreateForm" method="POST" class="form-inline" action="{{ url_for('dashboard.create_player') }}">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <div class="form-group">
           {{ player_create_form.first_name(placeholder="First name", class_="form-control") }}
@@ -16,7 +16,7 @@
         </div>
         <button type="submit" class="btn btn-default">Add Player</button>
       </form>
-      <form id="playerDeleteForm" class="form" method="POST" action="delete" role="form">
+      <form id="playerDeleteForm" class="form" method="POST" action="{{ url_for('dashboard.delete_player') }}" role="form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <div class="form-check">
           <div class="table-responsive">

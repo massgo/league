@@ -46,6 +46,7 @@ class TestConfig(Config):
     TESTING = True
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = 'sqlite://'
+    LOGIN_DISABLED = True
 
     # For faster tests; needs at least 4 to avoid "ValueError: Invalid rounds"
     BCRYPT_LOG_ROUNDS = 4
