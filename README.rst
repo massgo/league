@@ -37,7 +37,7 @@ add the following to ``.bashrc`` or ``.bash_profile``.
 Before running shell commands, set the ``FLASK_APP`` and ``FLASK_DEBUG``
 environment variables ::
 
-    export FLASK_APP=/path/to/autoapp.py
+    export FLASK_APP=app/autoapp.py
     export FLASK_DEBUG=1
 
 Then run the following commands to bootstrap your environment ::

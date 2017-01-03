@@ -1,0 +1,28 @@
+version: '2'
+services:
+  app:
+    build: ./app
+    volumes:
+        - ./tmp/uwsgi:/tmp/uwsgi
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+    depends_on:
+      - db
+
+  webserver:
+    build: ./webserver
+    volumes_from:
+        - app:rw
+    ports:
+        - '8080:80'
+    depends_on:
+      - app
+
+  db:
+    build: ./db
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD

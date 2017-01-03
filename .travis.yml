@@ -4,7 +4,7 @@ language: python
 python:
   - 3.4.5
 env:
-  - FLASK_APP=autoapp.py
-install: pip install -r requirements/dev.txt
+  - FLASK_APP=app/autoapp.py
+install: pip install -r app/requirements/dev.txt
 before_script: flask lint
 script: flask test

@@ -27,12 +27,15 @@ def test():
               help='Fix imports using isort, before linting')
 def lint(fix_imports):
     """Lint and check code style with flake8 and isort."""
+    root_dir = './app'
     skip = ['requirements', 'migrations']
     root_files = glob('*.py')
-    root_directories = [
-        name for name in next(os.walk('.'))[1] if not name.startswith('.')]
-    files_and_directories = [
-        arg for arg in root_files + root_directories if arg not in skip]
+    root_directories = [name for name in next(os.walk(root_dir))[1]
+                        if not name.startswith(root_dir)]
+
+    files_and_directories = [os.path.join(root_dir, arg)
+                             for arg in root_files + root_directories
+                             if arg not in skip]
 
     def execute_tool(description, *args):
         """Execute a checking tool with its arguments."""
