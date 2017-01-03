@@ -100,7 +100,7 @@ def create_game():
                            game_create_form=form)
 
 
-@blueprint.route('/games/delete', methods=['POST'])
+@blueprint.route('/games/delete/', methods=['POST'])
 @login_required
 def delete_game():
     """Delete a game."""
