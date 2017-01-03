@@ -22,7 +22,14 @@ class ProdConfig(Config):
 
     ENV = 'prod'
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/example'
+    POSTGRES_DB = os.environ.get('POSTGRES_DB', 'postgresql')
+    POSTGRES_USER = os.environ.get('POSTGRES_USER', 'postgresql')
+    POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD', '')
+    SQLALCHEMY_DATABASE_URI = ('postgresql://{}:{}@db/{}').format(
+        POSTGRES_USER,
+        POSTGRES_PASSWORD,
+        POSTGRES_DB
+    )
     DEBUG_TB_ENABLED = False  # Disable Debug toolbar
 
 

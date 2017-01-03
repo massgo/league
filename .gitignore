@@ -41,12 +41,9 @@ docs/_build
 
 .webassets-cache
 
-# Virtualenvs
-env/
-
 # SQLite DB
-dev.db
+app/dev.db
 
 # Generated CSS/JS
-league/static/public/css/common.css
-league/static/public/js/common.js
+app/league/static/public/css/common.css
+app/league/static/public/js/common.js
