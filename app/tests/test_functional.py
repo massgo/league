@@ -171,16 +171,34 @@ class TestGame:
         for row in res.html.find('table').find('tbody').find_all('tr'):
             games.append([col.text for col in row.find_all('td')])
         assert len(games) == 2
-        assert games[0] == ['', str(first_game.white.aga_id),
-                            str(first_game.black.aga_id),
-                            first_game.winner.name, str(first_game.handicap),
-                            str(first_game.komi), str(first_game.season),
-                            str(first_game.episode)]
-        assert games[1] == ['', str(second_game.white.aga_id),
-                            str(second_game.black.aga_id),
-                            second_game.winner.name, str(second_game.handicap),
-                            str(second_game.komi), str(second_game.season),
-                            str(second_game.episode)]
+
+        expected_one = [
+            '',
+            '{} ({})'.format(first_game.white.full_name,
+                             first_game.white.aga_id),
+            '{} ({})'.format(first_game.black.full_name,
+                             first_game.black.aga_id),
+            str(first_game.winner.name),
+            str(first_game.handicap),
+            str(first_game.komi),
+            str(first_game.season),
+            str(first_game.episode)
+        ]
+        assert games[0] == expected_one
+
+        expected_two = [
+            '',
+            '{} ({})'.format(second_game.white.full_name,
+                             second_game.white.aga_id),
+            '{} ({})'.format(second_game.black.full_name,
+                             second_game.black.aga_id),
+            str(second_game.winner.name),
+            str(second_game.handicap),
+            str(second_game.komi),
+            str(second_game.season),
+            str(second_game.episode)
+        ]
+        assert games[1] == expected_two
 
     @pytest.mark.parametrize('winner', ['white'])
     @pytest.mark.parametrize('handicap', [0, 8])
@@ -210,9 +228,13 @@ class TestGame:
         for row in post_res.html.find('table').find('tbody').find_all('tr'):
             games.append([col.text for col in row.find_all('td')])
         assert len(games) == 1
-        assert games[0] == ['', str(players[0].aga_id), str(players[1].aga_id),
-                            str('white'), str(handicap), str(komi), str(season),
-                            str(episode)]
+
+        expected = ['',
+                    '{} ({})'.format(players[0].full_name, players[0].aga_id),
+                    '{} ({})'.format(players[1].full_name, players[1].aga_id),
+                    str('white'), str(handicap), str(komi), str(season),
+                    str(episode)]
+        assert games[0] == expected
 
     def test_delete_game(self, testapp, games):
         """Test game deletion."""

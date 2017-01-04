@@ -26,8 +26,8 @@
             <thead>
               <tr>
                 <th />
-                <th>White ID</th>
-                <th>Black ID</th>
+                <th>White</th>
+                <th>Black</th>
                 <th>Winner</th>
                 <th>Handicap</th>
                 <th>Komi</th>
@@ -39,8 +39,8 @@
               {% for game in games -%}
               <tr>
                 <td><label class="form-check-label"><input class="form-check-input" type="checkbox" name="game_id" value="{{ game.id }}"></label></td>
-                <td>{{ game.white.aga_id }}</td>
-                <td>{{ game.black.aga_id }}</td>
+                <td>{{ game.white.full_name }} ({{ game.white.aga_id }})</td>
+                <td>{{ game.black.full_name }} ({{ game.black.aga_id }})</td>
                 <td>{{ game.winner.name }}</td>
                 <td>{{ game.handicap }}</td>
                 <td>{{ game.komi }}</td>
