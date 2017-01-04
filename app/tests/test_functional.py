@@ -193,8 +193,8 @@ class TestGame:
         get_res = testapp.get(url_for('dashboard.create_game'))
         form = get_res.forms['gameCreateForm']
 
-        form['white_id'] = players[0].aga_id
-        form['black_id'] = players[1].aga_id
+        form['white_id'] = players[0].id
+        form['black_id'] = players[1].id
         form['winner'] = winner
         form['handicap'] = handicap
         form['komi'] = komi

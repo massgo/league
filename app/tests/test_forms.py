@@ -89,6 +89,9 @@ class TestGameCreateForm:
                               komi=komi,
                               season=season,
                               episode=episode)
+        player_choices = [(player.id, player.full_name) for player in players]
+        form.white_id.choices = player_choices
+        form.black_id.choices = player_choices
         form.season.choices = season_choices
         form.episode.choices = episode_choices
         assert form.validate() is True, ('Validation failed: {}'

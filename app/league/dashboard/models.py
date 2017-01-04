@@ -55,6 +55,11 @@ class Player(SurrogatePK, Model):
         """Get player by AGA ID."""
         return cls.query.filter_by(aga_id=aga_id)[0]
 
+    @classmethod
+    def get_players(cls):
+        """Get all players."""
+        return cls.query.all()
+
 
 class Game(SurrogatePK, Model):
     """A game record."""

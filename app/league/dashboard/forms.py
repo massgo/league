@@ -39,10 +39,10 @@ class GameDeleteForm(Form):
 class GameCreateForm(Form):
     """Game creation form."""
 
-    white_id = IntegerField(
-        'white_id', validators=[NumberRange(0, 50000)])
-    black_id = IntegerField(
-        'black_id', validators=[NumberRange(0, 50000)])
+    white_id = SelectField('white_id', coerce=int,
+                           validators=[NumberRange(0, 50000)])
+    black_id = SelectField('black_id', coerce=int,
+                           validators=[NumberRange(0, 50000)])
     winner = SelectField(
         'winner', choices=[(name, name) for name, member
                            in Color.__members__.items()])

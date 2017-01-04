@@ -76,6 +76,13 @@ def _set_game_create_choices(game_create_form):
     game_create_form.episode.choices = [(e, e) for e in
                                         range(1, max_episode + 2)]
 
+    player_choices = [
+        (player.id, '{} ({})'.format(player.full_name, player.aga_id))
+        for player in Player.get_players()
+    ]
+    game_create_form.white_id.choices = player_choices
+    game_create_form.black_id.choices = player_choices
+
 
 @blueprint.route('/games/', methods=['GET'])
 @login_required
@@ -93,11 +100,11 @@ def get_games():
 @login_required
 def create_game():
     """Create a new game."""
-    form = GameCreateForm(request.form, csrf_enabled=False)
+    form = GameCreateForm(request.form)
     _set_game_create_choices(form)
     if form.validate_on_submit():
-        white = Player.get_by_aga_id(form.white_id.data)
-        black = Player.get_by_aga_id(form.black_id.data)
+        white = Player.get_by_id(form.white_id.data)
+        black = Player.get_by_id(form.black_id.data)
         Game.create(
             white=white,
             black=black,
