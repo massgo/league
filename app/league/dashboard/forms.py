@@ -46,10 +46,11 @@ class GameCreateForm(Form):
     winner = SelectField(
         'winner', choices=[(name, name) for name, member
                            in Color.__members__.items()])
-    handicap = IntegerField(
-        'handicap', validators=[AnyOf([0, 2, 3, 4, 5, 6, 7, 8, 9])])
-    komi = IntegerField(
-        'komi', validators=[AnyOf([0, 5, 6, 7])])
+    handicap = SelectField(
+        'handicap', choices=[(handi, handi) for handi
+                             in [0, 2, 3, 4, 5, 6, 7, 8, 9]])
+    komi = SelectField(
+        'komi', choices=[(komi, komi) for komi in [0, 5, 6, 7]])
     season = IntegerField('season', validators=[NumberRange(0, 10000)])
     episode = IntegerField('episode', validators=[NumberRange(0, 10000)])
 
