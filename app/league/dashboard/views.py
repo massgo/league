@@ -104,7 +104,7 @@ def create_game():
 @login_required
 def delete_game():
     """Delete a game."""
-    form = GameDeleteForm(request.form, csrf_enabled=False)
+    form = GameDeleteForm(request.form)
     if form.validate_on_submit():
         Game.delete(Game.get_by_id(form.game_id.data))
         flash('Game deleted!', 'success')
