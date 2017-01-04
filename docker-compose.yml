@@ -20,7 +20,7 @@ services:
     depends_on:
       - app
     volumes:
-        - uwsgi:/tmp/uwsgi
+      - uwsgi:/tmp/uwsgi
 
   db:
     build: ./db
@@ -28,6 +28,9 @@ services:
       - POSTGRES_DB
       - POSTGRES_USER
       - POSTGRES_PASSWORD
+    volumes:
+      - db_data:/var/lib/league/db
 
 volumes:
     uwsgi:
+    db_data:
