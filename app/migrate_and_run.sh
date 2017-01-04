@@ -8,4 +8,4 @@ do
     sleep 1
 done
 
-uwsgi -s /tmp/uwsgi/uwsgi.sock --plugin python3 --manage-script-name --mount /=autoapp:app
+uwsgi --chmod-socket=666 -s /tmp/uwsgi/uwsgi.sock --plugin python3 --manage-script-name --mount /=autoapp:app

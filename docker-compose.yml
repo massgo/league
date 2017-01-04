@@ -3,7 +3,7 @@ services:
   app:
     build: ./app
     volumes:
-        - ./tmp/uwsgi:/tmp/uwsgi
+        - uwsgi:/tmp/uwsgi
     environment:
       - POSTGRES_DB
       - POSTGRES_USER
@@ -19,6 +19,8 @@ services:
         - '8080:80'
     depends_on:
       - app
+    volumes:
+        - uwsgi:/tmp/uwsgi
 
   db:
     build: ./db
@@ -26,3 +28,6 @@ services:
       - POSTGRES_DB
       - POSTGRES_USER
       - POSTGRES_PASSWORD
+
+volumes:
+    uwsgi:
