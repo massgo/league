@@ -6,6 +6,7 @@ Includes the SQLAlchemy database object and DB-related utilities
 """
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import backref, relationship
+from sqlalchemy import func
 
 from .extensions import db
 
@@ -13,7 +14,9 @@ from .extensions import db
 Column = db.Column
 association_proxy = association_proxy
 backref = backref
+func = func
 relationship = relationship
+session = db.session
 
 
 class CRUDMixin(object):

@@ -51,8 +51,10 @@ class GameCreateForm(Form):
                                          in [0, 2, 3, 4, 5, 6, 7, 8, 9]])
     komi = SelectField(
         'komi', coerce=int, choices=[(komi, komi) for komi in [0, 5, 6, 7]])
-    season = IntegerField('season', validators=[NumberRange(0, 10000)])
-    episode = IntegerField('episode', validators=[NumberRange(0, 10000)])
+    season = SelectField('season', coerce=int,
+                         validators=[NumberRange(0, 10000)])
+    episode = SelectField('episode', coerce=int,
+                          validators=[NumberRange(0, 10000)])
 
     @staticmethod
     def validate_black_id(form, field):

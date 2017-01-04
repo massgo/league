@@ -80,7 +80,7 @@ class TestGameCreateForm:
     @pytest.mark.parametrize('season', [1])
     @pytest.mark.parametrize('episode', [1])
     def test_validate_success(self, players, winner, handicap, komi, season,
-                              episode):
+                              episode, season_choices, episode_choices):
         """Create a valid game."""
         form = GameCreateForm(white_id=players[0].id,
                               black_id=players[1].id,
@@ -89,5 +89,7 @@ class TestGameCreateForm:
                               komi=komi,
                               season=season,
                               episode=episode)
+        form.season.choices = season_choices
+        form.episode.choices = episode_choices
         assert form.validate() is True, ('Validation failed: {}'
                                          ''.format(form.errors))

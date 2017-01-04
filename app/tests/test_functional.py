@@ -6,7 +6,7 @@ See: http://webtest.readthedocs.org/
 import pytest
 from flask import url_for
 
-from league.dashboard.models import Color
+from league.dashboard.models import Color, Game
 from league.user.models import User
 
 from .factories import GameFactory, UserFactory
@@ -192,6 +192,7 @@ class TestGame:
         """Check that we can create a game."""
         get_res = testapp.get(url_for('dashboard.create_game'))
         form = get_res.forms['gameCreateForm']
+
         form['white_id'] = players[0].aga_id
         form['black_id'] = players[1].aga_id
         form['winner'] = winner
@@ -199,7 +200,9 @@ class TestGame:
         form['komi'] = komi
         form['season'] = season
         form['episode'] = episode
+
         post_res = form.submit()
+
         assert post_res.status_code == 200
         assert len(post_res.html.select('[class~=alert-error]')) == 0
 

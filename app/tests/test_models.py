@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """Model unit tests."""
 import datetime as dt
+from operator import methodcaller
 
 import pytest
 
 from league.dashboard.models import Color, Game, Player
 from league.user.models import Role, User
 
-from .factories import PlayerFactory, UserFactory
+from .factories import GameFactory, PlayerFactory, UserFactory
 
 
 @pytest.mark.usefixtures('db')
@@ -79,3 +80,10 @@ class TestGame:
         players = Player.query.all()
         assert len(games) == 1
         assert len(players) == 2
+
+    def test_get_max_season_ep(self, db):
+        """Test calculation of maximum season and episode."""
+        games = [GameFactory(season=s, episode=e)
+                 for (s, e) in [(1, 1), (1, 2)]]
+        map(methodcaller('save'), games)
+        assert Game.get_max_season_ep() == (1, 2)
