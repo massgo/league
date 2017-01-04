@@ -2,7 +2,7 @@
 """Public forms."""
 from flask_wtf import Form
 from wtforms import IntegerField, SelectField, StringField, ValidationError
-from wtforms.validators import AnyOf, DataRequired, NumberRange
+from wtforms.validators import DataRequired, NumberRange
 
 from league.dashboard.models import Color, Player
 
@@ -47,10 +47,10 @@ class GameCreateForm(Form):
         'winner', choices=[(name, name) for name, member
                            in Color.__members__.items()])
     handicap = SelectField(
-        'handicap', choices=[(handi, handi) for handi
+        'handicap', choices=[(str(handi), str(handi)) for handi
                              in [0, 2, 3, 4, 5, 6, 7, 8, 9]])
     komi = SelectField(
-        'komi', choices=[(komi, komi) for komi in [0, 5, 6, 7]])
+        'komi', choices=[(str(komi), str(komi)) for komi in [0, 5, 6, 7]])
     season = IntegerField('season', validators=[NumberRange(0, 10000)])
     episode = IntegerField('episode', validators=[NumberRange(0, 10000)])
 

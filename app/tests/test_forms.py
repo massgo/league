@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 """Test forms."""
 
+import pytest
+
+from league.dashboard.forms import GameCreateForm
 from league.public.forms import LoginForm
 from league.user.forms import RegisterForm
 
@@ -66,3 +69,25 @@ class TestLoginForm:
         form = LoginForm(username=user.username, password='example')
         assert form.validate() is False
         assert 'User not activated' in form.username.errors
+
+
+class TestGameCreateForm:
+    """Game create form."""
+
+    @pytest.mark.parametrize('winner', ['white', 'black'])
+    @pytest.mark.parametrize('handicap', [0, 8])
+    @pytest.mark.parametrize('komi', [0, 7])
+    @pytest.mark.parametrize('season', [1])
+    @pytest.mark.parametrize('episode', [1])
+    def test_validate_success(self, players, winner, handicap, komi, season,
+                              episode):
+        """Create a valid game."""
+        form = GameCreateForm(white_id=players[0].id,
+                              black_id=players[1].id,
+                              winner=winner,
+                              handicap=handicap,
+                              komi=komi,
+                              season=season,
+                              episode=episode)
+        assert form.validate() is True, ('Validation failed: {}'
+                                         ''.format(form.errors))
