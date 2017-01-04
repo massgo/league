@@ -113,7 +113,6 @@ class Game(SurrogatePK, Model):
 
         return (max_season, max_episode)
 
-
     @property
     def players(self):
         """Get players in game as set."""

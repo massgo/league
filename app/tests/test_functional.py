@@ -6,7 +6,7 @@ See: http://webtest.readthedocs.org/
 import pytest
 from flask import url_for
 
-from league.dashboard.models import Color, Game
+from league.dashboard.models import Color
 from league.user.models import User
 
 from .factories import GameFactory, UserFactory

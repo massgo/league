@@ -4,9 +4,9 @@ Database module.
 
 Includes the SQLAlchemy database object and DB-related utilities
 """
+from sqlalchemy import func
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import backref, relationship
-from sqlalchemy import func
 
 from .extensions import db
 
