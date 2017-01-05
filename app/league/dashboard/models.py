@@ -4,7 +4,7 @@
 from enum import Enum
 
 from league.database import (Column, Model, SurrogatePK, association_proxy, db,
-                             reference_col, relationship)
+                             func, reference_col, relationship, session)
 
 Color = Enum('Color', 'white black')
 Color.white.abbr = 'w'
@@ -27,6 +27,19 @@ class Player(SurrogatePK, Model):
     black_player_games = relationship('BlackPlayerGame', backref='player')
     black_games = association_proxy('black_player_games', 'game')
 
+    def __init__(self, first_name, last_name, aga_id, aga_rank):
+        """Initialize player."""
+        self.first_name = first_name
+        self.last_name = last_name
+        self.aga_id = aga_id
+        self.aga_rank = aga_rank
+
+    def __repr__(self):
+        """Represent instance as a unique string."""
+        return ('<Player({first_name}, {last_name}, {aga_id})>'.
+                format(first_name=self.first_name, last_name=self.last_name,
+                       aga_id=self.aga_id))
+
     @property
     def games(self):
         """All games that player has played."""
@@ -42,18 +55,10 @@ class Player(SurrogatePK, Model):
         """Get player by AGA ID."""
         return cls.query.filter_by(aga_id=aga_id)[0]
 
-    def __init__(self, first_name, last_name, aga_id, aga_rank):
-        """Initialize player."""
-        self.first_name = first_name
-        self.last_name = last_name
-        self.aga_id = aga_id
-        self.aga_rank = aga_rank
-
-    def __repr__(self):
-        """Represent instance as a unique string."""
-        return ('<Player({first_name}, {last_name}, {aga_id})>'.
-                format(first_name=self.first_name, last_name=self.last_name,
-                       aga_id=self.aga_id))
+    @classmethod
+    def get_players(cls):
+        """Get all players."""
+        return cls.query.all()
 
 
 class Game(SurrogatePK, Model):
@@ -101,6 +106,17 @@ class Game(SurrogatePK, Model):
     def get_by_season_ep(cls, season, episode):
         """Get games by season and episode."""
         return cls.query.filter_by(season=season, episode=episode)
+
+    @classmethod
+    def get_max_season_ep(cls):
+        """Get maximum season and episode."""
+        max_season, max_episode = session.query(func.max(cls.season),
+                                                func.max(cls.episode)).one()
+
+        max_season = 0 if max_season is None else max_season
+        max_episode = 0 if max_episode is None else max_episode
+
+        return (max_season, max_episode)
 
     @property
     def players(self):

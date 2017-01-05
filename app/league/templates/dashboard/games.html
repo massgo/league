@@ -6,52 +6,68 @@
   <div class="row">
     <div class="main">
       <h1 class="page-header">Games</h1>
-      <form id="gameCreateForm" method="POST" class="form-inline" action="{{ url_for('dashboard.create_game') }}">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-        <div class="form-group">
-          {{ game_create_form.white_id(placeholder="White's AGA ID", class_="form-control") }}
-          {{ game_create_form.black_id(placeholder="Black's AGA ID", class_="form-control") }}
-          {{ game_create_form.winner(placeholder="Winner", class_="form-control") }}
-          {{ game_create_form.handicap(placeholder="Handicap", class_="form-control") }}
-          {{ game_create_form.komi(placeholder="Komi", class_="form-control") }}
-          {{ game_create_form.season(placeholder="Season", class_="form-control") }}
-          {{ game_create_form.episode(placeholder="Episode", class_="form-control") }}
-        </div>
-        <button type="submit" class="btn btn-default">Add Game</button>
-      </form>
-      <form id="gameDeleteForm" class="form" method="POST" action="{{ url_for('dashboard.delete_game') }}"" role="form">
         <div class="table-responsive">
           <table class="table table-striped">
             <thead>
               <tr>
                 <th />
-                <th>White ID</th>
-                <th>Black ID</th>
+                <th>White</th>
+                <th>Black</th>
                 <th>Winner</th>
                 <th>Handicap</th>
                 <th>Komi</th>
                 <th>Season</th>
                 <th>Episode</th>
+                <th />
               </tr>
             </thead>
             <tbody>
-              {% for game in games -%}
               <tr>
-                <td><label class="form-check-label"><input class="form-check-input" type="checkbox" name="game_id" value="{{ game.id }}"></label></td>
-                <td>{{ game.white.aga_id }}</td>
-                <td>{{ game.black.aga_id }}</td>
-                <td>{{ game.winner.name }}</td>
-                <td>{{ game.handicap }}</td>
-                <td>{{ game.komi }}</td>
-                <td>{{ game.season }}</td>
-                <td>{{ game.episode }}</td>
-              </tr>
-              {%- endfor %}
+                <td />
+                <form id="gameCreateForm" method="POST" class="form-inline" action="{{ url_for('dashboard.create_game') }}">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                  <div class="form-group">
+                    <td>{{ game_create_form.white_id(placeholder="White's AGA ID", class_="form-control") }}</td>
+                    <td>{{ game_create_form.black_id(placeholder="Black's AGA ID", class_="form-control") }}</td>
+                    <td>{{ game_create_form.winner(placeholder="Winner", class_="form-control") }}</td>
+                    <td>{{ game_create_form.handicap(placeholder="Handicap", class_="form-control") }}</td>
+                    <td>{{ game_create_form.komi(placeholder="Komi", class_="form-control") }}</td>
+                    <td>{{ game_create_form.season(placeholder="Season", class_="form-control") }}</td>
+                    <td>{{ game_create_form.episode(placeholder="Episode", class_="form-control") }}</td>
+                    <td><button type="submit" class="btn btn-default">Add Game</button></td>
+                  </div>
+                </form>
+              <tr>
+              <form id="gameDeleteForm" class="form" method="POST" action="{{ url_for('dashboard.delete_game') }}" role="form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                {% for game in games -%}
+                <tr>
+                  <td><label class="form-check-label"><input class="form-check-input" type="checkbox" name="game_id" value="{{ game.id }}"></label></td>
+                  <td>{{ game.white.full_name }} ({{ game.white.aga_id }})</td>
+                  <td>{{ game.black.full_name }} ({{ game.black.aga_id }})</td>
+                  <td>{{ game.winner.name }}</td>
+                  <td>{{ game.handicap }}</td>
+                  <td>{{ game.komi }}</td>
+                  <td>{{ game.season }}</td>
+                  <td>{{ game.episode }}</td>
+                  <td />
+                </tr>
+                {%- endfor %}
+                <tr>
+                  <td />
+                  <td />
+                  <td />
+                  <td />
+                  <td />
+                  <td />
+                  <td />
+                  <td />
+                  <td><button type="submit" class="btn btn-default">Delete Selected Games</button></tr>
+                </tr>
+              </form>
             </tbody>
           </table>
         </div>
-        <button type="submit" class="btn btn-default">Delete Selected Games</button>
-      </form>
     </div>
   </div>
 </div>

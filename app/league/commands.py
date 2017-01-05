@@ -10,8 +10,9 @@ from flask.cli import with_appcontext
 from werkzeug.exceptions import MethodNotAllowed, NotFound
 
 HERE = os.path.abspath(os.path.dirname(__file__))
-PROJECT_ROOT = os.path.join(HERE, os.pardir)
-TEST_PATH = os.path.join(PROJECT_ROOT, 'tests')
+FLASK_ROOT = os.path.join(HERE, os.pardir)
+PROJECT_ROOT = os.path.join(FLASK_ROOT, os.pardir)
+TEST_PATH = os.path.join(FLASK_ROOT, 'tests')
 
 
 @click.command()
@@ -27,7 +28,7 @@ def test():
               help='Fix imports using isort, before linting')
 def lint(fix_imports):
     """Lint and check code style with flake8 and isort."""
-    root_dir = './app'
+    root_dir = os.path.join(PROJECT_ROOT, 'app')
     skip = ['requirements', 'migrations']
     root_files = glob('*.py')
     root_directories = [name for name in next(os.walk(root_dir))[1]

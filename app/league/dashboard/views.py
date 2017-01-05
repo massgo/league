@@ -65,11 +65,32 @@ def delete_player():
     return redirect(url_for('dashboard.get_players'))
 
 
+def _set_game_create_choices(game_create_form):
+    """
+    Calculate choices for season and episode and update form.
+
+    Should allow up to one more than current maxima.
+    """
+    max_season, max_episode = Game.get_max_season_ep()
+    game_create_form.season.choices = [(s, s) for s in range(1, max_season + 2)]
+    game_create_form.episode.choices = [(e, e) for e in
+                                        range(1, max_episode + 2)]
+
+    player_choices = [
+        (player.id, '{} ({})'.format(player.full_name, player.aga_id))
+        for player in Player.get_players()
+    ]
+    game_create_form.white_id.choices = player_choices
+    game_create_form.black_id.choices = player_choices
+
+
 @blueprint.route('/games/', methods=['GET'])
 @login_required
 def get_games():
     """Get list of games."""
     form = GameCreateForm(request.form, csrf_enabled=False)
+    _set_game_create_choices(form)
+
     games = Game.query.all()
     return render_template('dashboard/games.html', games=games,
                            game_create_form=form)
@@ -79,10 +100,11 @@ def get_games():
 @login_required
 def create_game():
     """Create a new game."""
-    form = GameCreateForm(request.form, csrf_enabled=False)
+    form = GameCreateForm(request.form)
+    _set_game_create_choices(form)
     if form.validate_on_submit():
-        white = Player.get_by_aga_id(form.white_id.data)
-        black = Player.get_by_aga_id(form.black_id.data)
+        white = Player.get_by_id(form.white_id.data)
+        black = Player.get_by_id(form.black_id.data)
         Game.create(
             white=white,
             black=black,
@@ -104,7 +126,7 @@ def create_game():
 @login_required
 def delete_game():
     """Delete a game."""
-    form = GameDeleteForm(request.form, csrf_enabled=False)
+    form = GameDeleteForm(request.form)
     if form.validate_on_submit():
         Game.delete(Game.get_by_id(form.game_id.data))
         flash('Game deleted!', 'success')

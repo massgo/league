@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """Public forms."""
 from flask_wtf import Form
-from wtforms import IntegerField, StringField, ValidationError
-from wtforms.validators import AnyOf, DataRequired, NumberRange
+from wtforms import IntegerField, SelectField, StringField, ValidationError
+from wtforms.validators import DataRequired, NumberRange
 
 from league.dashboard.models import Color, Player
 
@@ -39,19 +39,22 @@ class GameDeleteForm(Form):
 class GameCreateForm(Form):
     """Game creation form."""
 
-    white_id = IntegerField(
-        'white_id', validators=[NumberRange(0, 50000)])
-    black_id = IntegerField(
-        'black_id', validators=[NumberRange(0, 50000)])
-    winner = StringField(
-        'winner', validators=[AnyOf(
-            [name for name, member in Color.__members__.items()])])
-    handicap = IntegerField(
-        'handicap', validators=[AnyOf([0, 2, 3, 4, 5, 6, 7, 8, 9])])
-    komi = IntegerField(
-        'komi', validators=[AnyOf([0, 5, 6, 7])])
-    season = IntegerField('season', validators=[NumberRange(0, 10000)])
-    episode = IntegerField('episode', validators=[NumberRange(0, 10000)])
+    white_id = SelectField('white_id', coerce=int,
+                           validators=[NumberRange(0, 50000)])
+    black_id = SelectField('black_id', coerce=int,
+                           validators=[NumberRange(0, 50000)])
+    winner = SelectField(
+        'winner', choices=[(name, name) for name, member
+                           in Color.__members__.items()])
+    handicap = SelectField(
+        'handicap', coerce=int, choices=[(handi, handi) for handi
+                                         in [0, 2, 3, 4, 5, 6, 7, 8, 9]])
+    komi = SelectField(
+        'komi', coerce=int, choices=[(komi, komi) for komi in [0, 5, 6, 7]])
+    season = SelectField('season', coerce=int,
+                         validators=[NumberRange(0, 10000)])
+    episode = SelectField('episode', coerce=int,
+                          validators=[NumberRange(0, 10000)])
 
     @staticmethod
     def validate_black_id(form, field):
