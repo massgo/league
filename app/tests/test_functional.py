@@ -170,7 +170,7 @@ class TestGame:
         games = []
         for row in res.html.find('table').find('tbody').find_all('tr'):
             games.append([col.text for col in row.find_all('td')])
-        assert len(games) == 2
+        assert len(games) == 2 + 3  # add three for html noise
 
         expected_one = [
             '',
@@ -182,9 +182,10 @@ class TestGame:
             str(first_game.handicap),
             str(first_game.komi),
             str(first_game.season),
-            str(first_game.episode)
+            str(first_game.episode),
+            ''
         ]
-        assert games[0] == expected_one
+        assert games[2] == expected_one
 
         expected_two = [
             '',
@@ -196,9 +197,10 @@ class TestGame:
             str(second_game.handicap),
             str(second_game.komi),
             str(second_game.season),
-            str(second_game.episode)
+            str(second_game.episode),
+            ''
         ]
-        assert games[1] == expected_two
+        assert games[3] == expected_two
 
     @pytest.mark.parametrize('winner', ['white'])
     @pytest.mark.parametrize('handicap', [0, 8])
@@ -227,14 +229,14 @@ class TestGame:
         games = []
         for row in post_res.html.find('table').find('tbody').find_all('tr'):
             games.append([col.text for col in row.find_all('td')])
-        assert len(games) == 1
+        assert len(games) == 1 + 3  # add three for html noise
 
         expected = ['',
                     '{} ({})'.format(players[0].full_name, players[0].aga_id),
                     '{} ({})'.format(players[1].full_name, players[1].aga_id),
                     str('white'), str(handicap), str(komi), str(season),
-                    str(episode)]
-        assert games[0] == expected
+                    str(episode), '']
+        assert games[2] == expected
 
     def test_delete_game(self, testapp, games):
         """Test game deletion."""
