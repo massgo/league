@@ -2,7 +2,7 @@
 """The app module, containing the app factory function."""
 from flask import Flask, render_template, request
 
-from league import commands, dashboard, public, user
+from league import commands, dashboard, public, admin
 from league.assets import assets
 from league.extensions import (bcrypt, cache, csrf_protect, db, debug_toolbar,
                                login_manager, migrate)
@@ -25,6 +25,7 @@ def create_app(config_object=ProdConfig):
     register_errorhandlers(app)
     register_shellcontext(app)
     register_commands(app)
+    register_before_first(app)
     return app
 
 
@@ -45,7 +46,7 @@ def register_blueprints(app):
     """Register Flask blueprints."""
     app.register_blueprint(dashboard.views.blueprint)
     app.register_blueprint(public.views.blueprint)
-    app.register_blueprint(user.views.blueprint)
+    app.register_blueprint(admin.views.blueprint)
     return None
 
 
@@ -70,7 +71,7 @@ def register_shellcontext(app):
         """Shell context objects."""
         return {
             'db': db,
-            'User': user.models.User}
+            'User': admin.models.User}
 
     app.shell_context_processor(shell_context)
 
@@ -81,3 +82,8 @@ def register_commands(app):
     app.cli.add_command(commands.lint)
     app.cli.add_command(commands.clean)
     app.cli.add_command(commands.urls)
+
+
+def register_before_first(app):
+    """Register functions to run before first request."""
+    app.before_first_request_funcs.append(admin.utils.get_create_root_user(app))

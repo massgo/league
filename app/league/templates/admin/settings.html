@@ -1,0 +1,10 @@
+
+{% extends "layout.html" %}
+{% block content %}
+<div class="container-narrow">
+  <h1>Admin Settings</h1>
+  <br/>
+  <a href="{{ url_for('admin.list_users') }}"><h3>View users</h3></a>
+  <a href="{{ url_for('admin.create_user') }}"><h3>Create user</h3></a>
+</div>
+{% endblock %}

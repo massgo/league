@@ -5,7 +5,7 @@ from factory.alchemy import SQLAlchemyModelFactory
 
 from league.dashboard.models import Color, Game, Player
 from league.database import db
-from league.user.models import User
+from league.admin.models import User
 
 
 class BaseFactory(SQLAlchemyModelFactory):

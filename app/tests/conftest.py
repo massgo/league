@@ -52,6 +52,14 @@ def user(db):
 
 
 @pytest.fixture
+def users(db):
+    """Some users for the tests."""
+    users = [UserFactory(), UserFactory()]
+    db.session.commit()
+    return users
+
+
+@pytest.fixture
 def players(db):
     """Some players for the tests."""
     players = [PlayerFactory(), PlayerFactory()]

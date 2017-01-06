@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""User models."""
+"""Admin models."""
 import datetime as dt
 
 from flask_login import UserMixin
@@ -40,9 +40,11 @@ class User(UserMixin, SurrogatePK, Model):
     active = Column(db.Boolean(), default=False)
     is_admin = Column(db.Boolean(), default=False)
 
-    def __init__(self, username, email, password=None, **kwargs):
+    def __init__(self, username, email, password=None, is_admin=False,
+                 **kwargs):
         """Create instance."""
-        db.Model.__init__(self, username=username, email=email, **kwargs)
+        db.Model.__init__(self, username=username, email=email,
+                          is_admin=is_admin, **kwargs)
         if password:
             self.set_password(password)
         else:
@@ -64,3 +66,7 @@ class User(UserMixin, SurrogatePK, Model):
     def __repr__(self):
         """Represent instance as a unique string."""
         return '<User({username!r})>'.format(username=self.username)
+
+    @classmethod
+    def get_by_username(cls, username):
+        return cls.query.filter_by(username=username).first()
