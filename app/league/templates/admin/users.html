@@ -5,9 +5,10 @@
   <div class="row">
     <div class="main">
       <h1 class="page-header">Users</h1>
-      <form id="deleteUsersForm" class="form" method="POST" action="{{ url_for('admin.delete_users') }}" role="form">
+      <form id="deleteUsersForm" class="form" method="POST" action="{{ url_for('admin.list_and_delete_users') }}" role="form">
         {{ delete_users_form.csrf_token }}
         {{ delete_users_form.table() }}
+        <button type="submit" class="btn btn-default">Delete Selected Users</button>
       </form>
     </div>
   </div>

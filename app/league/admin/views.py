@@ -1,50 +1,36 @@
 # -*- coding: utf-8 -*-
 """User views."""
-from flask import Blueprint, flash, render_template, request, url_for
+from flask import Blueprint, flash, render_template, request
 
-from league.forms import CheckboxTableForm
 from league.utils import admin_required, flash_errors
 
-from .forms import CreateUserForm, DeleteUsersForm, UserForm
+from .forms import CreateUserForm, DeleteUsersForm
 from .models import User
 
 blueprint = Blueprint('admin', __name__, url_prefix='/admin',
                       static_folder='../static')
 
 
-@blueprint.route('/users/')
+@blueprint.route('/users/', methods=['GET', 'POST'])
 @admin_required
-def list_users():
-    """List users."""
-    # form = DeleteUsersForm(request.form)
-    # users = User.query.all()
-    # for user in users:
-    #     form.users.append_entry(UserForm())
-    columns = ['Name', 'Age']
-    rows = [['Andrew', 10],
-            ['Jeff', 20]]
-    button_text = 'Delete Selected Users'
-    form = CheckboxTableForm(columns=columns, rows=rows, button_text=button_text)
-    return render_template('admin/users.html', delete_users_form=form)
-
-
-@blueprint.route('/users/delete', methods=['POST'])
-@admin_required
-def delete_users():
-    """Delete users."""
+def list_and_delete_users():
+    """List and delete users."""
+    data = {'row_objects': User.get_users()}
+    form = DeleteUsersForm(request.form, data=data)
     if form.validate_on_submit():
-        users_ids_to_delete = form.user_ids.data
+        users_ids_to_delete = form.table.data
         flash('Users {} deleted!'.format(users_ids_to_delete), 'success')
     else:
         flash_errors(form)
-    users = User.query.all()
+
+    return render_template('admin/users.html', delete_users_form=form)
 
 
 @blueprint.route('/create_user/', methods=['GET', 'POST'])
 @admin_required
 def create_user():
     """Create new user."""
-    form = CreateUserForm(request.form)
+    form = CreateUserForm()
     if form.validate_on_submit():
         User.create(first_name=form.first_name.data,
                     last_name=form.last_name.data,

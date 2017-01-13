@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
 """Admin forms."""
+from collections import OrderedDict
+
+from flask_login import current_user
 from flask_wtf import FlaskForm
-from wtforms import (BooleanField, DateTimeField, FieldList, FormField,
+from wtforms import (BooleanField, DateTimeField, FieldList, Form, FormField,
                      HiddenField, IntegerField, StringField)
 from wtforms.validators import DataRequired, Email, Length, NumberRange
+
+from league.forms import CheckboxTableField
 
 from .models import User
 
@@ -41,15 +46,19 @@ class CreateUserForm(FlaskForm):
         return True
 
 
-class UserForm(FlaskForm):
-    selected = BooleanField()
-    user_id = HiddenField()
-
-
 class DeleteUsersForm(FlaskForm):
     """User deletion form."""
+    columns = OrderedDict([('User Name', 'username'),
+                           ('First Name', 'first_name'),
+                           ('Last Name', 'last_name'),
+                           ('Email', 'email')])
+    table = CheckboxTableField(columns=columns, validators=[DataRequired()])
 
-    users = FieldList(FormField(UserForm))
+    def process(self, formdata=None, obj=None, data=None, **kwargs):
+        formdata = self.meta.wrap_formdata(self, formdata)
+
+        for field in self._fields.values():
+            field.process(formdata, data)
 
     def validate(self):
         """Check that users exist."""
@@ -58,10 +67,13 @@ class DeleteUsersForm(FlaskForm):
             return False
 
         valid = True
-        for user in self.users.entries:
-            if user.selected and User.get_by_id(user.user_id) is None:
-                self.users.errors.append('User with id {} does not exist'.
-                                         format(user.user_id))
+        for user_id in self.table.data:
+            if User.get_by_id(user_id) is None:
+                self.table.errors.append('User with id {} does not exist',
+                                         format(user_id))
+                valid = False
+            elif user_id == current_user.id:
+                self.table.errors.append('You cannot delete yourself!')
                 valid = False
 
         return valid
