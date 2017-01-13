@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """User views."""
-from flask import Blueprint, flash, render_template, request
+from flask import Blueprint, flash, render_template, request, url_for
 
+from league.forms import CheckboxTableForm
 from league.utils import admin_required, flash_errors
 
 from .forms import CreateUserForm, DeleteUsersForm, UserForm
@@ -19,7 +20,11 @@ def list_users():
     # users = User.query.all()
     # for user in users:
     #     form.users.append_entry(UserForm())
-    form = UserForm(request.form)
+    columns = ['Name', 'Age']
+    rows = [['Andrew', 10],
+            ['Jeff', 20]]
+    button_text = 'Delete Selected Users'
+    form = CheckboxTableForm(columns=columns, rows=rows, button_text=button_text)
     return render_template('admin/users.html', delete_users_form=form)
 
 

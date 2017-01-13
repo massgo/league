@@ -26,7 +26,7 @@ def dashboard():
 @login_required
 def get_players():
     """Get list of players."""
-    form = PlayerCreateForm(request.form, csrf_enabled=False)
+    form = PlayerCreateForm(request.form)
     players = Player.query.all()
     return render_template('dashboard/players.html', players=players,
                            player_create_form=form)
