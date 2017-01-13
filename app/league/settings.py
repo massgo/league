@@ -15,7 +15,7 @@ class Config(object):
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    LEAGUE_ROOT_PASS = os.environ.get('LEAGUE_ROOT_PASS')
+    LEAGUE_ROOT_PASS = os.environ.get('LEAGUE_ROOT_PASS', 'root')
 
 
 class ProdConfig(Config):
