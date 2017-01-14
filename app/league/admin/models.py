@@ -72,6 +72,12 @@ class User(UserMixin, SurrogatePK, Model):
         return cls.query.filter_by(username=username).first()
 
     @classmethod
-    def get_users(cls):
+    def get(cls):
         """Get all users."""
         return cls.query.all()
+
+    @classmethod
+    def delete_by_id(cls, ids):
+        """Delete users by id."""
+        cls.query.filter(User.id.in_(ids)).delete(synchronize_session=False)
+        db.session.commit()

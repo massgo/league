@@ -50,6 +50,5 @@ class CheckboxTableField(Field):
                 row.append(getattr(obj, field_name))
             self.rows.append(row)
 
-
     def process_formdata(self, formdata):
         self.data = list(map(int, formdata.getlist('obj_id')))

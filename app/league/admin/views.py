@@ -15,11 +15,12 @@ blueprint = Blueprint('admin', __name__, url_prefix='/admin',
 @admin_required
 def list_and_delete_users():
     """List and delete users."""
-    data = {'row_objects': User.get_users()}
+    data = {'row_objects': User.get()}
     form = DeleteUsersForm(request.form, data=data)
     if form.validate_on_submit():
-        users_ids_to_delete = form.table.data
-        flash('Users {} deleted!'.format(users_ids_to_delete), 'success')
+        user_ids = form.table.data
+        User.delete_by_id(user_ids)
+        flash('Users {} deleted!'.format(user_ids), 'success')
     else:
         flash_errors(form)
 
