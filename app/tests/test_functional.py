@@ -15,14 +15,16 @@ from .factories import GameFactory, UserFactory
 class TestLoggingIn:
     """Login."""
 
-    def test_can_log_in_returns_200(self, user, testapp):
+    def test_can_log_in_returns_200(self, db, testapp):
         """Login successful."""
+        password = 'some_test_password'
+        user = UserFactory(password=password)
         # Goes to homepage
         res = testapp.get('/')
         # Fills out login form in navbar
         form = res.forms['loginForm']
         form['username'] = user.username
-        form['password'] = 'myprecious'
+        form['password'] = password
         # Submits
         res = form.submit().follow()
         assert res.status_code == 200
@@ -70,7 +72,7 @@ class TestLoggingIn:
 class TestUser:
     """Users."""
 
-    def test_delete_user(self, testapp, user):
+    def test_delete_user(self, testapp, authed_user):
         """Test user deletion."""
         res = testapp.get(url_for('admin.list_and_delete_users'))
         raw_form = res.html.find('form', {'id': 'deleteUsersForm'})
@@ -80,7 +82,7 @@ class TestUser:
 
         form = res.forms['deleteUsersForm']
         form.fields['obj_id'][1].checked = True
-        post_res = form.submit()
+        post_res = form.submit().follow()
         assert post_res.status_code == 200
 
         post_raw_form = post_res.html.find('form', {'id': 'deleteUsersForm'})
