@@ -7,7 +7,6 @@ import pytest
 from flask import url_for
 
 from league.dashboard.models import Color
-from league.admin.models import User
 
 from .factories import GameFactory, UserFactory
 
@@ -139,11 +138,26 @@ class TestGame:
 
         games = []
         for row in post_res.html.find('table').find('tbody').find_all('tr'):
-            games.extend(row.find_all('input', {'name': 'game_id'}))
+            input_attrs = getattr(row.find_all('td')[0].find('input'),
+                                  'attrs', None)
+            if input_attrs is not None and int(input_attrs['value']) in [1, 2]:
+                games.append(row)
 
         assert len(games) == 2
-        assert int(games[0].attrs['value']) == 1
-        assert int(games[1].attrs['value']) == 2
+
+        assert int(games[0].find_all('td')[0].find('input')
+                   .attrs['value']) == first_game.id
+        assert games[0].find_all('td')[3].contents[0] == first_game.winner.name
+        assert int(games[0].find_all('td')[4]
+                   .contents[0]) == first_game.handicap
+        assert int(games[0].find_all('td')[5].contents[0]) == first_game.komi
+
+        assert int(games[1].find_all('td')[0].find('input')
+                   .attrs['value']) == 2
+        assert games[1].find_all('td')[3].contents[0] == second_game.winner.name
+        assert int(games[1].find_all('td')[4]
+                   .contents[0]) == second_game.handicap
+        assert int(games[1].find_all('td')[5].contents[0]) == second_game.komi
 
     @pytest.mark.parametrize('winner', ['white'])
     @pytest.mark.parametrize('handicap', [0, 8])
