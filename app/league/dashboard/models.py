@@ -86,11 +86,12 @@ class Game(SurrogatePK, Model):
     episode = Column(db.Integer)
 
     created_at = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
+    played_at = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
 
     db.Index('ix_games_season_episode', 'season', 'episode')
 
     def __init__(self, white, black, winner, handicap, komi, season, episode,
-                 created_at=None):
+                 created_at=None, played_at=None):
         """Initialize game."""
         self.white = white
         self.black = black
@@ -100,6 +101,7 @@ class Game(SurrogatePK, Model):
         self.season = season
         self.episode = episode
         self.created_at = created_at
+        self.played_at = played_at
 
     def __repr__(self):
         """Represent instance as a unique string."""
