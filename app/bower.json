@@ -1,6 +1,7 @@
 {
   "name": "league",
   "dependencies": {
-    "bootstrap": "~3.3.4"
+    "bootstrap": "~3.3.4",
+    "combodate": "^1.1.0"
   }
 }
