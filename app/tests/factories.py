@@ -3,9 +3,9 @@
 from factory import PostGenerationMethodCall, Sequence, SubFactory
 from factory.alchemy import SQLAlchemyModelFactory
 
+from league.admin.models import User
 from league.dashboard.models import Color, Game, Player
 from league.database import db
-from league.admin.models import User
 
 
 class BaseFactory(SQLAlchemyModelFactory):

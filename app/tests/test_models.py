@@ -5,8 +5,8 @@ from operator import methodcaller
 
 import pytest
 
-from league.dashboard.models import Color, Game, Player
 from league.admin.models import Role, User
+from league.dashboard.models import Color, Game, Player
 
 from .factories import GameFactory, PlayerFactory, UserFactory
 

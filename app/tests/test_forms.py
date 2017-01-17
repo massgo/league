@@ -3,9 +3,9 @@
 
 import pytest
 
+from league.admin.forms import CreateUserForm
 from league.dashboard.forms import GameCreateForm
 from league.public.forms import LoginForm
-from league.admin.forms import CreateUserForm
 
 
 class TestCreateUserForm:

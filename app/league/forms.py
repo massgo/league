@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 """Shared forms."""
-from flask_wtf import FlaskForm
-from wtforms import Field, IntegerField
+from wtforms import Field
 from wtforms.widgets import HTMLString
 
 
 class CheckboxTableWidget(object):
+    """Widget for rendering table with checkboxes on each row."""
+
     def __call__(self, field, **kwargs):
+        """Render table to HTML."""
         columns = kwargs.pop('columns', field.columns)
         rows = kwargs.pop('rows', field.rows)
 
@@ -29,20 +31,30 @@ class CheckboxTableWidget(object):
 
 
 class CheckboxTableField(Field):
+    """Field representing table with checkboxes on each row."""
+
     widget = CheckboxTableWidget()
 
     def __init__(self, columns, *args, **kwargs):
+        """
+        Override constructor to allow for passing of display data columns.
+
+        Only the column titles are passed in here, as actual data will be passed
+        at process time.
+        """
         self.columns = columns
         self.rows = []
         super().__init__(*args, **kwargs)
 
     def process(self, formdata, data=None):
+        """Override process method has hack around weirdness."""
         if formdata:
             self.process_formdata(formdata)
         elif data is not None:
             self.process_data(data)
 
     def process_data(self, data):
+        """Process data rows for rendering to table."""
         row_objects = data['row_objects']
         for obj in row_objects:
             row = [obj.id]
@@ -51,4 +63,5 @@ class CheckboxTableField(Field):
             self.rows.append(row)
 
     def process_formdata(self, formdata):
+        """Process object IDs retrieved from form POST."""
         self.data = list(map(int, formdata.getlist('obj_id')))

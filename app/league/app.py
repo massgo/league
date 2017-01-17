@@ -2,7 +2,7 @@
 """The app module, containing the app factory function."""
 from flask import Flask, render_template, request
 
-from league import commands, dashboard, public, admin
+from league import admin, commands, dashboard, public
 from league.assets import assets
 from league.extensions import (bcrypt, cache, csrf_protect, db, debug_toolbar,
                                login_manager, migrate)

@@ -4,9 +4,8 @@ from collections import OrderedDict
 
 from flask_login import current_user
 from flask_wtf import FlaskForm
-from wtforms import (BooleanField, DateTimeField, FieldList, Form, FormField,
-                     HiddenField, IntegerField, StringField)
-from wtforms.validators import DataRequired, Email, Length, NumberRange
+from wtforms import BooleanField, StringField
+from wtforms.validators import DataRequired, Email, Length
 
 from league.forms import CheckboxTableField
 
@@ -48,6 +47,7 @@ class CreateUserForm(FlaskForm):
 
 class DeleteUsersForm(FlaskForm):
     """User deletion form."""
+
     columns = OrderedDict([('User Name', 'username'),
                            ('First Name', 'first_name'),
                            ('Last Name', 'last_name'),
@@ -55,6 +55,7 @@ class DeleteUsersForm(FlaskForm):
     table = CheckboxTableField(columns=columns, validators=[DataRequired()])
 
     def process(self, formdata=None, obj=None, data=None, **kwargs):
+        """Hack around mysterious problems with super's implementation."""
         formdata = self.meta.wrap_formdata(self, formdata)
 
         for field in self._fields.values():

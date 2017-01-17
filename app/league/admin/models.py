@@ -69,6 +69,7 @@ class User(UserMixin, SurrogatePK, Model):
 
     @classmethod
     def get_by_username(cls, username):
+        """Get User by username."""
         return cls.query.filter_by(username=username).first()
 
     @classmethod
