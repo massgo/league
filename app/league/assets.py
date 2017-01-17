@@ -13,7 +13,7 @@ css = Bundle(
 js = Bundle(
     'libs/jquery/dist/jquery.js',
     'libs/bootstrap/dist/js/bootstrap.js',
-    'libs/moment/min/**',
+    'libs/moment/min/moment-with-locales.js',
     'libs/combodate/src/combodate.js',
     'js/plugins.js',
     filters='jsmin',
