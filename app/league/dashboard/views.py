@@ -15,18 +15,19 @@ blueprint = Blueprint('dashboard', __name__, url_prefix='/dashboard',
 
 
 @blueprint.route('/')
-@login_required
 def dashboard():
     """Dashboard."""
     players = Player.query.all()
-    return render_template('dashboard/dashboard.html', players=players)
+    games = Game.query.all()
+    return render_template('dashboard/dashboard.html', players=players,
+                           games=games)
 
 
 @blueprint.route('/players/', methods=['GET'])
 @login_required
 def get_players():
     """Get list of players."""
-    form = PlayerCreateForm(request.form, csrf_enabled=False)
+    form = PlayerCreateForm(request.form)
     players = Player.query.all()
     return render_template('dashboard/players.html', players=players,
                            player_create_form=form)

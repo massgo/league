@@ -3,10 +3,9 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import login_required, login_user, logout_user
 
+from league.admin.models import User
 from league.extensions import login_manager
 from league.public.forms import LoginForm
-from league.user.forms import RegisterForm
-from league.user.models import User
 from league.utils import flash_errors
 
 blueprint = Blueprint('public', __name__, static_folder='../static')
@@ -27,7 +26,7 @@ def home():
         if form.validate_on_submit():
             login_user(form.user)
             flash('You are logged in.', 'success')
-            redirect_url = request.args.get('next') or url_for('user.members')
+            redirect_url = request.args.get('next') or url_for('public.home')
             return redirect(redirect_url)
         else:
             flash_errors(form)
@@ -41,20 +40,6 @@ def logout():
     logout_user()
     flash('You are logged out.', 'info')
     return redirect(url_for('public.home'))
-
-
-@blueprint.route('/register/', methods=['GET', 'POST'])
-def register():
-    """Register new user."""
-    form = RegisterForm(request.form, csrf_enabled=False)
-    if form.validate_on_submit():
-        User.create(username=form.username.data, email=form.email.data,
-                    password=form.password.data, active=True)
-        flash('Thank you for registering. You can now log in.', 'success')
-        return redirect(url_for('public.home'))
-    else:
-        flash_errors(form)
-    return render_template('public/register.html', register_form=form)
 
 
 @blueprint.route('/about/')

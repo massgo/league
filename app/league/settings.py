@@ -15,6 +15,7 @@ class Config(object):
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    LEAGUE_ROOT_PASS = os.environ.get('LEAGUE_ROOT_PASS', 'root')
 
 
 class ProdConfig(Config):
@@ -45,6 +46,7 @@ class DevConfig(Config):
     DEBUG_TB_ENABLED = True
     ASSETS_DEBUG = True  # Don't bundle/minify static assets
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
+    LEAGUE_ROOT_PASS = 'root'
 
 
 class TestConfig(Config):

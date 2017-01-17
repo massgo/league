@@ -3,9 +3,9 @@
 from factory import PostGenerationMethodCall, Sequence, SubFactory
 from factory.alchemy import SQLAlchemyModelFactory
 
+from league.admin.models import User
 from league.dashboard.models import Color, Game, Player
 from league.database import db
-from league.user.models import User
 
 
 class BaseFactory(SQLAlchemyModelFactory):
@@ -25,6 +25,8 @@ class UserFactory(BaseFactory):
     email = Sequence(lambda n: 'user{0}@example.com'.format(n))
     password = PostGenerationMethodCall('set_password', 'example')
     active = True
+    first_name = Sequence(lambda n: 'Jim{0}'.format(n))
+    last_name = Sequence(lambda n: 'Jones{0}'.format(n))
 
     class Meta:
         """Factory configuration."""

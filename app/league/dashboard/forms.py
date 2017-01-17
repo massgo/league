@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """Public forms."""
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import IntegerField, SelectField, StringField, ValidationError
 from wtforms.validators import DataRequired, NumberRange
 
 from league.dashboard.models import Color, Player
 
 
-class PlayerCreateForm(Form):
+class PlayerCreateForm(FlaskForm):
     """Player creation form."""
 
     first_name = StringField('first_name', validators=[DataRequired()])
@@ -18,7 +18,7 @@ class PlayerCreateForm(Form):
         'aga_rank', validators=[NumberRange(-30, 9)])
 
 
-class PlayerDeleteForm(Form):
+class PlayerDeleteForm(FlaskForm):
     """Player deletion form."""
 
     player_id = IntegerField('player_id', validators=[NumberRange(0, 50000)])
@@ -30,13 +30,13 @@ class PlayerDeleteForm(Form):
             raise ValidationError('Players with extant games cannot be deleted')
 
 
-class GameDeleteForm(Form):
+class GameDeleteForm(FlaskForm):
     """Game deletion form."""
 
     game_id = IntegerField('game_id', validators=[NumberRange(0, 50000)])
 
 
-class GameCreateForm(Form):
+class GameCreateForm(FlaskForm):
     """Game creation form."""
 
     white_id = SelectField('white_id', coerce=int,
@@ -63,7 +63,7 @@ class GameCreateForm(Form):
             raise ValidationError('Players cannot play themselves')
 
 
-class ReportGenerateForm(Form):
+class ReportGenerateForm(FlaskForm):
     """Report generation form."""
 
     season = IntegerField('season', validators=[NumberRange(1, 10000)])

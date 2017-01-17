@@ -52,6 +52,27 @@ def user(db):
 
 
 @pytest.fixture
+def authed_user(db, testapp):
+    """A user that has been authenticated with the testapp."""
+    password = 'some_test_password'
+    user = UserFactory(password=password)
+    res = testapp.get('/')
+    # Fills out login form in navbar
+    form = res.forms['loginForm']
+    form['username'] = user.username
+    form['password'] = password
+    form.submit().follow()
+
+
+@pytest.fixture
+def users(db):
+    """Some users for the tests."""
+    users = [UserFactory(), UserFactory()]
+    db.session.commit()
+    return users
+
+
+@pytest.fixture
 def players(db):
     """Some players for the tests."""
     players = [PlayerFactory(), PlayerFactory()]

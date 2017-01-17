@@ -7,7 +7,6 @@ import pytest
 from flask import url_for
 
 from league.dashboard.models import Color
-from league.user.models import User
 
 from .factories import GameFactory, UserFactory
 
@@ -15,14 +14,16 @@ from .factories import GameFactory, UserFactory
 class TestLoggingIn:
     """Login."""
 
-    def test_can_log_in_returns_200(self, user, testapp):
+    def test_can_log_in_returns_200(self, db, testapp):
         """Login successful."""
+        password = 'some_test_password'
+        user = UserFactory(password=password)
         # Goes to homepage
         res = testapp.get('/')
         # Fills out login form in navbar
         form = res.forms['loginForm']
         form['username'] = user.username
-        form['password'] = 'myprecious'
+        form['password'] = password
         # Submits
         res = form.submit().follow()
         assert res.status_code == 200
@@ -67,59 +68,27 @@ class TestLoggingIn:
         assert 'Unknown user' in res
 
 
-class TestRegistering:
-    """Register a user."""
+class TestUser:
+    """Users."""
 
-    def test_can_register(self, user, testapp):
-        """Register a new user."""
-        old_count = len(User.query.all())
-        # Goes to homepage
-        res = testapp.get('/')
-        # Clicks Create Account button
-        res = res.click('Create account')
-        # Fills out the form
-        form = res.forms['registerForm']
-        form['username'] = 'foobar'
-        form['email'] = 'foo@bar.com'
-        form['password'] = 'secret'
-        form['confirm'] = 'secret'
-        # Submits
-        res = form.submit().follow()
-        assert res.status_code == 200
-        # A new user was created
-        assert len(User.query.all()) == old_count + 1
+    def test_delete_user(self, testapp, authed_user):
+        """Test user deletion."""
+        res = testapp.get(url_for('admin.list_and_delete_users'))
+        raw_form = res.html.find('form', {'id': 'deleteUsersForm'})
+        found_users = [int(inp.get('value')) for inp in
+                       raw_form.find_all('input', {'name': 'obj_id'})]
+        assert len(found_users) == 2
 
-    def test_sees_error_message_if_passwords_dont_match(self, user, testapp):
-        """Show error if passwords don't match."""
-        # Goes to registration page
-        res = testapp.get(url_for('public.register'))
-        # Fills out form, but passwords don't match
-        form = res.forms['registerForm']
-        form['username'] = 'foobar'
-        form['email'] = 'foo@bar.com'
-        form['password'] = 'secret'
-        form['confirm'] = 'secrets'
-        # Submits
-        res = form.submit()
-        # sees error message
-        assert 'Passwords must match' in res
+        form = res.forms['deleteUsersForm']
+        form.fields['obj_id'][1].checked = True
+        post_res = form.submit().follow()
+        assert post_res.status_code == 200
 
-    def test_sees_error_message_if_user_already_registered(self, user, testapp):
-        """Show error if user already registered."""
-        user = UserFactory(active=True)  # A registered user
-        user.save()
-        # Goes to registration page
-        res = testapp.get(url_for('public.register'))
-        # Fills out form, but username is already registered
-        form = res.forms['registerForm']
-        form['username'] = user.username
-        form['email'] = 'foo@bar.com'
-        form['password'] = 'secret'
-        form['confirm'] = 'secret'
-        # Submits
-        res = form.submit()
-        # sees error
-        assert 'Username already registered' in res
+        post_raw_form = post_res.html.find('form', {'id': 'deleteUsersForm'})
+        post_found_users = [int(inp.get('value')) for inp in
+                            post_raw_form.find_all('input',
+                                                   {'name': 'obj_id'})]
+        assert len(post_found_users) == 1
 
 
 class TestPlayer:
@@ -164,43 +133,31 @@ class TestGame:
         second_game = GameFactory(winner=Color.black, handicap=0, komi=7)
         db.session.commit()
 
-        res = testapp.get(url_for('dashboard.get_games'))
-        assert res.status_int == 200
+        post_res = testapp.get(url_for('dashboard.get_games'))
+        assert post_res.status_int == 200
 
         games = []
-        for row in res.html.find('table').find('tbody').find_all('tr'):
-            games.append([col.text for col in row.find_all('td')])
-        assert len(games) == 2 + 3  # add three for html noise
+        for row in post_res.html.find('table').find('tbody').find_all('tr'):
+            input_attrs = getattr(row.find_all('td')[0].find('input'),
+                                  'attrs', None)
+            if input_attrs is not None and int(input_attrs['value']) in [1, 2]:
+                games.append(row)
 
-        expected_one = [
-            '',
-            '{} ({})'.format(first_game.white.full_name,
-                             first_game.white.aga_id),
-            '{} ({})'.format(first_game.black.full_name,
-                             first_game.black.aga_id),
-            str(first_game.winner.name),
-            str(first_game.handicap),
-            str(first_game.komi),
-            str(first_game.season),
-            str(first_game.episode),
-            ''
-        ]
-        assert games[2] == expected_one
+        assert len(games) == 2
 
-        expected_two = [
-            '',
-            '{} ({})'.format(second_game.white.full_name,
-                             second_game.white.aga_id),
-            '{} ({})'.format(second_game.black.full_name,
-                             second_game.black.aga_id),
-            str(second_game.winner.name),
-            str(second_game.handicap),
-            str(second_game.komi),
-            str(second_game.season),
-            str(second_game.episode),
-            ''
-        ]
-        assert games[3] == expected_two
+        assert int(games[0].find_all('td')[0].find('input')
+                   .attrs['value']) == first_game.id
+        assert games[0].find_all('td')[3].contents[0] == first_game.winner.name
+        assert int(games[0].find_all('td')[4]
+                   .contents[0]) == first_game.handicap
+        assert int(games[0].find_all('td')[5].contents[0]) == first_game.komi
+
+        assert int(games[1].find_all('td')[0].find('input')
+                   .attrs['value']) == 2
+        assert games[1].find_all('td')[3].contents[0] == second_game.winner.name
+        assert int(games[1].find_all('td')[4]
+                   .contents[0]) == second_game.handicap
+        assert int(games[1].find_all('td')[5].contents[0]) == second_game.komi
 
     @pytest.mark.parametrize('winner', ['white'])
     @pytest.mark.parametrize('handicap', [0, 8])
@@ -228,15 +185,10 @@ class TestGame:
 
         games = []
         for row in post_res.html.find('table').find('tbody').find_all('tr'):
-            games.append([col.text for col in row.find_all('td')])
-        assert len(games) == 1 + 3  # add three for html noise
+            games.extend(row.find_all('input', {'name': 'game_id'}))
 
-        expected = ['',
-                    '{} ({})'.format(players[0].full_name, players[0].aga_id),
-                    '{} ({})'.format(players[1].full_name, players[1].aga_id),
-                    str('white'), str(handicap), str(komi), str(season),
-                    str(episode), '']
-        assert games[2] == expected
+        assert len(games) == 1
+        assert int(games[0].attrs['value']) == 1
 
     def test_delete_game(self, testapp, games):
         """Test game deletion."""
