@@ -36,7 +36,7 @@
                   <td>{{ game_create_form.komi(placeholder="Komi", class_="form-control") }}</td>
                   <td>{{ game_create_form.season(placeholder="Season", class_="form-control") }}</td>
                   <td>{{ game_create_form.episode(placeholder="Episode", class_="form-control") }}</td>
-                  <td>{{ game_create_form.played_at(placeholder="Played At", class_="form-control") }}</td>
+                  <td>{{ game_create_form.played_at(placeholder="Played At", class_="form-control datetime") }}</td>
                   <td />
                   <td><button type="submit" class="btn btn-default">Add Game</button></td>
                 </div>
@@ -79,4 +79,20 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block js %}
+<script>
+var template_str = 'MM / DD / YY  HH : mm';
+var format_str = 'YYYY-MM-DD HH:mm:ss';
+
+$('.datetime').combodate({
+  format: format_str,
+  template: template_str,
+  minuteStep: 1,
+  value: moment().format(format_str),
+  minYear: 2016,
+  maxYear: 2017
+});
+</script>
 {% endblock %}
