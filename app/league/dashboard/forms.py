@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """Public forms."""
 from flask_wtf import FlaskForm
-from wtforms import IntegerField, SelectField, StringField, ValidationError
+from wtforms import (DateTimeField, IntegerField, SelectField, StringField,
+                     ValidationError)
 from wtforms.validators import DataRequired, NumberRange
 
 from league.dashboard.models import Color, Player
@@ -55,6 +56,7 @@ class GameCreateForm(FlaskForm):
                          validators=[NumberRange(0, 10000)])
     episode = SelectField('episode', coerce=int,
                           validators=[NumberRange(0, 10000)])
+    played_at = DateTimeField()
 
     @staticmethod
     def validate_black_id(form, field):

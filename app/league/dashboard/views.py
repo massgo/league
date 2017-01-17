@@ -113,7 +113,8 @@ def create_game():
             handicap=form.handicap.data,
             komi=form.komi.data,
             season=form.season.data,
-            episode=form.episode.data
+            episode=form.episode.data,
+            played_at=form.played_at.data
         )
         flash('Game created!', 'success')
     else:
