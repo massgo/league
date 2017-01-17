@@ -15,11 +15,12 @@ blueprint = Blueprint('dashboard', __name__, url_prefix='/dashboard',
 
 
 @blueprint.route('/')
-@login_required
 def dashboard():
     """Dashboard."""
     players = Player.query.all()
-    return render_template('dashboard/dashboard.html', players=players)
+    games = Game.query.all()
+    return render_template('dashboard/dashboard.html', players=players,
+                           games=games)
 
 
 @blueprint.route('/players/', methods=['GET'])

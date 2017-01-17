@@ -13,7 +13,7 @@
             <tr>
               <th>AGA ID</th>
               <th>Name</th>
-              <th>Rank</th>
+              <th>AGA Rank</th>
             </tr>
           </thead>
           <tbody>
@@ -21,7 +21,36 @@
             <tr>
               <td>{{ player.aga_id }}</td>
               <td>{{ player.full_name }}</td>
-              <td>{{ player.rank }}</td>
+              <td>{{ player.aga_rank }}</td>
+            </tr>
+            {%- endfor %}
+          </tbody>
+        </table>
+      </div>
+      <h2 class="sub-header">Games</h2>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>White</th>
+              <th>Black</th>
+              <th>Winner</th>
+              <th>Handicap</th>
+              <th>Komi</th>
+              <th>Season</th>
+              <th>Episode</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for game in games -%}
+            <tr>
+              <td>{{ game.white.full_name }} ({{ game.white.aga_id }})</td>
+              <td>{{ game.black.full_name }} ({{ game.black.aga_id }})</td>
+              <td>{{ game.winner.name }}</td>
+              <td>{{ game.handicap }}</td>
+              <td>{{ game.komi }}</td>
+              <td>{{ game.season }}</td>
+              <td>{{ game.episode }}</td>
             </tr>
             {%- endfor %}
           </tbody>

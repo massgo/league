@@ -16,9 +16,11 @@
   <div class="collapse navbar-collapse navbar-ex1-collapse">
     <ul class="nav navbar-nav">
       <li><a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a></li>
+      {% if current_user and current_user.is_authenticated %}
       <li><a href="{{ url_for('dashboard.get_players') }}">Players</a></li>
       <li><a href="{{ url_for('dashboard.get_games') }}">Games</a></li>
       <li><a href="{{ url_for('dashboard.get_reports') }}">Reports</a></li>
+      {% endif %}
     </ul>
     {% if current_user and current_user.is_authenticated %}
     <ul class="nav navbar-nav navbar-right">
