@@ -1,4 +1,5 @@
-"""empty message
+"""
+Add created_at column for games.
 
 Revision ID: 491d93ec347f
 Revises: 62d7e9633cf9
@@ -17,6 +18,8 @@ depends_on = None
 
 def upgrade():
     """Upgrade database."""
+    # The following is a ridiculous hack to force table recreation for SQLite to
+    # enable the use of a default timestamp.
     recreate = 'auto'
     migrate_context = context.get_context()
     sqlite_dialect_class = None
