@@ -18,6 +18,8 @@
               <th>Komi</th>
               <th>Season</th>
               <th>Episode</th>
+              <th>Played At</th>
+              <th>Created At</th>
               <th />
             </tr>
           </thead>
@@ -34,6 +36,8 @@
                   <td>{{ game_create_form.komi(placeholder="Komi", class_="form-control") }}</td>
                   <td>{{ game_create_form.season(placeholder="Season", class_="form-control") }}</td>
                   <td>{{ game_create_form.episode(placeholder="Episode", class_="form-control") }}</td>
+                  <td />
+                  <td />
                   <td><button type="submit" class="btn btn-default">Add Game</button></td>
                 </div>
               </form>
@@ -50,10 +54,14 @@
                 <td>{{ game.komi }}</td>
                 <td>{{ game.season }}</td>
                 <td>{{ game.episode }}</td>
+                <td>{{ game.played_at }}</td>
+                <td>{{ game.created_at }}</td>
                 <td />
               </tr>
               {%- endfor %}
               <tr>
+                <td />
+                <td />
                 <td />
                 <td />
                 <td />
