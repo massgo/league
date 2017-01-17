@@ -58,6 +58,7 @@ class GameFactory(BaseFactory):
     komi = 7
     season = 1
     episode = 1
+    created_at = None
 
     class Meta:
         """Factory configuration."""
