@@ -44,6 +44,9 @@ docs/_build
 # SQLite DB
 app/dev.db
 
+# Bower dependencies
+app/league/static/libs
+
 # Generated CSS/JS
 app/league/static/public/css/common.css
 app/league/static/public/js/common.js
