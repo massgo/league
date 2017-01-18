@@ -7,10 +7,9 @@
     <div class="main">
       <h1 class="page-header">Games</h1>
       <div class="table-responsive">
-        <table class="table table-striped">
+        <table class="table table-striped" id="gameTable">
           <thead>
             <tr>
-              <th />
               <th>White</th>
               <th>Black</th>
               <th>Winner</th>
@@ -20,61 +19,40 @@
               <th>Episode</th>
               <th>Played At</th>
               <th>Created At</th>
-              <th />
             </tr>
           </thead>
           <tbody>
+            {% for game in games -%}
             <tr>
-              <td />
-              <form id="gameCreateForm" method="POST" class="form-inline" action="{{ url_for('dashboard.create_game') }}">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <div class="form-group">
-                  <td>{{ game_create_form.white_id(placeholder="White's AGA ID", class_="form-control") }}</td>
-                  <td>{{ game_create_form.black_id(placeholder="Black's AGA ID", class_="form-control") }}</td>
-                  <td>{{ game_create_form.winner(placeholder="Winner", class_="form-control") }}</td>
-                  <td>{{ game_create_form.handicap(placeholder="Handicap", class_="form-control") }}</td>
-                  <td>{{ game_create_form.komi(placeholder="Komi", class_="form-control") }}</td>
-                  <td>{{ game_create_form.season(placeholder="Season", class_="form-control") }}</td>
-                  <td>{{ game_create_form.episode(placeholder="Episode", class_="form-control") }}</td>
-                  <td>{{ game_create_form.played_at(placeholder="Played At", class_="form-control datetime") }}</td>
-                  <td />
-                  <td><button type="submit" class="btn btn-default">Add Game</button></td>
-                </div>
-              </form>
+              <td>{{ game.white.full_name }} ({{ game.white.aga_id }})</td>
+              <td>{{ game.black.full_name }} ({{ game.black.aga_id }})</td>
+              <td>{{ game.winner.name }}</td>
+              <td>{{ game.handicap }}</td>
+              <td>{{ game.komi }}</td>
+              <td>{{ game.season }}</td>
+              <td>{{ game.episode }}</td>
+              <td>{{ game.played_at }}</td>
+              <td>{{ game.created_at }}</td>
             </tr>
-            <form id="gameDeleteForm" class="form" method="POST" action="{{ url_for('dashboard.delete_game') }}" role="form">
-              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-              {% for game in games -%}
-              <tr>
-                <td><label class="form-check-label"><input class="form-check-input" type="checkbox" name="game_id" value="{{ game.id }}"></label></td>
-                <td>{{ game.white.full_name }} ({{ game.white.aga_id }})</td>
-                <td>{{ game.black.full_name }} ({{ game.black.aga_id }})</td>
-                <td>{{ game.winner.name }}</td>
-                <td>{{ game.handicap }}</td>
-                <td>{{ game.komi }}</td>
-                <td>{{ game.season }}</td>
-                <td>{{ game.episode }}</td>
-                <td>{{ game.played_at }}</td>
-                <td>{{ game.created_at }}</td>
-                <td />
-              </tr>
-              {%- endfor %}
-              <tr>
-                <td />
-                <td />
-                <td />
-                <td />
-                <td />
-                <td />
-                <td />
-                <td />
-                <td />
-                <td />
-                <td><button type="submit" class="btn btn-default">Delete Selected Games</button></tr>
-              </tr>
-            </form>
+            {%- endfor %}
           </tbody>
         </table>
+        <form id="gameCreateForm" method="POST" class="form-inline" action="{{ url_for('dashboard.create_game') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <div class="form-group">
+            <td>{{ game_create_form.white_id(placeholder="White's AGA ID", class_="form-control") }}</td>
+            <td>{{ game_create_form.black_id(placeholder="Black's AGA ID", class_="form-control") }}</td>
+            <td>{{ game_create_form.winner(placeholder="Winner", class_="form-control") }}</td>
+            <td>{{ game_create_form.handicap(placeholder="Handicap", class_="form-control") }}</td>
+            <td>{{ game_create_form.komi(placeholder="Komi", class_="form-control") }}</td>
+            <td>{{ game_create_form.season(placeholder="Season", class_="form-control") }}</td>
+            <td>{{ game_create_form.episode(placeholder="Episode", class_="form-control") }}</td>
+            <td>{{ game_create_form.played_at(placeholder="Played At", class_="form-control datetime") }}</td>
+            <td />
+            <td><button type="submit" class="btn btn-default">Add Game</button></td>
+          </div>
+        </form>
+        <form type="hidden" id="gameDeleteForm" method="POST" />
       </div>
     </div>
   </div>
@@ -93,6 +71,20 @@ $('.datetime').combodate({
   value: moment().format(format_str),
   minYear: 2016,
   maxYear: 2017
+});
+
+$('#gameTable').dataTable({
+  dom: 'Bfrtip',
+  select: {
+      style: 'os'
+  },
+  buttons: [{
+    extend: 'selected',
+    text: 'Delete selected',
+    action: function (e, dt, node, config) {
+        console.log(dt.rows({ selected: true }));
+    }
+  }]
 });
 </script>
 {% endblock %}
