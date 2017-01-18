@@ -47,3 +47,5 @@ app/dev.db
 # Generated CSS/JS
 app/league/static/public/css/common.css
 app/league/static/public/js/common.js
+app/league/static/css/common.css
+app/league/static/js/common.js
