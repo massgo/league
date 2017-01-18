@@ -45,7 +45,8 @@ docs/_build
 app/dev.db
 
 # Bower dependencies
-app/league/static/libs
+app/league/static/libs/*
+!app/league/static/libs/.gitkeep
 
 # Generated CSS/JS
 app/league/static/public/css/common.css
