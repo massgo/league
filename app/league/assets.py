@@ -4,7 +4,7 @@ from flask_assets import Bundle, Environment
 
 css = Bundle(
     'libs/bootstrap/dist/css/bootstrap.css',
-    'libs/font-awesome4/css/font-awesome.css',
+    'libs/font-awesome/css/font-awesome.css',
     'libs/datatables.net-bs/css/dataTables.bootstrap.css',
     'libs/datatables.net-select-bs/css/select.bootstrap.css',
     'css/style.css',
