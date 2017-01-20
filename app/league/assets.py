@@ -6,6 +6,8 @@ css = Bundle(
     'libs/bootstrap/dist/css/bootstrap.css',
     'libs/font-awesome/css/font-awesome.css',
     'libs/agrotable/compiled/footable.*.min.css',
+    ('libs/eonasdan-bootstrap-datetimepicker/build/css/'
+     'bootstrap-datetimepicker.min.css'),
     'css/style.css',
     filters=['cssmin', 'cssrewrite'],
     output='public/css/common.css'
@@ -17,6 +19,8 @@ js = Bundle(
     'libs/moment/min/moment-with-locales.js',
     'libs/combodate/src/combodate.js',
     'libs/agrotable/compiled/footable.*.min.js',
+    ('libs/eonasdan-bootstrap-datetimepicker/build/js/'
+     'bootstrap-datetimepicker.min.js'),
     'js/plugins.js',
     filters='jsmin',
     output='public/js/common.js'
