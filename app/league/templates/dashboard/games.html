@@ -3,23 +3,15 @@
 
 {% block content %}
 <div class="modal fade" id="editor-modal" tabindex="-1" role="dialog" aria-labelledby="editor-title">
-  <style scoped>
-  /* provides a red astrix to denote required fields - this should be included in common stylesheet */
-  .form-group.required .control-label:after {
-    content:"*";
-    color:red;
-    margin-left: 4px;
-  }
-  </style>
   <div class="modal-dialog" role="document">
     <form class="modal-content form-horizontal" id="editor">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-        <h4 class="modal-title" id="editor-title">Add Row</h4>
+        <h4 class="modal-title" id="editor-title">Add Game</h4>
       </div>
       <div class="modal-body">
         <input type="number" id="id" name="id" class="hidden"/>
-        <div class="form-group required">
+        <div class="form-group">
           <label for="white" class="col-sm-3 control-label">White</label>
           <div class="col-sm-9">
             <select class="form-control" id="white" name="white">
@@ -29,7 +21,7 @@
             </select>
           </div>
         </div>
-        <div class="form-group required">
+        <div class="form-group">
           <label for="black" class="col-sm-3 control-label">Black</label>
           <div class="col-sm-9">
             <select class="form-control" id="black" name="black">
@@ -48,16 +40,16 @@
             </select>
           </div>
         </div>
-        <div class="form-group required">
+        <div class="form-group">
           <label for="playedAtDate" class="col-sm-3 control-label">Played At Date</label>
           <div class="col-sm-9">
-            <input type="date" class="form-control" id="playedAtDate" name="playedAtDate" placeholder="Played At Date" required>
+            <input type="date" class="form-control" id="playedAtDate" name="playedAtDate" placeholder="Played at date">
           </div>
         </div>
-        <div class="form-group required">
+        <div class="form-group">
           <label for="playedAtTime" class="col-sm-3 control-label">Played At Time</label>
           <div class="col-sm-9">
-            <input type="time" class="form-control" id="playedAtTime" name="playedAtTime" placeholder="Played At Time" required>
+            <input type="time" class="form-control" id="playedAtTime" name="playedAtTime" placeholder="Played at time">
           </div>
         </div>
       </div>
@@ -93,8 +85,8 @@
             {% for game in games -%}
             <tr>
               <td>{{ game.id }}</td>
-              <td>{{ game.white.full_name }} ({{ game.white.aga_id }})</td>
-              <td>{{ game.black.full_name }} ({{ game.black.aga_id }})</td>
+              <td data-value="{{ game.white.id }}" />
+              <td data-value="{{ game.black.id }}" />
               <td>{{ game.winner.name }}</td>
               <td>{{ game.handicap }}</td>
               <td>{{ game.komi }}</td>
@@ -114,29 +106,38 @@
 
 {% block js %}
 <script>
-var template_str = 'MM / DD / YY  HH : mm';
-var format_str = 'YYYY-MM-DD HH:mm:ss';
-
-$('.datetime').combodate({
-  format: format_str,
-  template: template_str,
-  minuteStep: 1,
-  value: moment().format(format_str),
-  minYear: 2016,
-  maxYear: 2017
-});
+var players = {};
+{% for player in players -%}
+players[{{ player.id }}] = '{{ player.full_name }} ({{ player.aga_id }})';
+{%- endfor %}
+var player_formatter = function(value) {
+  return players[value];
+};
 
 var $modal = $('#editor-modal'),
   $editor = $('#editor'),
   $editorTitle = $('#editor-title'),
   ft = FooTable.init('#gameTable', {
+    columns: [
+      {},
+      {'formatter': player_formatter},
+      {'formatter': player_formatter},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {}
+    ],
     editing: {
       enabled: true,
       alwaysShow: true,
+      addText: 'Add game',
       addRow: function(){
         $modal.removeData('row');
         $editor[0].reset();
-        $editorTitle.text('Add a new row');
+        $editorTitle.text('Add a new game');
         $modal.modal('show');
       },
       editRow: function(row){
@@ -152,7 +153,7 @@ var $modal = $('#editor-modal'),
         $modal.modal('show');
       },
       deleteRow: function(row){
-        if (confirm('Are you sure you want to delete the row?')){
+        if (confirm('Are you sure you want to delete this game?')){
           row.delete();
         }
       }
@@ -170,7 +171,6 @@ $editor.on('submit', function(e){
       black: $editor.find('#black').val(),
       winner: $editor.find('#winner').val(),
       playedAt: moment($editor.find('#playedAt').val(), 'YYYY-MM-DD'),
-      createdAt: moment($editor.find('#createdAt').val(), 'YYYY-MM-DD')
     };
 
   if (row instanceof FooTable.Row){
