@@ -41,15 +41,15 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="playedAtDate" class="col-sm-3 control-label">Played At Date</label>
+          <label for="playedAtDate" class="col-sm-3 control-label">Played at date</label>
           <div class="col-sm-9">
-            <input type="date" class="form-control" id="playedAtDate" name="playedAtDate" placeholder="Played at date">
+            <input type="date" class="form-control" id="playedAtDate" name="playedAtDate">
           </div>
         </div>
         <div class="form-group">
-          <label for="playedAtTime" class="col-sm-3 control-label">Played At Time</label>
+          <label for="playedAtTime" class="col-sm-3 control-label">Played at time</label>
           <div class="col-sm-9">
-            <input type="time" class="form-control" id="playedAtTime" name="playedAtTime" placeholder="Played at time">
+            <input type="time" class="form-control" id="playedAtTime" name="playedAtTime">
           </div>
         </div>
       </div>
@@ -106,6 +106,8 @@
 
 {% block js %}
 <script>
+var csrf_token = '{{ csrf_token() }}';
+
 var players = {};
 {% for player in players -%}
 players[{{ player.id }}] = '{{ player.full_name }} ({{ player.aga_id }})';
@@ -115,13 +117,35 @@ var format_player = function(value) {
   return players[value];
 };
 
+var create_game = function(values) {
+  debugger;
+  return $.post({
+    url: '{{ url_for('dashboard.delete_game') }}',
+    data: {
+      game_id: values.id,
+      csrf_token: csrf_token
+    }
+  });
+}
+
+var update_game = function(values) {
+  debugger;
+  return $.post({
+    url: '{{ url_for('dashboard.delete_game') }}',
+    data: {
+      game_id: values.id,
+      csrf_token: csrf_token
+    }
+  });
+}
+
 var delete_game = function(id) {
   return $.ajax({
     url: '{{ url_for('dashboard.delete_game') }}',
     type: 'DELETE',
     data: {
       game_id: id,
-      'csrf_token': '{{ csrf_token() }}'
+      csrf_token: csrf_token
     }
   });
 }
@@ -150,6 +174,12 @@ var $modal = $('#editor-modal'),
         $modal.removeData('row');
         $editor[0].reset();
         $editorTitle.text('Add a new game');
+        $editor.action = create_game;
+
+        now = moment();
+        $editor.find('#playedAtDate').val(now.format('YYYY-MM-DD'));
+        $editor.find('#playedAtTime').val(now.format('HH:mm:ss'));
+
         $modal.modal('show');
       },
       editRow: function(row){
@@ -158,10 +188,15 @@ var $modal = $('#editor-modal'),
         $editor.find('#white').val(values.white);
         $editor.find('#black').val(values.black);
         $editor.find('#winner').val(values.winner);
-        $editor.find('#playedAt').val(values.playedAt);
+
+        playedAt = $editor.find('#playedAt');
+
+        $editor.find('#playedAtDate').val(values.playedAtDate);
+        $editor.find('#playedAtTime').val(values.playedAtTime);
 
         $modal.data('row', row);
         $editorTitle.text('Edit game #' + values.id);
+        $editor.action = update_game;
         $modal.modal('show');
       },
       deleteRow: function(row){
@@ -191,6 +226,7 @@ $editor.on('submit', function(e){
   } else {
     values.id = uid++;
     ft.rows.add(values);
+    $editor.action(values);
   }
   $modal.modal('hide');
 });
