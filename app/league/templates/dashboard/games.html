@@ -2,6 +2,73 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<div class="modal fade" id="editor-modal" tabindex="-1" role="dialog" aria-labelledby="editor-title">
+  <style scoped>
+  /* provides a red astrix to denote required fields - this should be included in common stylesheet */
+  .form-group.required .control-label:after {
+    content:"*";
+    color:red;
+    margin-left: 4px;
+  }
+  </style>
+  <div class="modal-dialog" role="document">
+    <form class="modal-content form-horizontal" id="editor">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <h4 class="modal-title" id="editor-title">Add Row</h4>
+      </div>
+      <div class="modal-body">
+        <input type="number" id="id" name="id" class="hidden"/>
+        <div class="form-group required">
+          <label for="white" class="col-sm-3 control-label">White</label>
+          <div class="col-sm-9">
+            <select class="form-control" id="white" name="white">
+              {% for player in players -%}
+              <option value="{{ player.id }}"> {{ player.full_name }} ({{ player.aga_id }})</option>
+              {%- endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="form-group required">
+          <label for="black" class="col-sm-3 control-label">Black</label>
+          <div class="col-sm-9">
+            <select class="form-control" id="black" name="black">
+              {% for player in players -%}
+              <option value="{{ player.id }}"> {{ player.full_name }} ({{ player.aga_id }})</option>
+              {%- endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="winner" class="col-sm-3 control-label">Winner</label>
+          <div class="col-sm-9">
+            <select class="form-control" id="winner" name="winner">
+              <option>white</option>
+              <option>black</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group required">
+          <label for="playedAtDate" class="col-sm-3 control-label">Played At Date</label>
+          <div class="col-sm-9">
+            <input type="date" class="form-control" id="playedAtDate" name="playedAtDate" placeholder="Played At Date" required>
+          </div>
+        </div>
+        <div class="form-group required">
+          <label for="playedAtTime" class="col-sm-3 control-label">Played At Time</label>
+          <div class="col-sm-9">
+            <input type="time" class="form-control" id="playedAtTime" name="playedAtTime" placeholder="Played At Time" required>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div class="container-fluid">
   <div class="row">
     <div class="main">
@@ -10,20 +77,22 @@
         <table id="gameTable" class="table table-striped" data-paging="true" data-filtering="true" data-filter-delay="-1" data-sorting="true">
           <thead>
             <tr>
-              <th>White</th>
-              <th>Black</th>
-              <th>Winner</th>
-              <th>Handicap</th>
-              <th>Komi</th>
-              <th>Season</th>
-              <th>Episode</th>
-              <th>Played At</th>
-              <th>Created At</th>
+              <th data-name="id">ID</th>
+              <th data-name="white">White</th>
+              <th data-name="black">Black</th>
+              <th data-name="winner">Winner</th>
+              <th data-name="handicap">Handicap</th>
+              <th data-name="komi">Komi</th>
+              <th data-name="season">Season</th>
+              <th data-name="episode">Episode</th>
+              <th data-name="playedAt">Played At</th>
+              <th data-name="createdAt">Created At</th>
             </tr>
           </thead>
           <tbody>
             {% for game in games -%}
             <tr>
+              <td>{{ game.id }}</td>
               <td>{{ game.white.full_name }} ({{ game.white.aga_id }})</td>
               <td>{{ game.black.full_name }} ({{ game.black.aga_id }})</td>
               <td>{{ game.winner.name }}</td>
@@ -37,22 +106,6 @@
             {%- endfor %}
           </tbody>
         </table>
-        <form id="gameCreateForm" method="POST" class="form-inline" action="{{ url_for('dashboard.create_game') }}">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-          <div class="form-group">
-            <td>{{ game_create_form.white_id(placeholder="White's AGA ID", class_="form-control") }}</td>
-            <td>{{ game_create_form.black_id(placeholder="Black's AGA ID", class_="form-control") }}</td>
-            <td>{{ game_create_form.winner(placeholder="Winner", class_="form-control") }}</td>
-            <td>{{ game_create_form.handicap(placeholder="Handicap", class_="form-control") }}</td>
-            <td>{{ game_create_form.komi(placeholder="Komi", class_="form-control") }}</td>
-            <td>{{ game_create_form.season(placeholder="Season", class_="form-control") }}</td>
-            <td>{{ game_create_form.episode(placeholder="Episode", class_="form-control") }}</td>
-            <td>{{ game_create_form.played_at(placeholder="Played At", class_="form-control datetime") }}</td>
-            <td />
-            <td><button type="submit" class="btn btn-default">Add Game</button></td>
-          </div>
-        </form>
-        <form type="hidden" id="gameDeleteForm" method="POST" />
       </div>
     </div>
   </div>
@@ -73,6 +126,60 @@ $('.datetime').combodate({
   maxYear: 2017
 });
 
-$('#gameTable').footable();
+var $modal = $('#editor-modal'),
+  $editor = $('#editor'),
+  $editorTitle = $('#editor-title'),
+  ft = FooTable.init('#gameTable', {
+    editing: {
+      enabled: true,
+      alwaysShow: true,
+      addRow: function(){
+        $modal.removeData('row');
+        $editor[0].reset();
+        $editorTitle.text('Add a new row');
+        $modal.modal('show');
+      },
+      editRow: function(row){
+        var values = row.val();
+        $editor.find('#id').val(values.id);
+        $editor.find('#white').val(values.white);
+        $editor.find('#black').val(values.black);
+        $editor.find('#winner').val(values.winner);
+        $editor.find('#playedAt').val(values.playedAt);
+
+        $modal.data('row', row);
+        $editorTitle.text('Edit game #' + values.id);
+        $modal.modal('show');
+      },
+      deleteRow: function(row){
+        if (confirm('Are you sure you want to delete the row?')){
+          row.delete();
+        }
+      }
+    }
+  }),
+  uid = 10;
+
+$editor.on('submit', function(e){
+  if (this.checkValidity && !this.checkValidity()) return;
+  e.preventDefault();
+  var row = $modal.data('row'),
+    values = {
+      id: $editor.find('#id').val(),
+      white: $editor.find('#white').val(),
+      black: $editor.find('#black').val(),
+      winner: $editor.find('#winner').val(),
+      playedAt: moment($editor.find('#playedAt').val(), 'YYYY-MM-DD'),
+      createdAt: moment($editor.find('#createdAt').val(), 'YYYY-MM-DD')
+    };
+
+  if (row instanceof FooTable.Row){
+    row.val(values);
+  } else {
+    values.id = uid++;
+    ft.rows.add(values);
+  }
+  $modal.modal('hide');
+});
 </script>
 {% endblock %}

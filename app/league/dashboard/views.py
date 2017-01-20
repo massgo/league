@@ -93,7 +93,8 @@ def get_games():
     _set_game_create_choices(form)
 
     games = Game.query.all()
-    return render_template('dashboard/games.html', games=games,
+    players = Player.query.all()
+    return render_template('dashboard/games.html', games=games, players=players,
                            game_create_form=form)
 
 
