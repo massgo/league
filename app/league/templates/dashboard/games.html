@@ -7,7 +7,7 @@
     <div class="main">
       <h1 class="page-header">Games</h1>
       <div class="table-responsive">
-        <table class="table table-striped" id="gameTable">
+        <table id="gameTable" class="table table-striped" data-paging="true" data-filtering="true" data-filter-delay="-1" data-sorting="true">
           <thead>
             <tr>
               <th>White</th>
@@ -73,18 +73,6 @@ $('.datetime').combodate({
   maxYear: 2017
 });
 
-$('#gameTable').dataTable({
-  dom: 'Bfrtip',
-  select: {
-      style: 'os'
-  },
-  buttons: [{
-    extend: 'selected',
-    text: 'Delete selected',
-    action: function (e, dt, node, config) {
-        console.log(dt.rows({ selected: true }));
-    }
-  }]
-});
+$('#gameTable').footable();
 </script>
 {% endblock %}

@@ -5,9 +5,7 @@ from flask_assets import Bundle, Environment
 css = Bundle(
     'libs/bootstrap/dist/css/bootstrap.css',
     'libs/font-awesome/css/font-awesome.css',
-    'libs/datatables.net-bs/css/dataTables.bootstrap.css',
-    'libs/datatables.net-select-bs/css/select.bootstrap.css',
-    'libs/datatables.net-buttons-bs/css/buttons.bootstrap.css',
+    'libs/agrotable/compiled/footable.*.min.css',
     'css/style.css',
     filters=['cssmin', 'cssrewrite'],
     output='public/css/common.css'
@@ -18,11 +16,7 @@ js = Bundle(
     'libs/bootstrap/dist/js/bootstrap.js',
     'libs/moment/min/moment-with-locales.js',
     'libs/combodate/src/combodate.js',
-    'libs/datatables.net/js/jquery.dataTables.js',
-    'libs/datatables.net-bs/js/dataTables.bootstrap.js',
-    'libs/datatables.net-select/js/dataTables.select.js',
-    'libs/datatables.net-buttons/js/dataTables.buttons.js',
-    'libs/datatables.net-buttons-bs/js/buttons.bootstrap.js',
+    'libs/agrotable/compiled/footable.*.min.js',
     'js/plugins.js',
     filters='jsmin',
     output='public/js/common.js'
