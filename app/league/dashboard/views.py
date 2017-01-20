@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Dashboard."""
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import (Blueprint, flash, jsonify, redirect, render_template,
+                   request, url_for)
 from flask_login import login_required
 
 from league.dashboard.forms import (GameCreateForm, GameDeleteForm,
@@ -125,17 +126,16 @@ def create_game():
                            game_create_form=form)
 
 
-@blueprint.route('/games/delete/', methods=['POST'])
+@blueprint.route('/games/', methods=['DELETE'])
 @login_required
 def delete_game():
     """Delete a game."""
     form = GameDeleteForm(request.form)
     if form.validate_on_submit():
         Game.delete(Game.get_by_id(form.game_id.data))
-        flash('Game deleted!', 'success')
+        return '', 204
     else:
-        flash_errors(form)
-    return redirect(url_for('dashboard.get_games'))
+        return jsonify(**form.errors), 404
 
 
 @blueprint.route('/reports/', methods=['GET'])

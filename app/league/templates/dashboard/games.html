@@ -110,9 +110,21 @@ var players = {};
 {% for player in players -%}
 players[{{ player.id }}] = '{{ player.full_name }} ({{ player.aga_id }})';
 {%- endfor %}
-var player_formatter = function(value) {
+
+var format_player = function(value) {
   return players[value];
 };
+
+var delete_game = function(id) {
+  return $.ajax({
+    url: '{{ url_for('dashboard.delete_game') }}',
+    type: 'DELETE',
+    data: {
+      game_id: id,
+      'csrf_token': '{{ csrf_token() }}'
+    }
+  });
+}
 
 var $modal = $('#editor-modal'),
   $editor = $('#editor'),
@@ -120,8 +132,8 @@ var $modal = $('#editor-modal'),
   ft = FooTable.init('#gameTable', {
     columns: [
       {},
-      {'formatter': player_formatter},
-      {'formatter': player_formatter},
+      {'formatter': format_player},
+      {'formatter': format_player},
       {},
       {},
       {},
@@ -155,6 +167,7 @@ var $modal = $('#editor-modal'),
       deleteRow: function(row){
         if (confirm('Are you sure you want to delete this game?')){
           row.delete();
+          delete_game(row.value.id);
         }
       }
     }
