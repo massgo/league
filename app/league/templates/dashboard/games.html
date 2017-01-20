@@ -41,15 +41,12 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="playedAtDate" class="col-sm-3 control-label">Played at date</label>
-          <div class="col-sm-9">
-            <input type="date" class="form-control" id="playedAtDate" name="playedAtDate">
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="playedAtTime" class="col-sm-3 control-label">Played at time</label>
-          <div class="col-sm-9">
-            <input type="time" class="form-control" id="playedAtTime" name="playedAtTime">
+          <label for="playedAt" class="col-sm-3 control-label">Played at</label>
+          <div class="input-group date col-sm-9" id="playedAtDTP">
+            <input id="playedAt" type="text" class="form-control" />
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+            </span>
           </div>
         </div>
       </div>
@@ -120,7 +117,7 @@ var format_player = function(value) {
 var create_game = function(values) {
   debugger;
   return $.post({
-    url: '{{ url_for('dashboard.delete_game') }}',
+    url: '{{ url_for('dashboard.create_game') }}',
     data: {
       game_id: values.id,
       csrf_token: csrf_token
@@ -177,8 +174,8 @@ var $modal = $('#editor-modal'),
         $editor.action = create_game;
 
         now = moment();
-        $editor.find('#playedAtDate').val(now.format('YYYY-MM-DD'));
-        $editor.find('#playedAtTime').val(now.format('HH:mm:ss'));
+        $editor.find('#playedAt').val(now.format('MM/DD/YYYY hh:mm A'));
+        $('#playedAtDTP').datetimepicker();
 
         $modal.modal('show');
       },
