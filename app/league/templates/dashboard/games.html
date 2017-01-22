@@ -12,11 +12,11 @@
       <div class="modal-body">
         <input type="number" id="id" name="id" class="hidden"/>
         <div class="form-group">
-          <label for="whiteId" class="col-sm-3 control-label">White</label>
+          <label for="white_id" class="col-sm-3 control-label">White</label>
           <div class="col-sm-9">{{ game_create_form.white_id(class_='form-control') }}</div>
         </div>
         <div class="form-group">
-          <label for="blackId" class="col-sm-3 control-label">Black</label>
+          <label for="black_id" class="col-sm-3 control-label">Black</label>
           <div class="col-sm-9">{{ game_create_form.black_id(class_='form-control') }}</div>
         </div>
         <div class="form-group">
@@ -40,9 +40,9 @@
           <div class="col-sm-9">{{ game_create_form.episode(class_='form-control') }}</div>
         </div>
         <div class="form-group">
-          <label for="playedAt" class="col-sm-3 control-label">Played at</label>
-          <div class="input-group date col-sm-9" id="playedAtDTP" >
-            <input id="playedAt" type="text" class="form-control"/>
+          <label for="played_at" class="col-sm-3 control-label">Played at</label>
+          <div class="input-group date col-sm-9" id="played_at_dtp" >
+            <input id="played_at" type="text" class="form-control"/>
             <span class="input-group-addon" >
                 <span class="glyphicon glyphicon-calendar"></span>
             </span>
@@ -50,7 +50,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-primary">Save changes</button>
+        <button id="submit-button" type="submit" class="btn btn-primary">Save changes</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
       </div>
     </form>
@@ -73,8 +73,8 @@
               <th data-name="komi">Komi</th>
               <th data-name="season">Season</th>
               <th data-name="episode">Episode</th>
-              <th data-name="playedAt">Played At</th>
-              <th data-name="createdAt">Created At</th>
+              <th data-name="played_at">Played At</th>
+              <th data-name="created_at">Created At</th>
             </tr>
           </thead>
           <tbody>
@@ -122,21 +122,32 @@ var format_date = function(value) {
 }
 
 var create_game = function(values) {
-  var date_string = values.playedAt.format(server_dt_format);
-  debugger;
-  return $.post({
+  $.post({
     url: '{{ url_for('dashboard.create_game') }}',
     data: {
-      white_id: values.whiteId,
-      black_id: values.blackId,
+      white_id: values.white_id,
+      black_id: values.black_id,
       winner: values.winner,
       handicap: values.handicap,
       komi: values.komi,
       season: values.season,
       episode: values.episode,
-      played_at: date_string,
+      played_at: values.played_at,
       csrf_token: csrfToken
     }
+  }).done(function(data) {
+    ft.rows.add({
+      id: data.game_id,
+      white: data.white_id,
+      black: data.black_id,
+      winner: data.winner,
+      handicap: data.handicap,
+      komi: data.komi,
+      season: data.season,
+      episode: data.episode,
+      played_at: data.played_at,
+      created_at: data.created_at
+    });
   });
 }
 
@@ -164,6 +175,7 @@ var delete_game = function(id) {
 var $modal = $('#editor-modal'),
   $editor = $('#editor'),
   $editorTitle = $('#editor-title'),
+  $submitButton = $('#submit-button'),
   ft = FooTable.init('#gameTable', {
     columns: [
       {},
@@ -185,11 +197,12 @@ var $modal = $('#editor-modal'),
         $modal.removeData('row');
         $editor[0].reset();
         $editorTitle.text('Add a new game');
+        $submitButton.text('Add game');
         $editor.action = create_game;
 
         now = moment();
-        $editor.find('#playedAt').val(now.format(local_dt_format));
-        $('#playedAtDTP').datetimepicker();
+        $editor.find('#played_at').val(now.format(local_dt_format));
+        $('#played_at_dtp').datetimepicker();
 
         $modal.modal('show');
       },
@@ -211,6 +224,7 @@ var $modal = $('#editor-modal'),
 
         $modal.data('row', row);
         $editorTitle.text('Edit game #' + values.id);
+        $submitButton.text('Update game');
         $editor.action = update_game;
         $modal.modal('show');
       },
@@ -221,8 +235,7 @@ var $modal = $('#editor-modal'),
         }
       }
     }
-  }),
-  uid = 10;
+  });
 
 $editor.on('submit', function(e) {
   if (this.checkValidity && !this.checkValidity()) return;
@@ -230,23 +243,17 @@ $editor.on('submit', function(e) {
   var row = $modal.data('row'),
     values = {
       id: $editor.find('#id').val(),
-      whiteId: $editor.find('#white_id').val(),
-      blackId: $editor.find('#black_id').val(),
+      white_id: $editor.find('#white_id').val(),
+      black_id: $editor.find('#black_id').val(),
       winner: $editor.find('#winner').val(),
       handicap: $editor.find('#handicap').val(),
       komi: $editor.find('#komi').val(),
       season: $editor.find('#season').val(),
       episode: $editor.find('#episode').val(),
-      playedAt: moment($editor.find('#playedAt').val(), 'MM/DD/YYYY hh:mm A')
+      played_at: moment.utc($editor.find('#played_at').val(), local_dt_format).format(server_dt_format)
     };
 
-  if (row instanceof FooTable.Row){
-    row.val(values);
-  } else {
-    values.id = uid++;
-    ft.rows.add(values);
-    $editor.action(values);
-  }
+  $editor.action(values);
   $modal.modal('hide');
 });
 </script>

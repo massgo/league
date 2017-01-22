@@ -109,7 +109,7 @@ def create_game():
     if form.validate_on_submit():
         white = Player.get_by_id(form.white_id.data)
         black = Player.get_by_id(form.black_id.data)
-        Game.create(
+        game = Game.create(
             white=white,
             black=black,
             winner=form.winner.data,
@@ -119,7 +119,7 @@ def create_game():
             episode=form.episode.data,
             played_at=form.played_at.data.astimezone(timezone.utc)
         )
-        return '', 201
+        return jsonify(game.to_dict()), 201
     else:
         return jsonify(**form.errors), 400
 

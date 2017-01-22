@@ -109,6 +109,21 @@ class Game(SurrogatePK, Model):
                 format(white=self.white, black=self.black, winner=self.winner,
                        handicap=self.handicap, komi=self.komi))
 
+    def to_dict(self):
+        """Return game as dictionary."""
+        return {
+            'game_id': self.id,
+            'white_id': self.white.id,
+            'black_id': self.black.id,
+            'winner': self.winner.name,
+            'handicap': self.handicap,
+            'komi': self.komi,
+            'season': self.season,
+            'episode': self.episode,
+            'created_at': str(self.created_at),
+            'played_at': str(self.played_at)
+        }
+
     @classmethod
     def get_by_season_ep(cls, season, episode):
         """Get games by season and episode."""
