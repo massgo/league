@@ -12,39 +12,38 @@
       <div class="modal-body">
         <input type="number" id="id" name="id" class="hidden"/>
         <div class="form-group">
-          <label for="white" class="col-sm-3 control-label">White</label>
-          <div class="col-sm-9">
-            <select class="form-control" id="white" name="white">
-              {% for player in players -%}
-              <option value="{{ player.id }}"> {{ player.full_name }} ({{ player.aga_id }})</option>
-              {%- endfor %}
-            </select>
-          </div>
+          <label for="whiteId" class="col-sm-3 control-label">White</label>
+          <div class="col-sm-9">{{ game_create_form.white_id(class_='form-control') }}</div>
         </div>
         <div class="form-group">
-          <label for="black" class="col-sm-3 control-label">Black</label>
-          <div class="col-sm-9">
-            <select class="form-control" id="black" name="black">
-              {% for player in players -%}
-              <option value="{{ player.id }}"> {{ player.full_name }} ({{ player.aga_id }})</option>
-              {%- endfor %}
-            </select>
-          </div>
+          <label for="blackId" class="col-sm-3 control-label">Black</label>
+          <div class="col-sm-9">{{ game_create_form.black_id(class_='form-control') }}</div>
         </div>
         <div class="form-group">
           <label for="winner" class="col-sm-3 control-label">Winner</label>
-          <div class="col-sm-9">
-            <select class="form-control" id="winner" name="winner">
-              <option>white</option>
-              <option>black</option>
-            </select>
-          </div>
+          <div class="col-sm-9">{{ game_create_form.winner(class_='form-control') }}</div>
+        </div>
+        <div class="form-group">
+          <label for="handicap" class="col-sm-3 control-label">Handicap</label>
+          <div class="col-sm-9">{{ game_create_form.handicap(class_='form-control') }}</div>
+        </div>
+        <div class="form-group">
+          <label for="komi" class="col-sm-3 control-label">Komi</label>
+          <div class="col-sm-9">{{ game_create_form.komi(class_='form-control') }}</div>
+        </div>
+        <div class="form-group">
+          <label for="season" class="col-sm-3 control-label">Season</label>
+          <div class="col-sm-9">{{ game_create_form.season(class_='form-control') }}</div>
+        </div>
+        <div class="form-group">
+          <label for="episode" class="col-sm-3 control-label">Episode</label>
+          <div class="col-sm-9">{{ game_create_form.episode(class_='form-control') }}</div>
         </div>
         <div class="form-group">
           <label for="playedAt" class="col-sm-3 control-label">Played at</label>
-          <div class="input-group date col-sm-9" id="playedAtDTP">
-            <input id="playedAt" type="text" class="form-control" />
-            <span class="input-group-addon">
+          <div class="input-group date col-sm-9" id="playedAtDTP" >
+            <input id="playedAt" type="text" class="form-control"/>
+            <span class="input-group-addon" >
                 <span class="glyphicon glyphicon-calendar"></span>
             </span>
           </div>
@@ -103,11 +102,11 @@
 
 {% block js %}
 <script>
-var csrf_token = '{{ csrf_token() }}';
+var csrfToken = '{{ csrf_token() }}';
 
 var players = {};
-{% for player in players -%}
-players[{{ player.id }}] = '{{ player.full_name }} ({{ player.aga_id }})';
+{% for choice in game_create_form.white_id.choices -%}
+players[{{ choice[0] }}] = '{{ choice[1] }}';
 {%- endfor %}
 
 var format_player = function(value) {
@@ -119,14 +118,20 @@ var create_game = function(values) {
   return $.post({
     url: '{{ url_for('dashboard.create_game') }}',
     data: {
-      game_id: values.id,
-      csrf_token: csrf_token
+      white_id: values.whiteId,
+      black_id: values.blackId,
+      winner: values.winner,
+      handicap: values.handicap,
+      komi: values.komi,
+      season: values.season,
+      episode: values.episode,
+      played_at: values.playedAt.format('YYYY-MM-DD HH:mm:ss'),
+      csrf_token: csrfToken
     }
   });
 }
 
 var update_game = function(values) {
-  debugger;
   return $.post({
     url: '{{ url_for('dashboard.delete_game') }}',
     data: {
@@ -142,7 +147,7 @@ var delete_game = function(id) {
     type: 'DELETE',
     data: {
       game_id: id,
-      csrf_token: csrf_token
+      csrf_token: csrfToken
     }
   });
 }
@@ -182,9 +187,13 @@ var $modal = $('#editor-modal'),
       editRow: function(row){
         var values = row.val();
         $editor.find('#id').val(values.id);
-        $editor.find('#white').val(values.white);
-        $editor.find('#black').val(values.black);
+        $editor.find('#whiteId').val(values.whiteId);
+        $editor.find('#blackId').val(values.blackId);
         $editor.find('#winner').val(values.winner);
+        $editor.find('#handicap').val(values.handicap);
+        $editor.find('#komi').val(values.komi);
+        $editor.find('#season').val(values.season);
+        $editor.find('#episode').val(values.episode);
 
         playedAt = $editor.find('#playedAt');
 
@@ -206,16 +215,20 @@ var $modal = $('#editor-modal'),
   }),
   uid = 10;
 
-$editor.on('submit', function(e){
+$editor.on('submit', function(e) {
   if (this.checkValidity && !this.checkValidity()) return;
   e.preventDefault();
   var row = $modal.data('row'),
     values = {
       id: $editor.find('#id').val(),
-      white: $editor.find('#white').val(),
-      black: $editor.find('#black').val(),
+      whiteId: $editor.find('#white_id').val(),
+      blackId: $editor.find('#black_id').val(),
       winner: $editor.find('#winner').val(),
-      playedAt: moment($editor.find('#playedAt').val(), 'YYYY-MM-DD'),
+      handicap: $editor.find('#handicap').val(),
+      komi: $editor.find('#komi').val(),
+      season: $editor.find('#season').val(),
+      episode: $editor.find('#episode').val(),
+      playedAt: moment($editor.find('#playedAt').val(), 'MM/DD/YYYY hh:mm A')
     };
 
   if (row instanceof FooTable.Row){

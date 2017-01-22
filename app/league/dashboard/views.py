@@ -94,8 +94,7 @@ def get_games():
     _set_game_create_choices(form)
 
     games = Game.query.all()
-    players = Player.query.all()
-    return render_template('dashboard/games.html', games=games, players=players,
+    return render_template('dashboard/games.html', games=games,
                            game_create_form=form)
 
 
@@ -118,12 +117,9 @@ def create_game():
             episode=form.episode.data,
             played_at=form.played_at.data
         )
-        flash('Game created!', 'success')
+        return '', 201
     else:
-        flash_errors(form)
-    games = Game.query.all()
-    return render_template('dashboard/games.html', games=games,
-                           game_create_form=form)
+        return jsonify(**form.errors), 400
 
 
 @blueprint.route('/games/', methods=['DELETE'])
