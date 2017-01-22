@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """Dashboard."""
+from datetime import timezone
+
 from flask import (Blueprint, flash, jsonify, redirect, render_template,
                    request, url_for)
 from flask_login import login_required
@@ -115,7 +117,7 @@ def create_game():
             komi=form.komi.data,
             season=form.season.data,
             episode=form.episode.data,
-            played_at=form.played_at.data
+            played_at=form.played_at.data.astimezone(timezone.utc)
         )
         return '', 201
     else:

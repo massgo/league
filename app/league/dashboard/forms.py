@@ -56,7 +56,7 @@ class GameCreateForm(FlaskForm):
                          validators=[NumberRange(0, 10000)])
     episode = SelectField('episode', coerce=int,
                           validators=[NumberRange(0, 10000)])
-    played_at = DateTimeField()
+    played_at = DateTimeField(format='%Y-%m-%d %H:%M:%S %z')
 
     @staticmethod
     def validate_black_id(form, field):
