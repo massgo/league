@@ -209,15 +209,16 @@ var $modal = $('#editor-modal'),
       editRow: function(row){
         var values = row.val();
         $editor.find('#id').val(values.id);
-        $editor.find('#whiteId').val(values.whiteId);
-        $editor.find('#blackId').val(values.blackId);
+        $editor.find('#white_id').val(values.white);
+        $editor.find('#black_id').val(values.black);
         $editor.find('#winner').val(values.winner);
         $editor.find('#handicap').val(values.handicap);
         $editor.find('#komi').val(values.komi);
         $editor.find('#season').val(values.season);
         $editor.find('#episode').val(values.episode);
+        $editor.find('#played_at').val(moment(values.played_at, server_dt_format).format(local_dt_format));
 
-        playedAt = $editor.find('#playedAt');
+        playedAt = $editor.find('#played_at');
 
         $editor.find('#playedAtDate').val(values.playedAtDate);
         $editor.find('#playedAtTime').val(values.playedAtTime);
