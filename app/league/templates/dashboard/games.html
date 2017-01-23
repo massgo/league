@@ -254,6 +254,7 @@ var $modal = $('#editor-modal'),
         $editor.find('#played_at').val(remotedate_to_local(values.played_at));
 
         playedAt = $editor.find('#played_at');
+        $('#played_at_dtp').datetimepicker();
 
         $modal.data('row', row);
         $editorTitle.text('Edit game #' + values.id);
