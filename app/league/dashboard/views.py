@@ -7,8 +7,8 @@ from flask import (Blueprint, flash, jsonify, redirect, render_template,
 from flask_login import login_required
 
 from league.dashboard.forms import (GameCreateForm, GameDeleteForm,
-                                    PlayerCreateForm, PlayerDeleteForm,
-                                    ReportGenerateForm)
+                                    GameUpdateForm, PlayerCreateForm,
+                                    PlayerDeleteForm, ReportGenerateForm)
 from league.dashboard.models import Game, Player
 from league.dashboard.reports import Report
 from league.utils import flash_errors
@@ -121,7 +121,32 @@ def create_game():
         )
         return jsonify(game.to_dict()), 201
     else:
-        return jsonify(**form.errors), 400
+        return jsonify(**form.errors), 404
+
+
+@blueprint.route('/games/', methods=['PATCH'])
+@login_required
+def update_game():
+    """Update an existing game."""
+    form = GameUpdateForm(request.form)
+    _set_game_create_choices(form)
+    if form.validate_on_submit():
+        white = Player.get_by_id(form.white_id.data)
+        black = Player.get_by_id(form.black_id.data)
+        game = Game.get_by_id(form.game_id.data)
+        game.update(
+            white=white,
+            black=black,
+            winner=form.winner.data,
+            handicap=form.handicap.data,
+            komi=form.komi.data,
+            season=form.season.data,
+            episode=form.episode.data,
+            played_at=form.played_at.data.astimezone(timezone.utc)
+        )
+        return jsonify(game.to_dict()), 200
+    else:
+        return jsonify(**form.errors), 404
 
 
 @blueprint.route('/games/', methods=['DELETE'])

@@ -160,12 +160,34 @@ var create_game = function(values) {
 }
 
 var update_game = function(values) {
-  return $.post({
-    url: '{{ url_for('dashboard.delete_game') }}',
+  $.ajax({
+    url: '{{ url_for('dashboard.update_game') }}',
+    type: 'PATCH',
     data: {
       game_id: values.id,
+      white_id: values.white_id,
+      black_id: values.black_id,
+      winner: values.winner,
+      handicap: values.handicap,
+      komi: values.komi,
+      season: values.season,
+      episode: values.episode,
+      played_at: values.played_at,
       csrf_token: csrfToken
     }
+  }).done(function(data) {
+    $editor.last_row_edited.val({
+      id: data.game_id,
+      white: data.white_id,
+      black: data.black_id,
+      winner: data.winner,
+      handicap: data.handicap,
+      komi: data.komi,
+      season: data.season,
+      episode: data.episode,
+      played_at: data.played_at,
+      created_at: data.created_at
+    });
   });
 }
 
@@ -259,6 +281,7 @@ $editor.on('submit', function(e) {
       played_at: localdate_to_remote($editor.find('#played_at').val())
     };
 
+  $editor.last_row_edited = row;
   $editor.action(values);
   $modal.modal('hide');
 });
