@@ -87,11 +87,13 @@ class Game(SurrogatePK, Model):
 
     created_at = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
     played_at = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
+    last_modified_at = Column(db.DateTime, nullable=False,
+                              default=dt.datetime.utcnow)
 
     db.Index('ix_games_season_episode', 'season', 'episode')
 
     def __init__(self, white, black, winner, handicap, komi, season, episode,
-                 created_at=None, played_at=None):
+                 created_at=None, played_at=None, last_modified_at=None):
         """Initialize game."""
         self.white = white
         self.black = black
@@ -102,6 +104,7 @@ class Game(SurrogatePK, Model):
         self.episode = episode
         self.created_at = created_at
         self.played_at = played_at
+        self.last_modified_at = last_modified_at
 
     def __repr__(self):
         """Represent instance as a unique string."""
@@ -121,8 +124,14 @@ class Game(SurrogatePK, Model):
             'season': self.season,
             'episode': self.episode,
             'created_at': str(self.created_at),
-            'played_at': str(self.played_at)
+            'played_at': str(self.played_at),
+            'last_modified_at': str(self.last_modified_at)
         }
+
+    def update(self, **kwargs):
+        """Override update method to reset last_modified_at."""
+        self.last_modified_at = dt.datetime.utcnow()
+        super().update(**kwargs)
 
     @classmethod
     def get_by_season_ep(cls, season, episode):

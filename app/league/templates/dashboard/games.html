@@ -73,8 +73,9 @@
               <th data-name="komi">Komi</th>
               <th data-name="season">Season</th>
               <th data-name="episode">Episode</th>
-              <th data-name="played_at">Played At</th>
-              <th data-name="created_at">Created At</th>
+              <th data-name="played_at">Played</th>
+              <th data-name="created_at">Created</th>
+              <th data-name="last_modified_at">Modified</th>
             </tr>
           </thead>
           <tbody>
@@ -90,6 +91,7 @@
               <td>{{ game.episode }}</td>
               <td>{{ game.played_at }}</td>
               <td>{{ game.created_at }}</td>
+              <td>{{ game.last_modified_at }}</td>
             </tr>
             {%- endfor %}
           </tbody>
@@ -154,7 +156,8 @@ var create_game = function(values) {
       season: data.season,
       episode: data.episode,
       played_at: data.played_at,
-      created_at: data.created_at
+      created_at: data.created_at,
+      last_modified_at: data.last_modified_at
     });
   });
 }
@@ -186,7 +189,8 @@ var update_game = function(values) {
       season: data.season,
       episode: data.episode,
       played_at: data.played_at,
-      created_at: data.created_at
+      created_at: data.created_at,
+      last_modified_at: data.last_modified_at
     });
   });
 }
@@ -216,6 +220,7 @@ var $modal = $('#editor-modal'),
       {},
       {},
       {},
+      {'formatter': format_date},
       {'formatter': format_date},
       {'formatter': format_date}
     ],
