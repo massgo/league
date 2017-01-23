@@ -113,12 +113,20 @@ var players = {};
 players[{{ choice[0] }}] = '{{ choice[1] }}';
 {%- endfor %}
 
+var localdate_to_remote = function(localdate) {
+  return moment(localdate, local_dt_format).format(server_dt_format);
+}
+
+var remotedate_to_local = function(remotedate) {
+  return moment.utc(remotedate, server_dt_format).utcOffset(local_tz).format(local_dt_format);
+}
+
 var format_player = function(value) {
   return players[value];
 };
 
 var format_date = function(value) {
-  return moment.utc(value, server_dt_format).utcOffset(local_tz).format(local_dt_format);
+  return remotedate_to_local(value);
 }
 
 var create_game = function(values) {
@@ -216,12 +224,9 @@ var $modal = $('#editor-modal'),
         $editor.find('#komi').val(values.komi);
         $editor.find('#season').val(values.season);
         $editor.find('#episode').val(values.episode);
-        $editor.find('#played_at').val(moment(values.played_at, server_dt_format).format(local_dt_format));
+        $editor.find('#played_at').val(remotedate_to_local(values.played_at));
 
         playedAt = $editor.find('#played_at');
-
-        $editor.find('#playedAtDate').val(values.playedAtDate);
-        $editor.find('#playedAtTime').val(values.playedAtTime);
 
         $modal.data('row', row);
         $editorTitle.text('Edit game #' + values.id);
@@ -251,7 +256,7 @@ $editor.on('submit', function(e) {
       komi: $editor.find('#komi').val(),
       season: $editor.find('#season').val(),
       episode: $editor.find('#episode').val(),
-      played_at: moment.utc($editor.find('#played_at').val(), local_dt_format).format(server_dt_format)
+      played_at: localdate_to_remote($editor.find('#played_at').val())
     };
 
   $editor.action(values);
