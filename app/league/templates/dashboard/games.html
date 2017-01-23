@@ -164,7 +164,7 @@ var update_game = function(values) {
     url: '{{ url_for('dashboard.delete_game') }}',
     data: {
       game_id: values.id,
-      csrf_token: csrf_token
+      csrf_token: csrfToken
     }
   });
 }
