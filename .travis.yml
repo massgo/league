@@ -6,6 +6,6 @@ python:
   - 3.4.5
 env:
   - FLASK_APP=app/autoapp.py
-install: pip install -r app/requirements/dev.txt
+install: pip install -r app/requirements/dev.txt && bower install --force
 before_script: flask lint
 script: flask test
