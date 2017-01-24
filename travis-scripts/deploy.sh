@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 APP=league_app
 DB=league_db

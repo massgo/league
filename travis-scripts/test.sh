@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 APP_DIR=app
 APP_FILE=autoapp.py
