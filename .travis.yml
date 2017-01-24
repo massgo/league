@@ -11,9 +11,9 @@ install:
   - pip install -r requirements/dev.txt
   - bower install --force
   - popd
-before_script: flask lint
 script:
   - pushd app
+  - flask lint
   - flask assets build
   - flask test
   - popd
