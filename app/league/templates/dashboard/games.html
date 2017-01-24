@@ -115,23 +115,23 @@ var players = {};
 players[{{ choice[0] }}] = '{{ choice[1] }}';
 {%- endfor %}
 
-var localdate_to_remote = function(localdate) {
+function localdate_to_remote(localdate) {
   return moment(localdate, local_dt_format).format(server_dt_format);
 }
 
-var remotedate_to_local = function(remotedate) {
+function remotedate_to_local(remotedate) {
   return moment.utc(remotedate, server_dt_format).utcOffset(local_tz).format(local_dt_format);
 }
 
-var format_player = function(value) {
+function format_player(value) {
   return players[value];
 };
 
-var format_date = function(value) {
+function format_date(value) {
   return remotedate_to_local(value);
 }
 
-var create_game = function(values) {
+function create_game(values) {
   $.post({
     url: '{{ url_for('dashboard.create_game') }}',
     data: {
@@ -162,7 +162,7 @@ var create_game = function(values) {
   });
 }
 
-var update_game = function(values) {
+function update_game(values) {
   $.ajax({
     url: '{{ url_for('dashboard.update_game') }}',
     type: 'PATCH',
@@ -195,7 +195,7 @@ var update_game = function(values) {
   });
 }
 
-var delete_game = function(id) {
+function delete_game(id) {
   return $.ajax({
     url: '/dashboard/games/' + id,
     type: 'DELETE'
