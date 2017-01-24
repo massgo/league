@@ -2,6 +2,13 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<!-- See http://stackoverflow.com/questions/18673860/defining-a-html-template-to-append-using-jquery -->
+<script id="error-template" type="text/x-error-template">
+  <div class="alert alert-warning">
+    <a class="close" title="Close" href="#" data-dismiss="alert">&times;</a>
+  </div><!-- end .alert -->
+</script>
+
 <div class="modal fade" id="editor-modal" tabindex="-1" role="dialog" aria-labelledby="editor-title">
   <div class="modal-dialog" role="document">
     <form class="modal-content form-horizontal" id="editor">
@@ -123,6 +130,21 @@ function remotedate_to_local(remotedate) {
   return moment.utc(remotedate, server_dt_format).utcOffset(local_tz).format(local_dt_format);
 }
 
+$error_container = $('#error-container');
+$error_template = $('#error-template');
+
+
+function display_errors(errors) {
+  $error_container.hide();
+  for (var attr in errors) {
+    $error_container.append($error_template.html());
+    alerts = $error_container.children('.alert');
+    $new_alert = alerts[alerts.length -1];
+    $new_alert.append(attr + ' - ' + errors[attr]);
+  }
+  $error_container.show();
+}
+
 function format_player(value) {
   return players[value];
 };
@@ -144,21 +166,25 @@ function create_game(values) {
       episode: values.episode,
       played_at: values.played_at,
       csrf_token: csrfToken
+    },
+    success: function(data, textStatus, jqXHR) {
+      ft.rows.add({
+        id: data.game_id,
+        white: data.white_id,
+        black: data.black_id,
+        winner: data.winner,
+        handicap: data.handicap,
+        komi: data.komi,
+        season: data.season,
+        episode: data.episode,
+        played_at: data.played_at,
+        created_at: data.created_at,
+        last_modified_at: data.last_modified_at
+      });
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      display_errors(jqXHR.responseJSON);
     }
-  }).done(function(data) {
-    ft.rows.add({
-      id: data.game_id,
-      white: data.white_id,
-      black: data.black_id,
-      winner: data.winner,
-      handicap: data.handicap,
-      komi: data.komi,
-      season: data.season,
-      episode: data.episode,
-      played_at: data.played_at,
-      created_at: data.created_at,
-      last_modified_at: data.last_modified_at
-    });
   });
 }
 
