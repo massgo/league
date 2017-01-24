@@ -197,12 +197,8 @@ var update_game = function(values) {
 
 var delete_game = function(id) {
   return $.ajax({
-    url: '{{ url_for('dashboard.delete_game') }}',
-    type: 'DELETE',
-    data: {
-      game_id: id,
-      csrf_token: csrfToken
-    }
+    url: '/dashboard/games/' + id,
+    type: 'DELETE'
   });
 }
 
