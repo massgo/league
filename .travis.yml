@@ -13,6 +13,7 @@ install:
   - popd
 script:
   - pushd app
+  - export FLASK_APP=autoapp.py
   - flask lint
   - flask assets build
   - flask test
