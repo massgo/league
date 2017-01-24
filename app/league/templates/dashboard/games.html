@@ -202,21 +202,25 @@ function update_game(values) {
       episode: values.episode,
       played_at: values.played_at,
       csrf_token: csrfToken
+    },
+    success: function(data, textStatus, jqXHR) {
+      $editor.last_row_edited.val({
+        id: data.game_id,
+        white: data.white_id,
+        black: data.black_id,
+        winner: data.winner,
+        handicap: data.handicap,
+        komi: data.komi,
+        season: data.season,
+        episode: data.episode,
+        played_at: data.played_at,
+        created_at: data.created_at,
+        last_modified_at: data.last_modified_at
+      });
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      display_errors(jqXHR.responseJSON);
     }
-  }).done(function(data) {
-    $editor.last_row_edited.val({
-      id: data.game_id,
-      white: data.white_id,
-      black: data.black_id,
-      winner: data.winner,
-      handicap: data.handicap,
-      komi: data.komi,
-      season: data.season,
-      episode: data.episode,
-      played_at: data.played_at,
-      created_at: data.created_at,
-      last_modified_at: data.last_modified_at
-    });
   });
 }
 
