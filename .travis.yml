@@ -7,7 +7,7 @@ python:
 env:
   - FLASK_APP=app/autoapp.py
 before_install:
-  - npm install bower
+  - npm install -g bower
 install:
   - pushd app
   - pip install -r requirements/dev.txt
