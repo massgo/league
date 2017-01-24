@@ -133,7 +133,6 @@ function remotedate_to_local(remotedate) {
 $error_container = $('#error-container');
 $error_template = $('#error-template');
 
-
 function display_errors(errors) {
   $error_container.hide();
   for (var attr in errors) {
@@ -221,10 +220,18 @@ function update_game(values) {
   });
 }
 
-function delete_game(id) {
+function delete_game(row) {
   return $.ajax({
-    url: '/dashboard/games/' + id,
-    type: 'DELETE'
+    url: '/dashboard/games/' + row.value.id,
+    type: 'DELETE',
+    success: function() {
+      row.delete();
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      if (jqXHR.status == 404) {
+        display_errors({'game_id': 'Game ' + id + ' could not be found and was not deleted.'});
+      }
+    }
   });
 }
 
@@ -286,8 +293,7 @@ var $modal = $('#editor-modal'),
       },
       deleteRow: function(row){
         if (confirm('Are you sure you want to delete this game?')){
-          row.delete();
-          delete_game(row.value.id);
+          delete_game(row);
         }
       }
     }
