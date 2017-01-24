@@ -7,14 +7,15 @@ python:
 before_install:
   - npm install -g bower
 install:
-  - pushd app
-  - pip install -r requirements/dev.txt
-  - bower install --force
-  - popd
+  - ./travis-scripts/install.sh
 script:
-  - pushd app
-  - export FLASK_APP=autoapp.py
-  - flask lint
-  - flask assets build
-  - flask test
-  - popd
+  - ./travis-scripts/build.sh
+  - ./travis-scripts/test.sh
+after_success:
+  - if [ "$TRAVIS_BRANCH" == "master" ] && if [ -z "$TRAVIS_TAG" ]; then
+      ./deploy.sh
+    fi
+deploy:
+  provider: releases
+  on:
+    tags: true
