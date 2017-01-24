@@ -11,6 +11,7 @@ from league.dashboard.forms import (GameCreateForm, GameUpdateForm,
                                     ReportGenerateForm)
 from league.dashboard.models import Game, Player
 from league.dashboard.reports import Report
+from league.extensions import csrf_protect
 from league.utils import flash_errors
 
 blueprint = Blueprint('dashboard', __name__, url_prefix='/dashboard',
@@ -168,6 +169,7 @@ def update_game():
 
 @blueprint.route('/games/<int:game_id>', methods=['DELETE'])
 @login_required
+@csrf_protect.exempt
 def delete_game(game_id):
     """Delete a game."""
     game = Game.get_by_id(game_id)
