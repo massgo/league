@@ -81,6 +81,22 @@ class TestGame:
         assert len(games) == 1
         assert len(players) == 2
 
+    def test_set_created_at(self, db):
+        """Test game creation with specified created_at."""
+        some_datetime = dt.datetime(2017, 1, 1, 1, 1, 1, 1)
+        game = GameFactory(created_at=some_datetime)
+        game.save()
+        games = Game.query.all()
+        assert games[0].created_at == some_datetime
+
+    def test_set_played_at(self, db):
+        """Test game creation with specified played_at."""
+        some_datetime = dt.datetime(2017, 1, 1, 1, 1, 1, 1)
+        game = GameFactory(played_at=some_datetime)
+        game.save()
+        games = Game.query.all()
+        assert games[0].played_at == some_datetime
+
     def test_get_max_season_ep(self, db):
         """Test calculation of maximum season and episode."""
         games = [GameFactory(season=s, episode=e)

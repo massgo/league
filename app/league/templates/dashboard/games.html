@@ -2,73 +2,290 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<div class="modal fade" id="editor-modal" tabindex="-1" role="dialog" aria-labelledby="editor-title">
+  <div class="modal-dialog" role="document">
+    <form class="modal-content form-horizontal" id="editor">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+        <h4 class="modal-title" id="editor-title">Add Game</h4>
+      </div>
+      <div class="modal-body">
+        <input type="number" id="id" name="id" class="hidden"/>
+        <div class="form-group">
+          <label for="white_id" class="col-sm-3 control-label">White</label>
+          <div class="col-sm-9">{{ game_create_form.white_id(class_='form-control') }}</div>
+        </div>
+        <div class="form-group">
+          <label for="black_id" class="col-sm-3 control-label">Black</label>
+          <div class="col-sm-9">{{ game_create_form.black_id(class_='form-control') }}</div>
+        </div>
+        <div class="form-group">
+          <label for="winner" class="col-sm-3 control-label">Winner</label>
+          <div class="col-sm-9">{{ game_create_form.winner(class_='form-control') }}</div>
+        </div>
+        <div class="form-group">
+          <label for="handicap" class="col-sm-3 control-label">Handicap</label>
+          <div class="col-sm-9">{{ game_create_form.handicap(class_='form-control') }}</div>
+        </div>
+        <div class="form-group">
+          <label for="komi" class="col-sm-3 control-label">Komi</label>
+          <div class="col-sm-9">{{ game_create_form.komi(class_='form-control') }}</div>
+        </div>
+        <div class="form-group">
+          <label for="season" class="col-sm-3 control-label">Season</label>
+          <div class="col-sm-9">{{ game_create_form.season(class_='form-control') }}</div>
+        </div>
+        <div class="form-group">
+          <label for="episode" class="col-sm-3 control-label">Episode</label>
+          <div class="col-sm-9">{{ game_create_form.episode(class_='form-control') }}</div>
+        </div>
+        <div class="form-group">
+          <label for="played_at" class="col-sm-3 control-label">Played at</label>
+          <div class="input-group date col-sm-9" id="played_at_dtp" >
+            <input id="played_at" type="text" class="form-control"/>
+            <span class="input-group-addon" >
+                <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="submit-button" type="submit" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <div class="container-fluid">
   <div class="row">
     <div class="main">
       <h1 class="page-header">Games</h1>
       <div class="table-responsive">
-        <table class="table table-striped">
+        <table id="gameTable" class="table table-striped" data-paging="true" data-filtering="true" data-filter-delay="-1" data-sorting="true">
           <thead>
             <tr>
-              <th />
-              <th>White</th>
-              <th>Black</th>
-              <th>Winner</th>
-              <th>Handicap</th>
-              <th>Komi</th>
-              <th>Season</th>
-              <th>Episode</th>
-              <th />
+              <th data-name="id">ID</th>
+              <th data-name="white">White</th>
+              <th data-name="black">Black</th>
+              <th data-name="winner">Winner</th>
+              <th data-name="handicap">Handicap</th>
+              <th data-name="komi">Komi</th>
+              <th data-name="season">Season</th>
+              <th data-name="episode">Episode</th>
+              <th data-name="played_at">Played</th>
+              <th data-name="created_at">Created</th>
+              <th data-name="last_modified_at">Modified</th>
             </tr>
           </thead>
           <tbody>
+            {% for game in games -%}
             <tr>
-              <td />
-              <form id="gameCreateForm" method="POST" class="form-inline" action="{{ url_for('dashboard.create_game') }}">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <div class="form-group">
-                  <td>{{ game_create_form.white_id(placeholder="White's AGA ID", class_="form-control") }}</td>
-                  <td>{{ game_create_form.black_id(placeholder="Black's AGA ID", class_="form-control") }}</td>
-                  <td>{{ game_create_form.winner(placeholder="Winner", class_="form-control") }}</td>
-                  <td>{{ game_create_form.handicap(placeholder="Handicap", class_="form-control") }}</td>
-                  <td>{{ game_create_form.komi(placeholder="Komi", class_="form-control") }}</td>
-                  <td>{{ game_create_form.season(placeholder="Season", class_="form-control") }}</td>
-                  <td>{{ game_create_form.episode(placeholder="Episode", class_="form-control") }}</td>
-                  <td><button type="submit" class="btn btn-default">Add Game</button></td>
-                </div>
-              </form>
+              <td>{{ game.id }}</td>
+              <td data-value="{{ game.white.id }}" />
+              <td data-value="{{ game.black.id }}" />
+              <td>{{ game.winner.name }}</td>
+              <td>{{ game.handicap }}</td>
+              <td>{{ game.komi }}</td>
+              <td>{{ game.season }}</td>
+              <td>{{ game.episode }}</td>
+              <td>{{ game.played_at }}</td>
+              <td>{{ game.created_at }}</td>
+              <td>{{ game.last_modified_at }}</td>
             </tr>
-            <form id="gameDeleteForm" class="form" method="POST" action="{{ url_for('dashboard.delete_game') }}" role="form">
-              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-              {% for game in games -%}
-              <tr>
-                <td><label class="form-check-label"><input class="form-check-input" type="checkbox" name="game_id" value="{{ game.id }}"></label></td>
-                <td>{{ game.white.full_name }} ({{ game.white.aga_id }})</td>
-                <td>{{ game.black.full_name }} ({{ game.black.aga_id }})</td>
-                <td>{{ game.winner.name }}</td>
-                <td>{{ game.handicap }}</td>
-                <td>{{ game.komi }}</td>
-                <td>{{ game.season }}</td>
-                <td>{{ game.episode }}</td>
-                <td />
-              </tr>
-              {%- endfor %}
-              <tr>
-                <td />
-                <td />
-                <td />
-                <td />
-                <td />
-                <td />
-                <td />
-                <td />
-                <td><button type="submit" class="btn btn-default">Delete Selected Games</button></tr>
-              </tr>
-            </form>
+            {%- endfor %}
           </tbody>
         </table>
       </div>
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block js %}
+<script>
+local_dt_format = 'MM/DD/YYYY hh:mm A';
+local_tz = '-0500';
+server_dt_format = 'YYYY-MM-DD HH:mm:ss ZZ';
+
+var csrfToken = '{{ csrf_token() }}';
+
+var players = {};
+{% for choice in game_create_form.white_id.choices -%}
+players[{{ choice[0] }}] = '{{ choice[1] }}';
+{%- endfor %}
+
+var localdate_to_remote = function(localdate) {
+  return moment(localdate, local_dt_format).format(server_dt_format);
+}
+
+var remotedate_to_local = function(remotedate) {
+  return moment.utc(remotedate, server_dt_format).utcOffset(local_tz).format(local_dt_format);
+}
+
+var format_player = function(value) {
+  return players[value];
+};
+
+var format_date = function(value) {
+  return remotedate_to_local(value);
+}
+
+var create_game = function(values) {
+  $.post({
+    url: '{{ url_for('dashboard.create_game') }}',
+    data: {
+      white_id: values.white_id,
+      black_id: values.black_id,
+      winner: values.winner,
+      handicap: values.handicap,
+      komi: values.komi,
+      season: values.season,
+      episode: values.episode,
+      played_at: values.played_at,
+      csrf_token: csrfToken
+    }
+  }).done(function(data) {
+    ft.rows.add({
+      id: data.game_id,
+      white: data.white_id,
+      black: data.black_id,
+      winner: data.winner,
+      handicap: data.handicap,
+      komi: data.komi,
+      season: data.season,
+      episode: data.episode,
+      played_at: data.played_at,
+      created_at: data.created_at,
+      last_modified_at: data.last_modified_at
+    });
+  });
+}
+
+var update_game = function(values) {
+  $.ajax({
+    url: '{{ url_for('dashboard.update_game') }}',
+    type: 'PATCH',
+    data: {
+      game_id: values.id,
+      white_id: values.white_id,
+      black_id: values.black_id,
+      winner: values.winner,
+      handicap: values.handicap,
+      komi: values.komi,
+      season: values.season,
+      episode: values.episode,
+      played_at: values.played_at,
+      csrf_token: csrfToken
+    }
+  }).done(function(data) {
+    $editor.last_row_edited.val({
+      id: data.game_id,
+      white: data.white_id,
+      black: data.black_id,
+      winner: data.winner,
+      handicap: data.handicap,
+      komi: data.komi,
+      season: data.season,
+      episode: data.episode,
+      played_at: data.played_at,
+      created_at: data.created_at,
+      last_modified_at: data.last_modified_at
+    });
+  });
+}
+
+var delete_game = function(id) {
+  return $.ajax({
+    url: '/dashboard/games/' + id,
+    type: 'DELETE'
+  });
+}
+
+var $modal = $('#editor-modal'),
+  $editor = $('#editor'),
+  $editorTitle = $('#editor-title'),
+  $submitButton = $('#submit-button'),
+  ft = FooTable.init('#gameTable', {
+    columns: [
+      {},
+      {'formatter': format_player},
+      {'formatter': format_player},
+      {},
+      {},
+      {},
+      {},
+      {},
+      {'formatter': format_date},
+      {'formatter': format_date},
+      {'formatter': format_date}
+    ],
+    editing: {
+      enabled: true,
+      alwaysShow: true,
+      addText: 'Add game',
+      addRow: function(){
+        $modal.removeData('row');
+        $editor[0].reset();
+        $editorTitle.text('Add a new game');
+        $submitButton.text('Add game');
+        $editor.action = create_game;
+
+        now = moment();
+        $editor.find('#played_at').val(now.format(local_dt_format));
+        $('#played_at_dtp').datetimepicker();
+
+        $modal.modal('show');
+      },
+      editRow: function(row){
+        var values = row.val();
+        $editor.find('#id').val(values.id);
+        $editor.find('#white_id').val(values.white);
+        $editor.find('#black_id').val(values.black);
+        $editor.find('#winner').val(values.winner);
+        $editor.find('#handicap').val(values.handicap);
+        $editor.find('#komi').val(values.komi);
+        $editor.find('#season').val(values.season);
+        $editor.find('#episode').val(values.episode);
+        $editor.find('#played_at').val(remotedate_to_local(values.played_at));
+
+        playedAt = $editor.find('#played_at');
+        $('#played_at_dtp').datetimepicker();
+
+        $modal.data('row', row);
+        $editorTitle.text('Edit game #' + values.id);
+        $submitButton.text('Update game');
+        $editor.action = update_game;
+        $modal.modal('show');
+      },
+      deleteRow: function(row){
+        if (confirm('Are you sure you want to delete this game?')){
+          row.delete();
+          delete_game(row.value.id);
+        }
+      }
+    }
+  });
+
+$editor.on('submit', function(e) {
+  if (this.checkValidity && !this.checkValidity()) return;
+  e.preventDefault();
+  var row = $modal.data('row'),
+    values = {
+      id: $editor.find('#id').val(),
+      white_id: $editor.find('#white_id').val(),
+      black_id: $editor.find('#black_id').val(),
+      winner: $editor.find('#winner').val(),
+      handicap: $editor.find('#handicap').val(),
+      komi: $editor.find('#komi').val(),
+      season: $editor.find('#season').val(),
+      episode: $editor.find('#episode').val(),
+      played_at: localdate_to_remote($editor.find('#played_at').val())
+    };
+
+  $editor.last_row_edited = row;
+  $editor.action(values);
+  $modal.modal('hide');
+});
+</script>
 {% endblock %}
