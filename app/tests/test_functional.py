@@ -189,7 +189,8 @@ class TestGame:
         retrieved_games = get_res.json
         assert len(retrieved_games) == 2
 
-        delete_res = testapp.delete('/dashboard/games/{}'.format(retrieved_games[0]['game_id']))
+        delete_res = testapp.delete('/dashboard/games/{}'.format(
+                                    retrieved_games[0]['game_id']))
         assert delete_res.status_int == 204
 
         new_get_res = testapp.get(url_for('dashboard.get_games'))

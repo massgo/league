@@ -6,9 +6,9 @@ from flask import (Blueprint, flash, jsonify, redirect, render_template,
                    request, url_for)
 from flask_login import login_required
 
-from league.dashboard.forms import (GameCreateForm, GameDeleteForm,
-                                    GameUpdateForm, PlayerCreateForm,
-                                    PlayerDeleteForm, ReportGenerateForm)
+from league.dashboard.forms import (GameCreateForm, GameUpdateForm,
+                                    PlayerCreateForm, PlayerDeleteForm,
+                                    ReportGenerateForm)
 from league.dashboard.models import Game, Player
 from league.dashboard.reports import Report
 from league.utils import flash_errors

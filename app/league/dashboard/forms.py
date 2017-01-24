@@ -31,19 +31,6 @@ class PlayerDeleteForm(FlaskForm):
             raise ValidationError('Players with extant games cannot be deleted')
 
 
-class GameDeleteForm(FlaskForm):
-    """Game deletion form."""
-
-    game_id = IntegerField('game_id', validators=[NumberRange(0, 50000)])
-
-    @staticmethod
-    def validate_game_id(form, field):
-        """Check that game exists."""
-        game_id = form.game_id.data
-        if Game.get_by_id(game_id) is None:
-            raise ValidationError('Game {} does not exist'.format(game_id))
-
-
 class GameCreateForm(FlaskForm):
     """Game creation form."""
 
