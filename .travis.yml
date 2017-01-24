@@ -4,8 +4,6 @@ language: python
 cache: pip
 python:
   - 3.4.5
-env:
-  - FLASK_APP=app/autoapp.py
 before_install:
   - npm install -g bower
 install:
@@ -14,4 +12,8 @@ install:
   - bower install --force
   - popd
 before_script: flask lint
-script: flask test
+script:
+  - pushd app
+  - flask assets build
+  - flask test
+  - popd
