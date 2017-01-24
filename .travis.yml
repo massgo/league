@@ -8,6 +8,10 @@ env:
   - FLASK_APP=app/autoapp.py
 before_install:
   - npm install bower
-install: pip install -r app/requirements/dev.txt && bower install --force
+install:
+  - pushd app
+  - pip install -r requirements/dev.txt
+  - bower install --force
+  - popd
 before_script: flask lint
 script: flask test
