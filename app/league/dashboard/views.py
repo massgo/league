@@ -90,7 +90,7 @@ def _set_game_create_choices(game_create_form):
 
 @blueprint.route('/games/', methods=['GET'])
 @login_required
-def get_games():
+def list_games():
     """Get list of games."""
     form = GameCreateForm(request.form, csrf_enabled=False)
     _set_game_create_choices(form)
@@ -98,6 +98,17 @@ def get_games():
     games = Game.query.all()
     return render_template('dashboard/games.html', games=games,
                            game_create_form=form)
+
+
+@blueprint.route('/games/all', methods=['GET'])
+@login_required
+def get_games():
+    """Get all games."""
+    form = GameCreateForm(request.form, csrf_enabled=False)
+    _set_game_create_choices(form)
+
+    games = Game.query.all()
+    return jsonify([game.to_dict() for game in games]), 200
 
 
 @blueprint.route('/games/', methods=['POST'])
@@ -109,6 +120,9 @@ def create_game():
     if form.validate_on_submit():
         white = Player.get_by_id(form.white_id.data)
         black = Player.get_by_id(form.black_id.data)
+        played_at = None
+        if form.played_at.data is not None:
+            played_at = form.played_at.data.astimezone(timezone.utc)
         game = Game.create(
             white=white,
             black=black,
@@ -117,7 +131,7 @@ def create_game():
             komi=form.komi.data,
             season=form.season.data,
             episode=form.episode.data,
-            played_at=form.played_at.data.astimezone(timezone.utc)
+            played_at=played_at
         )
         return jsonify(game.to_dict()), 201
     else:
@@ -133,6 +147,9 @@ def update_game():
     if form.validate_on_submit():
         white = Player.get_by_id(form.white_id.data)
         black = Player.get_by_id(form.black_id.data)
+        played_at = None
+        if form.played_at.data is not None:
+            played_at = form.played_at.data.astimezone(timezone.utc)
         game = Game.get_by_id(form.game_id.data)
         game.update(
             white=white,
@@ -142,23 +159,23 @@ def update_game():
             komi=form.komi.data,
             season=form.season.data,
             episode=form.episode.data,
-            played_at=form.played_at.data.astimezone(timezone.utc)
+            played_at=played_at
         )
         return jsonify(game.to_dict()), 200
     else:
         return jsonify(**form.errors), 404
 
 
-@blueprint.route('/games/', methods=['DELETE'])
+@blueprint.route('/games/<int:game_id>', methods=['DELETE'])
 @login_required
-def delete_game():
+def delete_game(game_id):
     """Delete a game."""
-    form = GameDeleteForm(request.form)
-    if form.validate_on_submit():
-        Game.delete(Game.get_by_id(form.game_id.data))
+    game = Game.get_by_id(game_id)
+    if game is not None:
+        game.delete()
         return '', 204
     else:
-        return jsonify(**form.errors), 404
+        return '', 404
 
 
 @blueprint.route('/reports/', methods=['GET'])
