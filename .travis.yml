@@ -12,10 +12,7 @@ script:
   - ./travis-scripts/test.sh
   - ./travis-scripts/build_images.sh
 after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ] && if [ -z "$TRAVIS_TAG" ]; then
-      ./deploy.sh
-    fi
-deploy:
-  provider: releases
-  on:
-    tags: true
+  - ./travis-scripts/deploy.sh
+provider: releases
+on:
+  tags: true
