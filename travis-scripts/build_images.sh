@@ -1,10 +1,14 @@
 #! /bin/bash
 
-APP_DIR=app
-APP_FILE=autoapp.py
+APP=league_app
+DB=league_db
+WEB=league_webserver
+REPO=055326413375.dkr.ecr.us-east-1.amazonaws.com
 
-pushd $APP_DIR
-FLASK_APP=$APP_FILE flask assets build
-popd
+$(aws ecr get-login)
+
+docker pull $REPO/$APP:latest
+docker pull $REPO/$DB:latest
+docker pull $REPO/$WEB:latest
 
 docker-compose build
