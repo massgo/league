@@ -4,6 +4,8 @@ language: python
 cache: pip
 python:
   - 3.4.5
+services:
+  - docker
 install:
   - ./travis-scripts/install.sh
 script:
