@@ -9,7 +9,9 @@ services:
 install:
   - ./travis-scripts/install.sh
 script:
-  - $(aws ecr get-login)
+  - if [ "$TRAVIS_BRANCH" == "master" ] && [ -z "$TRAVIS_TAG" ]; then
+      $(aws ecr get-login)
+    fi
   - ./travis-scripts/build_assets.sh
   - ./travis-scripts/test.sh
   - ./travis-scripts/build_images.sh \
