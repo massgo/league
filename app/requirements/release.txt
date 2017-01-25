@@ -1,0 +1,7 @@
+-r dev.txt
+
+# Releasing
+bumpversion==0.5.3
+
+# AWS
+awscli==1.11.26
