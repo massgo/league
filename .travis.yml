@@ -9,14 +9,17 @@ services:
 install:
   - ./travis-scripts/install.sh
 script:
-  - ./travis-scripts/build_assets.sh \
+  - ./travis-scripts/build_assets.sh
+  - ./travis-scripts/test.sh
+  - ./travis-scripts/build_images.sh \
     AWS_ACCESS_KEY=$AWS_ACCESS_KEY \
     AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
     AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
-  - ./travis-scripts/test.sh
-  - ./travis-scripts/build_images.sh
 after_success:
-  - ./travis-scripts/deploy.sh
+  - ./travis-scripts/deploy.sh \
+    AWS_ACCESS_KEY=$AWS_ACCESS_KEY \
+    AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
+    AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
 provider: releases
 on:
   tags: true
