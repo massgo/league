@@ -10,7 +10,7 @@ install:
   - ./travis-scripts/install.sh
 script:
   - if [ "$TRAVIS_BRANCH" = "master" ] && [ -z "$TRAVIS_TAG" ]; then
-      $(aws ecr get-login)
+      $(aws ecr get-login);
     fi
   - ./travis-scripts/build_assets.sh
   - ./travis-scripts/test.sh
