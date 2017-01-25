@@ -9,20 +9,14 @@ services:
 install:
   - ./travis-scripts/install.sh
 script:
-  - if [ "$TRAVIS_PULL_REQUEST" == "false"] && [ "$TRAVIS_BRANCH" == "master" ] && [ -z "$TRAVIS_TAG" ]; then
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ] && [ -z "$TRAVIS_TAG" ]; then
       $(aws ecr get-login);
     fi
   - ./travis-scripts/build_assets.sh
   - ./travis-scripts/test.sh
-  - ./travis-scripts/build_images.sh \
-    AWS_ACCESS_KEY=$AWS_ACCESS_KEY \
-    AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
-    AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
+  - ./travis-scripts/build_images.sh
 after_success:
-  - ./travis-scripts/deploy.sh \
-    AWS_ACCESS_KEY=$AWS_ACCESS_KEY \
-    AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
-    AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
+  - ./travis-scripts/deploy.sh
 provider: releases
 on:
   tags: true

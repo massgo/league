@@ -6,7 +6,7 @@ WEB=league_webserver
 REPO=055326413375.dkr.ecr.us-east-1.amazonaws.com
 VERSION=$(cat VERSION)
 
-if [ "$TRAVIS_BRANCH" == "master" ] && [ -z "$TRAVIS_TAG" ]; then
+if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_BRANCH" == "master" ] && [ -z "$TRAVIS_TAG" ]; then
     docker tag $APP:$VERSION $REPO/$APP:latest
     docker tag $DB:$VERSION $REPO/$DB:latest
     docker tag $WEB:$VERSION $REPO/$WEB:latest

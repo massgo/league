@@ -10,3 +10,5 @@ docker pull $REPO/$DB:latest
 docker pull $REPO/$WEB:latest
 
 docker-compose build
+
+exit $?
