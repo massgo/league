@@ -1,0 +1,61 @@
+
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="main">
+      <h1 class="page-header">{{ player.last_name }}, {{player.first_name}}</h1>
+      <h4>AGA rank: {{ player.aga_rank }}</h4>
+      <h4>
+        <a href="http://agagd.usgo.org/player/{{ player.aga_id }}">
+          agagd player page
+        </a>
+      </h4>
+      <h3>Games played</h3>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th />
+                <th>White</th>
+                <th>Black</th>
+                <th>Winner</th>
+                <th>Handicap</th>
+                <th>Komi</th>
+                <th>Season</th>
+                <th>Episode</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {% for game in games -%}
+              <tr>
+                <td />
+                <td>{{ game.white.full_name }} ({{ game.white.aga_id }})</td>
+                <td>{{ game.black.full_name }} ({{ game.black.aga_id }})</td>
+                <td>{{ game.winner.name }}</td>
+                <td>{{ game.handicap }}</td>
+                <td>{{ game.komi }}</td>
+                <td>{{ game.season }}</td>
+                <td>{{ game.episode }}</td>
+                <td />
+              </tr>
+              {%- endfor %}
+              <tr>
+                <td />
+                <td />
+                <td />
+                <td />
+                <td />
+                <td />
+                <td />
+                <td />
+              </tr>
+            </tbody>
+          </table>
+        </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

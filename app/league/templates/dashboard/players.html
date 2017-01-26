@@ -34,9 +34,9 @@
                 {% for player in players -%}
                 <tr>
                   <td><label class="form-check-label"><input class="form-check-input" type="checkbox" name="player_id" value="{{ player.id }}"></label></td>
+                  <td><a href="{{ player.id }}">{{ player.aga_id }}</a></td>
                   <td>{{ player.first_name }}</td>
                   <td>{{ player.last_name }}</td>
-                  <td>{{ player.aga_id }}</td>
                   <td>{{ player.aga_rank }}</td>
                 </tr>
                 {%- endfor %}

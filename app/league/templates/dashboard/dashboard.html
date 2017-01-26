@@ -19,9 +19,9 @@
           <tbody>
             {% for player in players -%}
             <tr>
-              <td>{{ player.aga_id }}</td>
+                <td><a href="players/{{player.id}}"> {{ player.aga_id }}</a></td>
               <td>{{ player.full_name }}</td>
-              <td>{{ player.rank }}</td>
+              <td>{{ player.aga_rank }}</td>
             </tr>
             {%- endfor %}
           </tbody>
