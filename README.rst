@@ -2,6 +2,12 @@
 League
 ===============================
 
+
+
+.. image:: https://img.shields.io/github/release/massgo/league.svg
+    :target: https://github.com/massgo/league/releases
+    :alt: Latest Release
+
 .. image:: https://travis-ci.org/massgo/league.svg?branch=master
     :target: https://travis-ci.org/massgo/league
     :alt: Build Status
