@@ -3,34 +3,37 @@
 
 import pytest
 
+from league.admin.forms import CreateUserForm
 from league.dashboard.forms import GameCreateForm
 from league.public.forms import LoginForm
-from league.user.forms import RegisterForm
 
 
-class TestRegisterForm:
-    """Register form."""
+class TestCreateUserForm:
+    """Create user form."""
 
     def test_validate_user_already_registered(self, user):
         """Enter username that is already registered."""
-        form = RegisterForm(username=user.username, email='foo@bar.com',
-                            password='example', confirm='example')
+        form = CreateUserForm(username=user.username, email='foo@bar.com',
+                              password='example', first_name=user.first_name,
+                              last_name=user.last_name)
 
         assert form.validate() is False
-        assert 'Username already registered' in form.username.errors
+        assert 'Username already in use' in form.username.errors
 
     def test_validate_email_already_registered(self, user):
         """Enter email that is already registered."""
-        form = RegisterForm(username='unique', email=user.email,
-                            password='example', confirm='example')
+        form = CreateUserForm(username='unique', email=user.email,
+                              password='example', first_name=user.first_name,
+                              last_name=user.last_name)
 
         assert form.validate() is False
-        assert 'Email already registered' in form.email.errors
+        assert 'Email already in use' in form.email.errors
 
     def test_validate_success(self, db):
         """Register with success."""
-        form = RegisterForm(username='newusername', email='new@test.test',
-                            password='example', confirm='example')
+        form = CreateUserForm(username='newusername', email='new@test.test',
+                              password='example', first_name='Jane',
+                              last_name='Doe')
         assert form.validate() is True
 
 

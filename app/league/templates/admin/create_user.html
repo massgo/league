@@ -1,0 +1,36 @@
+
+{% extends "layout.html" %}
+{% block content %}
+<div class="container-narrow">
+  <h1>Create User</h1>
+  <br/>
+  <form id="createUserForm" class="form" method="POST" action="" role="form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <div class="form-group">
+            {{create_user_form.first_name.label}}
+            {{create_user_form.first_name(placeholder="First name", class_="form-control")}}
+          </div>
+          <div class="form-group">
+            {{create_user_form.last_name.label}}
+            {{create_user_form.last_name(placeholder="Last name", class_="form-control")}}
+          </div>
+          <div class="form-group">
+            {{create_user_form.username.label}}
+            {{create_user_form.username(placeholder="Username", class_="form-control")}}
+          </div>
+          <div class="form-group">
+            {{create_user_form.email.label}}
+            {{create_user_form.email(placeholder="Email", class_="form-control")}}
+          </div>
+          <div class="form-group">
+            {{create_user_form.password.label}}
+            {{create_user_form.password(placeholder="Password", class_="form-control")}}
+          </div>
+          <div class="form-group">
+            {{create_user_form.is_admin.label}}
+            {{create_user_form.is_admin(class_="form-control")}}
+          </div>
+          <p><input class="btn btn-default btn-submit" type="submit" value="Create User"></p>
+  </form>
+</div>
+{% endblock %}
