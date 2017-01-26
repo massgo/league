@@ -62,8 +62,7 @@ def create_player():
 def get_player(player_id):
     """Get game history and statistics for player"""
     player = Player.get_by_id(player_id)
-    games = player.games
-    return render_template('dashboard/player.html', player=player, games=games)
+    return render_template('dashboard/player.html', player=player)
 
 
 @blueprint.route('/players/delete/', methods=['POST'])

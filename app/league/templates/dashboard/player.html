@@ -8,8 +8,9 @@
       <h1 class="page-header">{{ player.last_name }}, {{player.first_name}}</h1>
       <h4>AGA rank: {{ player.aga_rank }}</h4>
       <h4>
+        AGA #: 
         <a href="http://agagd.usgo.org/player/{{ player.aga_id }}">
-          agagd player page
+          {{ player.aga_id }}
         </a>
       </h4>
       <h3>Games played</h3>
@@ -29,7 +30,7 @@
               </tr>
             </thead>
             <tbody>
-              {% for game in games -%}
+              {% for game in player.games -%}
               <tr>
                 <td />
                 <td>
@@ -51,6 +52,7 @@
               </tr>
               {%- endfor %}
               <tr>
+                <td />
                 <td />
                 <td />
                 <td />
