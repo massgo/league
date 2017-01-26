@@ -45,8 +45,16 @@
           <tbody>
             {% for game in games -%}
             <tr>
-              <td>{{ game.white.full_name }} ({{ game.white.aga_id }})</td>
-              <td>{{ game.black.full_name }} ({{ game.black.aga_id }})</td>
+              <td>
+                <a href="players/{{ game.white.id }}">
+                  {{ game.white.full_name }} ({{ game.white.aga_id }})
+                </a>
+              </td>
+              <td>
+                <a href="players/{{ game.black.id }}">
+                  {{ game.black.full_name }} ({{ game.black.aga_id }})
+                </a>
+              </td>
               <td>{{ game.winner.name }}</td>
               <td>{{ game.handicap }}</td>
               <td>{{ game.komi }}</td>
