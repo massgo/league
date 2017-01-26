@@ -20,6 +20,7 @@ League
     :target: https://pyup.io/repos/github/massgo/league/
     :alt: Python 3
 
+
 A go league app.
 
 
