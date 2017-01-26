@@ -20,7 +20,6 @@
   <!-- Mobile viewport optimized: h5bp.com/viewport -->
   <meta name="viewport" content="width=device-width">
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='libs/font-awesome4/css/font-awesome.min.css') }}">
   {% assets "css_all" %}
     <link rel="stylesheet" href="{{ ASSET_URL }}">
   {% endassets %}
@@ -38,20 +37,20 @@
 <div class="{% block content_class %}container{% endblock content_class %}">
 
   <div role="main">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
     <div class="row">
-      <div class="col-md-12">
+      <div id="error-container" class="col-md-12">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
         {% for category, message in messages %}
         <div class="alert alert-{{ category }}">
           <a class="close" title="Close" href="#" data-dismiss="alert">&times;</a>
          {{message}}
         </div><!-- end .alert -->
         {% endfor %}
+        {% endif %}
+        {% endwith %}
       </div><!-- end col-md -->
     </div><!-- end row -->
-        {% endif %}
-    {% endwith %}
 
     {% block content %}{% endblock %}
   </div>

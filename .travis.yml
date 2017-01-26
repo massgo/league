@@ -4,8 +4,19 @@ language: python
 cache: pip
 python:
   - 3.4.5
-env:
-  - FLASK_APP=app/autoapp.py
-install: pip install -r app/requirements/dev.txt
-before_script: flask lint
-script: flask test
+services:
+  - docker
+install:
+  - ./travis-scripts/install.sh
+script:
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ -n "$TRAVIS_TAG" ]; then
+      $(aws ecr get-login);
+    fi
+  - ./travis-scripts/build_assets.sh
+  - ./travis-scripts/test.sh
+  - ./travis-scripts/build_images.sh
+after_success:
+  - ./travis-scripts/deploy.sh
+provider: releases
+on:
+  tags: true

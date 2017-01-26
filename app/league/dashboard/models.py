@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Dashboard models."""
 
+import datetime as dt
 from enum import Enum
 
 from league.database import (Column, Model, SurrogatePK, association_proxy, db,
@@ -84,9 +85,15 @@ class Game(SurrogatePK, Model):
     season = Column(db.Integer)
     episode = Column(db.Integer)
 
+    created_at = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
+    played_at = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
+    last_modified_at = Column(db.DateTime, nullable=False,
+                              default=dt.datetime.utcnow)
+
     db.Index('ix_games_season_episode', 'season', 'episode')
 
-    def __init__(self, white, black, winner, handicap, komi, season, episode):
+    def __init__(self, white, black, winner, handicap, komi, season, episode,
+                 created_at=None, played_at=None, last_modified_at=None):
         """Initialize game."""
         self.white = white
         self.black = black
@@ -95,12 +102,36 @@ class Game(SurrogatePK, Model):
         self.komi = komi
         self.season = season
         self.episode = episode
+        self.created_at = created_at
+        self.played_at = played_at
+        self.last_modified_at = last_modified_at
 
     def __repr__(self):
         """Represent instance as a unique string."""
         return ('<Game({white!r}, {black!r}, {winner}, {handicap}, {komi})>'.
                 format(white=self.white, black=self.black, winner=self.winner,
                        handicap=self.handicap, komi=self.komi))
+
+    def to_dict(self):
+        """Return game as dictionary."""
+        return {
+            'game_id': self.id,
+            'white_id': self.white.id,
+            'black_id': self.black.id,
+            'winner': self.winner.name,
+            'handicap': self.handicap,
+            'komi': self.komi,
+            'season': self.season,
+            'episode': self.episode,
+            'created_at': str(self.created_at),
+            'played_at': str(self.played_at),
+            'last_modified_at': str(self.last_modified_at)
+        }
+
+    def update(self, **kwargs):
+        """Override update method to reset last_modified_at."""
+        self.last_modified_at = dt.datetime.utcnow()
+        super().update(**kwargs)
 
     @classmethod
     def get_by_season_ep(cls, season, episode):

@@ -7,7 +7,6 @@ import pytest
 from flask import url_for
 
 from league.dashboard.models import Color
-from league.user.models import User
 
 from .factories import GameFactory, UserFactory
 
@@ -15,14 +14,16 @@ from .factories import GameFactory, UserFactory
 class TestLoggingIn:
     """Login."""
 
-    def test_can_log_in_returns_200(self, user, testapp):
+    def test_can_log_in_returns_200(self, db, testapp):
         """Login successful."""
+        password = 'some_test_password'
+        user = UserFactory(password=password)
         # Goes to homepage
         res = testapp.get('/')
         # Fills out login form in navbar
         form = res.forms['loginForm']
         form['username'] = user.username
-        form['password'] = 'myprecious'
+        form['password'] = password
         # Submits
         res = form.submit().follow()
         assert res.status_code == 200
@@ -67,59 +68,27 @@ class TestLoggingIn:
         assert 'Unknown user' in res
 
 
-class TestRegistering:
-    """Register a user."""
+class TestUser:
+    """Users."""
 
-    def test_can_register(self, user, testapp):
-        """Register a new user."""
-        old_count = len(User.query.all())
-        # Goes to homepage
-        res = testapp.get('/')
-        # Clicks Create Account button
-        res = res.click('Create account')
-        # Fills out the form
-        form = res.forms['registerForm']
-        form['username'] = 'foobar'
-        form['email'] = 'foo@bar.com'
-        form['password'] = 'secret'
-        form['confirm'] = 'secret'
-        # Submits
-        res = form.submit().follow()
-        assert res.status_code == 200
-        # A new user was created
-        assert len(User.query.all()) == old_count + 1
+    def test_delete_user(self, testapp, authed_user):
+        """Test user deletion."""
+        res = testapp.get(url_for('admin.list_and_delete_users'))
+        raw_form = res.html.find('form', {'id': 'deleteUsersForm'})
+        found_users = [int(inp.get('value')) for inp in
+                       raw_form.find_all('input', {'name': 'obj_id'})]
+        assert len(found_users) == 2
 
-    def test_sees_error_message_if_passwords_dont_match(self, user, testapp):
-        """Show error if passwords don't match."""
-        # Goes to registration page
-        res = testapp.get(url_for('public.register'))
-        # Fills out form, but passwords don't match
-        form = res.forms['registerForm']
-        form['username'] = 'foobar'
-        form['email'] = 'foo@bar.com'
-        form['password'] = 'secret'
-        form['confirm'] = 'secrets'
-        # Submits
-        res = form.submit()
-        # sees error message
-        assert 'Passwords must match' in res
+        form = res.forms['deleteUsersForm']
+        form.fields['obj_id'][1].checked = True
+        post_res = form.submit().follow()
+        assert post_res.status_code == 200
 
-    def test_sees_error_message_if_user_already_registered(self, user, testapp):
-        """Show error if user already registered."""
-        user = UserFactory(active=True)  # A registered user
-        user.save()
-        # Goes to registration page
-        res = testapp.get(url_for('public.register'))
-        # Fills out form, but username is already registered
-        form = res.forms['registerForm']
-        form['username'] = user.username
-        form['email'] = 'foo@bar.com'
-        form['password'] = 'secret'
-        form['confirm'] = 'secret'
-        # Submits
-        res = form.submit()
-        # sees error
-        assert 'Username already registered' in res
+        post_raw_form = post_res.html.find('form', {'id': 'deleteUsersForm'})
+        post_found_users = [int(inp.get('value')) for inp in
+                            post_raw_form.find_all('input',
+                                                   {'name': 'obj_id'})]
+        assert len(post_found_users) == 1
 
 
 class TestPlayer:
@@ -159,48 +128,26 @@ class TestGame:
     """Games."""
 
     def test_get_games(self, testapp, db):
-        """Check that we can list games."""
+        """Check that we can get games."""
         first_game = GameFactory(winner=Color.white, handicap=3, komi=0)
         second_game = GameFactory(winner=Color.black, handicap=0, komi=7)
         db.session.commit()
 
-        res = testapp.get(url_for('dashboard.get_games'))
-        assert res.status_int == 200
+        post_res = testapp.get(url_for('dashboard.get_games'))
+        assert post_res.status_int == 200
 
-        games = []
-        for row in res.html.find('table').find('tbody').find_all('tr'):
-            games.append([col.text for col in row.find_all('td')])
-        assert len(games) == 2 + 3  # add three for html noise
+        games = post_res.json
+        assert len(games) == 2
 
-        expected_one = [
-            '',
-            '{} ({})'.format(first_game.white.full_name,
-                             first_game.white.aga_id),
-            '{} ({})'.format(first_game.black.full_name,
-                             first_game.black.aga_id),
-            str(first_game.winner.name),
-            str(first_game.handicap),
-            str(first_game.komi),
-            str(first_game.season),
-            str(first_game.episode),
-            ''
-        ]
-        assert games[2] == expected_one
+        assert int(games[0]['game_id']) == first_game.id
+        assert games[0]['winner'] == first_game.winner.name
+        assert int(games[0]['handicap']) == first_game.handicap
+        assert int(games[0]['komi']) == first_game.komi
 
-        expected_two = [
-            '',
-            '{} ({})'.format(second_game.white.full_name,
-                             second_game.white.aga_id),
-            '{} ({})'.format(second_game.black.full_name,
-                             second_game.black.aga_id),
-            str(second_game.winner.name),
-            str(second_game.handicap),
-            str(second_game.komi),
-            str(second_game.season),
-            str(second_game.episode),
-            ''
-        ]
-        assert games[3] == expected_two
+        assert int(games[1]['game_id']) == second_game.id
+        assert games[1]['winner'] == second_game.winner.name
+        assert int(games[1]['handicap']) == second_game.handicap
+        assert int(games[1]['komi']) == second_game.komi
 
     @pytest.mark.parametrize('winner', ['white'])
     @pytest.mark.parametrize('handicap', [0, 8])
@@ -210,49 +157,44 @@ class TestGame:
     def test_create_game(self, testapp, players, winner, handicap, komi, season,
                          episode):
         """Check that we can create a game."""
-        get_res = testapp.get(url_for('dashboard.create_game'))
-        form = get_res.forms['gameCreateForm']
+        form = {
+            'white_id': players[0].id,
+            'black_id': players[1].id,
+            'winner': winner,
+            'handicap': handicap,
+            'komi': komi,
+            'season': season,
+            'episode': episode
+        }
 
-        form['white_id'] = players[0].id
-        form['black_id'] = players[1].id
-        form['winner'] = winner
-        form['handicap'] = handicap
-        form['komi'] = komi
-        form['season'] = season
-        form['episode'] = episode
+        post_res = testapp.post(url_for('dashboard.create_game'), form)
 
-        post_res = form.submit()
+        assert post_res.status_code == 201
+        game = post_res.json
 
-        assert post_res.status_code == 200
-        assert len(post_res.html.select('[class~=alert-error]')) == 0
-
-        games = []
-        for row in post_res.html.find('table').find('tbody').find_all('tr'):
-            games.append([col.text for col in row.find_all('td')])
-        assert len(games) == 1 + 3  # add three for html noise
-
-        expected = ['',
-                    '{} ({})'.format(players[0].full_name, players[0].aga_id),
-                    '{} ({})'.format(players[1].full_name, players[1].aga_id),
-                    str('white'), str(handicap), str(komi), str(season),
-                    str(episode), '']
-        assert games[2] == expected
+        assert int(game['game_id']) == 1
+        assert game['white_id'] == players[0].id
+        assert game['black_id'] == players[1].id
+        assert game['winner'] == winner
+        assert game['handicap'] == handicap
+        assert game['komi'] == komi
+        assert game['season'] == season
+        assert game['episode'] == episode
 
     def test_delete_game(self, testapp, games):
         """Test game deletion."""
-        res = testapp.get(url_for('dashboard.get_games'))
-        raw_form = res.html.find('form', {'id': 'gameDeleteForm'})
-        found_games = [int(inp.get('value')) for inp in
-                       raw_form.find_all('input', {'name': 'game_id'})]
-        assert len(found_games) == 2
+        get_res = testapp.get(url_for('dashboard.get_games'))
+        assert get_res.status_int == 200
 
-        form = res.forms['gameDeleteForm']
-        form.fields['game_id'][0].checked = True
-        post_res = form.submit().follow()
-        assert post_res.status_code == 200
+        retrieved_games = get_res.json
+        assert len(retrieved_games) == 2
 
-        post_raw_form = post_res.html.find('form', {'id': 'gameDeleteForm'})
-        post_found_games = [int(inp.get('value')) for inp in
-                            post_raw_form.find_all('input',
-                                                   {'name': 'game_id'})]
-        assert len(post_found_games) == 1
+        delete_res = testapp.delete('/dashboard/games/{}'.format(
+                                    retrieved_games[0]['game_id']))
+        assert delete_res.status_int == 204
+
+        new_get_res = testapp.get(url_for('dashboard.get_games'))
+        assert new_get_res.status_int == 200
+
+        new_games = new_get_res.json
+        assert len(new_games) == 1
