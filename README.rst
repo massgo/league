@@ -21,7 +21,6 @@ League
     :alt: Python 3
 
 |
-|
 
 A go league app.
 
