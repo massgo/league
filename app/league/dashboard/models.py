@@ -71,7 +71,8 @@ class Player(SurrogatePK, Model):
             season = self.latest_season()
         wins, losses = 0, 0
         for game in ([game for game in self.games if game.season == season]):
-            if game.winner == self:
+            if ((game.winner == Color.white and game.white == self) or
+                    (game.winner == Color.black and game.black == self)):
                 wins += 1
             else:
                 losses += 1
@@ -92,7 +93,8 @@ class Player(SurrogatePK, Model):
         for game in ([game for game in self.games
                       if game.season == season and
                       game.episode == episode]):
-            if game.winner == self:
+            if ((game.winner == Color.white and game.white == self) or
+                    (game.winner == Color.black and game.black == self)):
                 wins += 1
             else:
                 losses += 1
