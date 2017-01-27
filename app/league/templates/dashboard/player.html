@@ -5,7 +5,7 @@
 <div class="container-narrow">
   <div class="row">
     <div class="main">
-      <h1 class="page-header">{{ player.last_name }}, {{player.first_name}}</h1>
+      <h1 class="page-header">{{ player.full_name }}</h1>
       <div class="row">
         <div class="col-sm-3">
           <div class="panel panel-default">
@@ -87,7 +87,7 @@
                 <th>Komi</th>
                 <th>Season</th>
                 <th>Episode</th>
-                <th />
+                <th>Played</th>
               </tr>
             </thead>
             <tbody>
@@ -96,12 +96,12 @@
                 <td />
                 <td>
                   <a href="{{ game.white.id }}">
-                    {{ game.white.full_name }} ({{ game.white.aga_id }})
+                    {{ game.white.full_name }}
                   </a>
                 </td>
                 <td>
                   <a href="{{ game.black.id }}">
-                    {{ game.black.full_name }} ({{ game.black.aga_id }})
+                    {{ game.black.full_name }}
                   </a>
                 </td>
                 <td>{{ game.winner.name }}</td>
@@ -109,6 +109,7 @@
                 <td>{{ game.komi }}</td>
                 <td>{{ game.season }}</td>
                 <td>{{ game.episode }}</td>
+                <td>{{ game.played_at }}</td>
                 <td />
               </tr>
               {%- endfor %}

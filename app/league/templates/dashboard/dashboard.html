@@ -24,8 +24,8 @@
                 <tbody>
                   {% for place, stat in episode_stats['wins'] -%}
                   <tr>
-                    <td>{{ place + 1 }}</td>
-                    <td><a href="{{url_for('dashboard.get_player', player_id=stat[0].id)}}">{{ stat[0].full_name }} ({{ stat[0].aga_id }})</a></td>
+                    <td><strong>{{ place + 1 }}</strong></td>
+                    <td><a href="{{url_for('dashboard.get_player', player_id=stat[0].id)}}">{{ stat[0].full_name }}</a></td>
                     <td>{{ stat[1] }}</td>
                   </tr>
                   {%- endfor %}
@@ -51,8 +51,8 @@
                 <tbody>
                   {% for place, stat in episode_stats['games_played'] -%}
                   <tr>
-                    <td>{{ place + 1 }}</td>
-                    <td><a href="{{url_for('dashboard.get_player', player_id=stat[0].id)}}">{{ stat[0].full_name }} ({{ stat[0].aga_id }})</a></td>
+                    <td><strong>{{ place + 1 }}</strong></td>
+                    <td><a href="{{url_for('dashboard.get_player', player_id=stat[0].id)}}">{{ stat[0].full_name }}</a></td>
                     <td>{{ stat[1] }}</td>
                   </tr>
                   {%- endfor %}
@@ -102,7 +102,7 @@
                 <th>Komi</th>
                 <th>Season</th>
                 <th>Episode</th>
-                <th>Played At</th>
+                <th>Played</th>
               </tr>
             </thead>
             <tbody>
@@ -110,12 +110,12 @@
               <tr>
                 <td>
                   <a href="players/{{ game.white.id }}">
-                    {{ game.white.full_name }} ({{ game.white.aga_id }})
+                    {{ game.white.full_name }}
                   </a>
                 </td>
                 <td>
                   <a href="players/{{ game.black.id }}">
-                    {{ game.black.full_name }} ({{ game.black.aga_id }})
+                    {{ game.black.full_name }}
                   </a>
                 </td>
                 <td>{{ game.winner.name }}</td>

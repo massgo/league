@@ -105,7 +105,8 @@ class Player(SurrogatePK, Model):
         """Get player statistics for the whole league."""
         wins, losses = 0, 0
         for game in self.games:
-            if game.winner == self:
+            if ((game.winner == Color.white and game.white == self) or
+                    (game.winner == Color.black and game.black == self)):
                 wins += 1
             else:
                 losses += 1
