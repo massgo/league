@@ -61,6 +61,55 @@ class Player(SurrogatePK, Model):
         """Get all players."""
         return cls.query.all()
 
+    def latest_season(self):
+        """Get latest season player has played in."""
+        return sorted([game.season for game in self.games])[-1]
+
+    def season_stats(self, season=None):
+        """Get player statistics for a season."""
+        if season is None:
+            season = self.latest_season()
+        wins, losses = 0, 0
+        for game in ([game for game in self.games if game.season == season]):
+            if game.winner == self:
+                wins += 1
+            else:
+                losses += 1
+
+        return {'wins': wins, 'losses': losses}
+
+    def latest_episode(self):
+        """Get latest episode player has played in."""
+        return sorted([game.episode for game in self.games])[-1]
+
+    def episode_stats(self, episode=None, season=None):
+        """Get player statistics for an episode."""
+        if episode is None:
+            episode = self.latest_episode()
+        if season is None:
+            season = self.latest_season()
+        wins, losses = 0, 0
+        for game in ([game for game in self.games
+                      if game.season == season and
+                      game.episode == episode]):
+            if game.winner == self:
+                wins += 1
+            else:
+                losses += 1
+
+        return {'wins': wins, 'losses': losses}
+
+    def league_stats(self):
+        """Get player statistics for the whole league."""
+        wins, losses = 0, 0
+        for game in self.games:
+            if game.winner == self:
+                wins += 1
+            else:
+                losses += 1
+
+        return {'wins': wins, 'losses': losses}
+
 
 class Game(SurrogatePK, Model):
     """A game record."""

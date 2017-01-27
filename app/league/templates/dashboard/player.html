@@ -2,18 +2,79 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container-fluid">
+<div class="container-narrow">
   <div class="row">
     <div class="main">
       <h1 class="page-header">{{ player.last_name }}, {{player.first_name}}</h1>
-      <h4>AGA rank: {{ player.aga_rank }}</h4>
-      <h4>
-        AGA #: 
-        <a href="http://agagd.usgo.org/player/{{ player.aga_id }}">
-          {{ player.aga_id }}
-        </a>
-      </h4>
-      <h3>Games played</h3>
+      <div class="row">
+        <div class="col-sm-3">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">AGA Info</h3>
+            </div>
+            <div class="panel-body">
+              <h5>
+                ID:
+                <a href="http://agagd.usgo.org/player/{{ player.aga_id }}">
+                  {{ player.aga_id }}
+                </a>
+              </h5>
+              <h5>
+                Rank: {{ player.aga_rank }}
+              </h5>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">This Episode</h3>
+            </div>
+            <div class="panel-body">
+              <h5>
+                Wins: {{ episode_stats.wins }}
+              </h5>
+              <h5>
+                Losses: {{ episode_stats.losses }}
+              </h5>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">This Season</h3>
+            </div>
+            <div class="panel-body">
+              <h5>
+                Wins: {{ season_stats.wins }}
+              </h5>
+              <h5>
+                Losses: {{ season_stats.losses }}
+              </h5>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Overall</h3>
+            </div>
+            <div class="panel-body">
+              <h5>
+                Wins: {{ league_stats.wins }}
+              </h5>
+              <h5>
+                Losses: {{ league_stats.losses }}
+              </h5>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title">Games Played</h3>
+        </div>
         <div class="table-responsive">
           <table class="table table-striped">
             <thead>
@@ -54,6 +115,7 @@
             </tbody>
           </table>
         </div>
+      </div>
     </div>
   </div>
 </div>
