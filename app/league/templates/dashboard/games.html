@@ -119,7 +119,7 @@ var csrfToken = '{{ csrf_token() }}';
 
 var players = {};
 {% for choice in game_create_form.white_id.choices -%}
-players[{{ choice[0] }}] = '{{ choice[1] }}';
+players[{{ choice[0] }}] = '<a href="../players/{{ choice[0] }}">{{ choice[1] }}</a>';
 {%- endfor %}
 
 function localdate_to_remote(localdate) {
