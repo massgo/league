@@ -232,11 +232,6 @@ class Game(SurrogatePK, Model):
             games_played[game.white.id] = games_played.get(game.white.id, 0) + 1
             games_played[game.black.id] = games_played.get(game.black.id, 0) + 1
 
-        # unsorted_wins_list = [(Player.get_by_id(player_id), player_wins)
-        #                       for player_id, player_wins in wins.items()]
-        #
-        # import pytest; pytest.set_trace()
-
         wins_list = enumerate(sorted(
             [(Player.get_by_id(player_id), player_wins)
              for player_id, player_wins in wins.items()],
