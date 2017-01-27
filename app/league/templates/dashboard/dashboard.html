@@ -2,69 +2,133 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container-fluid">
+<div class="container-narrow">
   <div class="row">
     <div class="main">
       <h1 class="page-header">Dashboard</h1>
-      <h2 class="sub-header">Players</h2>
-      <div class="table-responsive">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>AGA ID</th>
-              <th>Name</th>
-              <th>AGA Rank</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for player in players -%}
-            <tr>
-              <td><a href="players/{{player.id}}"> {{ player.aga_id }}</a></td>
-              <td><a href="players/{{player.id}}"> {{ player.full_name }}</a></td>
-              <td>{{ player.aga_rank }}</td>
-            </tr>
-            {%- endfor %}
-          </tbody>
-        </table>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h2 class="panel-title">Most Wins in Current Episode</h2>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th class="col-sm-1"/>
+                    <th class="col-sm-8">Player</th>
+                    <th class="col-sm-3">Wins</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for place, stat in episode_stats['wins'] -%}
+                  <tr>
+                    <td>{{ place + 1 }}</td>
+                    <td><a href="{{url_for('dashboard.get_player', player_id=stat[0].id)}}">{{ stat[0].full_name }} ({{ stat[0].aga_id }})</a></td>
+                    <td>{{ stat[1] }}</td>
+                  </tr>
+                  {%- endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h2 class="panel-title">Most Games in Current Episode</h2>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th class="col-sm-1"/>
+                    <th class="col-sm-8">Player</th>
+                    <th class="col-sm-3">Games</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for place, stat in episode_stats['games_played'] -%}
+                  <tr>
+                    <td>{{ place + 1 }}</td>
+                    <td><a href="{{url_for('dashboard.get_player', player_id=stat[0].id)}}">{{ stat[0].full_name }} ({{ stat[0].aga_id }})</a></td>
+                    <td>{{ stat[1] }}</td>
+                  </tr>
+                  {%- endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
-      <h2 class="sub-header">Games</h2>
-      <div class="table-responsive">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>White</th>
-              <th>Black</th>
-              <th>Winner</th>
-              <th>Handicap</th>
-              <th>Komi</th>
-              <th>Season</th>
-              <th>Episode</th>
-              <th>Played At</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for game in games -%}
-            <tr>
-              <td>
-                <a href="players/{{ game.white.id }}">
-                  {{ game.white.full_name }} ({{ game.white.aga_id }})
-                </a>
-              </td>
-              <td>
-                <a href="players/{{ game.black.id }}">
-                  {{ game.black.full_name }} ({{ game.black.aga_id }})
-                </a>
-              </td>
-              <td>{{ game.winner.name }}</td>
-              <td>{{ game.handicap }}</td>
-              <td>{{ game.komi }}</td>
-              <td>{{ game.season }}</td>
-              <td>{{ game.episode }}</td>
-              <td>{{ game.played_at }}</td>
-            </tr>
-            {%- endfor %}
-          </tbody>
-        </table>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Players</h2>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th class="col-sm-3">AGA ID</th>
+                <th class="col-sm-7">Name</th>
+                <th class="col-sm-2">AGA Rank</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for player in players -%}
+              <tr>
+                <td><a href="players/{{player.id}}"> {{ player.aga_id }}</a></td>
+                <td><a href="players/{{player.id}}"> {{ player.full_name }}</a></td>
+                <td>{{ player.aga_rank }}</td>
+              </tr>
+              {%- endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">Games</h2>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>White</th>
+                <th>Black</th>
+                <th>Winner</th>
+                <th>Handicap</th>
+                <th>Komi</th>
+                <th>Season</th>
+                <th>Episode</th>
+                <th>Played At</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for game in games -%}
+              <tr>
+                <td>
+                  <a href="players/{{ game.white.id }}">
+                    {{ game.white.full_name }} ({{ game.white.aga_id }})
+                  </a>
+                </td>
+                <td>
+                  <a href="players/{{ game.black.id }}">
+                    {{ game.black.full_name }} ({{ game.black.aga_id }})
+                  </a>
+                </td>
+                <td>{{ game.winner.name }}</td>
+                <td>{{ game.handicap }}</td>
+                <td>{{ game.komi }}</td>
+                <td>{{ game.season }}</td>
+                <td>{{ game.episode }}</td>
+                <td>{{ game.played_at }}</td>
+              </tr>
+              {%- endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>

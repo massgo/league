@@ -24,7 +24,7 @@ def dashboard():
     players = Player.query.all()
     games = Game.query.all()
     return render_template('dashboard/dashboard.html', players=players,
-                           games=games)
+                           games=games, episode_stats=Game.episode_stats())
 
 
 @blueprint.route('/players/', methods=['GET'])
@@ -58,7 +58,6 @@ def create_player():
 
 
 @blueprint.route('/players/<int:player_id>', methods=['GET'])
-@login_required
 def get_player(player_id):
     """Get game history and statistics for player."""
     player = Player.get_by_id(player_id)

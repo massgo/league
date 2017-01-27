@@ -203,6 +203,56 @@ class Game(SurrogatePK, Model):
         """Get players in game as set."""
         return frozenset((self.white, self.black))
 
+    @classmethod
+    def latest_episode(cls):
+        """Get latest episode."""
+        return sorted([game.episode for game in cls.query.all()])[-1]
+
+    @classmethod
+    def latest_season(cls):
+        """Get latest season."""
+        return sorted([game.season for game in cls.query.all()])[-1]
+
+    @classmethod
+    def episode_stats(cls, episode=None, season=None, num_players=5):
+        """Get statistics for an episode."""
+        if episode is None:
+            episode = cls.latest_episode()
+        if season is None:
+            season = cls.latest_season()
+        wins, games_played = {}, {}
+        games = [game for game in cls.query.all()
+                 if game.season == season and
+                 game.episode == episode]
+        for game in games:
+            if game.winner is Color.white:
+                wins[game.white.id] = wins.get(game.white.id, 0) + 1
+            else:
+                wins[game.black.id] = wins.get(game.black.id, 0) + 1
+            games_played[game.white.id] = games_played.get(game.white.id, 0) + 1
+            games_played[game.black.id] = games_played.get(game.black.id, 0) + 1
+
+        # unsorted_wins_list = [(Player.get_by_id(player_id), player_wins)
+        #                       for player_id, player_wins in wins.items()]
+        #
+        # import pytest; pytest.set_trace()
+
+        wins_list = enumerate(sorted(
+            [(Player.get_by_id(player_id), player_wins)
+             for player_id, player_wins in wins.items()],
+            key=lambda stat: stat[1],
+            reverse=True
+        )[0:num_players])
+
+        games_played_list = enumerate(sorted(
+            [(Player.get_by_id(player_id), player_games_played)
+             for player_id, player_games_played in games_played.items()],
+            key=lambda stat: stat[1],
+            reverse=True
+        )[0:num_players])
+
+        return {'wins': wins_list, 'games_played': games_played_list}
+
 
 class WhitePlayerGame(Model):
     """A map between players and the games they've played as white."""
