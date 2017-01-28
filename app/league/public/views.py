@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 """Public section, including homepage and signup."""
 from flask import Blueprint, flash, redirect, render_template, request, url_for
-from flask_login import login_required, login_user, logout_user
+from flask_login import login_required, logout_user
 
 from league.admin.models import User
 from league.extensions import login_manager
 from league.public.forms import LoginForm
-from league.utils import flash_errors
 
 blueprint = Blueprint('public', __name__, static_folder='../static')
 
