@@ -19,7 +19,7 @@ class TestLoggingIn:
         password = 'some_test_password'
         user = UserFactory(password=password)
         # Goes to homepage
-        res = testapp.get('/')
+        res = testapp.get('/dashboard/')
         # Fills out login form in navbar
         form = res.forms['loginForm']
         form['username'] = user.username
@@ -30,21 +30,21 @@ class TestLoggingIn:
 
     def test_sees_alert_on_log_out(self, user, testapp):
         """Show alert on logout."""
-        res = testapp.get('/')
+        res = testapp.get(url_for('dashboard.dashboard'))
         # Fills out login form in navbar
         form = res.forms['loginForm']
         form['username'] = user.username
         form['password'] = 'myprecious'
         # Submits
         res = form.submit().follow()
-        res = testapp.get(url_for('public.logout')).follow()
+        res = testapp.get(url_for('public.logout')).follow().follow()
         # sees alert
         assert 'You are logged out.' in res
 
     def test_sees_error_message_if_password_is_incorrect(self, user, testapp):
         """Show error if password is incorrect."""
         # Goes to homepage
-        res = testapp.get('/')
+        res = testapp.get('/dashboard/')
         # Fills out login form, password incorrect
         form = res.forms['loginForm']
         form['username'] = user.username
@@ -57,7 +57,7 @@ class TestLoggingIn:
     def test_sees_error_message_if_username_doesnt_exist(self, user, testapp):
         """Show error if username doesn't exist."""
         # Goes to homepage
-        res = testapp.get('/')
+        res = testapp.get('/dashboard/')
         # Fills out login form, password incorrect
         form = res.forms['loginForm']
         form['username'] = 'unknown'

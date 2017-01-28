@@ -209,12 +209,20 @@ class Game(SurrogatePK, Model):
     @classmethod
     def latest_episode(cls):
         """Get latest episode."""
-        return sorted([game.episode for game in cls.query.all()])[-1]
+        games = cls.query.all()
+        if len(games) > 0:
+            return sorted([game.episode for game in games])[-1]
+        else:
+            return 1
 
     @classmethod
     def latest_season(cls):
         """Get latest season."""
-        return sorted([game.season for game in cls.query.all()])[-1]
+        games = cls.query.all()
+        if len(games) > 0:
+            return sorted([game.season for game in games])[-1]
+        else:
+            return 1
 
     @classmethod
     def episode_stats(cls, episode=None, season=None, num_players=5):
