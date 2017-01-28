@@ -10,12 +10,11 @@
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
-    <a class="navbar-brand" href="{{ url_for('public.home') }}">League</a>
+    <a class="navbar-brand" href="{{ url_for('dashboard.dashboard') }}">League</a>
   </div>
   <!-- Collect the nav links, forms, and other content for toggling -->
   <div class="collapse navbar-collapse navbar-ex1-collapse">
     <ul class="nav navbar-nav">
-      <li><a href="{{ url_for('dashboard.dashboard') }}">Dashboard</a></li>
       {% if current_user and current_user.is_authenticated %}
       <li><a href="{{ url_for('dashboard.get_players') }}">Players</a></li>
       <li><a href="{{ url_for('dashboard.list_games') }}">Games</a></li>
@@ -37,7 +36,7 @@
       <li><a class="navbar-link" href="{{ url_for('public.logout') }}"><i class="fa fa-sign-out"></i></a></li>
     </ul>
     {% elif login_form %}
-    <form id="loginForm" method="POST" class="navbar-form form-inline navbar-right" action="/" role="login">
+    <form id="loginForm" method="POST" class="navbar-form form-inline navbar-right" action="/dashboard/" role="login">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
       <div class="form-group">
         {{ login_form.username(placeholder="Username", class_="form-control") }}

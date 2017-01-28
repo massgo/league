@@ -61,6 +61,58 @@ class Player(SurrogatePK, Model):
         """Get all players."""
         return cls.query.all()
 
+    def latest_season(self):
+        """Get latest season player has played in."""
+        return sorted([game.season for game in self.games])[-1]
+
+    def season_stats(self, season=None):
+        """Get player statistics for a season."""
+        if season is None:
+            season = self.latest_season()
+        wins, losses = 0, 0
+        for game in ([game for game in self.games if game.season == season]):
+            if ((game.winner == Color.white and game.white == self) or
+                    (game.winner == Color.black and game.black == self)):
+                wins += 1
+            else:
+                losses += 1
+
+        return {'wins': wins, 'losses': losses}
+
+    def latest_episode(self):
+        """Get latest episode player has played in."""
+        return sorted([game.episode for game in self.games])[-1]
+
+    def episode_stats(self, episode=None, season=None):
+        """Get player statistics for an episode."""
+        if episode is None:
+            episode = self.latest_episode()
+        if season is None:
+            season = self.latest_season()
+        wins, losses = 0, 0
+        for game in ([game for game in self.games
+                      if game.season == season and
+                      game.episode == episode]):
+            if ((game.winner == Color.white and game.white == self) or
+                    (game.winner == Color.black and game.black == self)):
+                wins += 1
+            else:
+                losses += 1
+
+        return {'wins': wins, 'losses': losses}
+
+    def league_stats(self):
+        """Get player statistics for the whole league."""
+        wins, losses = 0, 0
+        for game in self.games:
+            if ((game.winner == Color.white and game.white == self) or
+                    (game.winner == Color.black and game.black == self)):
+                wins += 1
+            else:
+                losses += 1
+
+        return {'wins': wins, 'losses': losses}
+
 
 class Game(SurrogatePK, Model):
     """A game record."""
@@ -153,6 +205,59 @@ class Game(SurrogatePK, Model):
     def players(self):
         """Get players in game as set."""
         return frozenset((self.white, self.black))
+
+    @classmethod
+    def latest_episode(cls):
+        """Get latest episode."""
+        games = cls.query.all()
+        if len(games) > 0:
+            return sorted([game.episode for game in games])[-1]
+        else:
+            return 1
+
+    @classmethod
+    def latest_season(cls):
+        """Get latest season."""
+        games = cls.query.all()
+        if len(games) > 0:
+            return sorted([game.season for game in games])[-1]
+        else:
+            return 1
+
+    @classmethod
+    def episode_stats(cls, episode=None, season=None, num_players=5):
+        """Get statistics for an episode."""
+        if episode is None:
+            episode = cls.latest_episode()
+        if season is None:
+            season = cls.latest_season()
+        wins, games_played = {}, {}
+        games = [game for game in cls.query.all()
+                 if game.season == season and
+                 game.episode == episode]
+        for game in games:
+            if game.winner is Color.white:
+                wins[game.white.id] = wins.get(game.white.id, 0) + 1
+            else:
+                wins[game.black.id] = wins.get(game.black.id, 0) + 1
+            games_played[game.white.id] = games_played.get(game.white.id, 0) + 1
+            games_played[game.black.id] = games_played.get(game.black.id, 0) + 1
+
+        wins_list = enumerate(sorted(
+            [(Player.get_by_id(player_id), player_wins)
+             for player_id, player_wins in wins.items()],
+            key=lambda stat: stat[1],
+            reverse=True
+        )[0:num_players])
+
+        games_played_list = enumerate(sorted(
+            [(Player.get_by_id(player_id), player_games_played)
+             for player_id, player_games_played in games_played.items()],
+            key=lambda stat: stat[1],
+            reverse=True
+        )[0:num_players])
+
+        return {'wins': wins_list, 'games_played': games_played_list}
 
 
 class WhitePlayerGame(Model):

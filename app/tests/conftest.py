@@ -2,6 +2,7 @@
 """Defines fixtures available to all tests."""
 
 import pytest
+from flask import url_for
 from webtest import TestApp
 
 from league.app import create_app
@@ -56,7 +57,7 @@ def authed_user(db, testapp):
     """A user that has been authenticated with the testapp."""
     password = 'some_test_password'
     user = UserFactory(password=password)
-    res = testapp.get('/')
+    res = testapp.get(url_for('dashboard.dashboard'))
     # Fills out login form in navbar
     form = res.forms['loginForm']
     form['username'] = user.username

@@ -4,7 +4,7 @@ from datetime import timezone
 
 from flask import (Blueprint, flash, jsonify, redirect, render_template,
                    request, url_for)
-from flask_login import login_required
+from flask_login import login_required, login_user
 
 from league.dashboard.forms import (GameCreateForm, GameUpdateForm,
                                     PlayerCreateForm, PlayerDeleteForm,
@@ -12,19 +12,32 @@ from league.dashboard.forms import (GameCreateForm, GameUpdateForm,
 from league.dashboard.models import Game, Player
 from league.dashboard.reports import Report
 from league.extensions import csrf_protect
+from league.public.forms import LoginForm
 from league.utils import flash_errors
 
 blueprint = Blueprint('dashboard', __name__, url_prefix='/dashboard',
                       static_folder='../static')
 
 
-@blueprint.route('/')
+@blueprint.route('/', methods=['GET', 'POST'])
 def dashboard():
     """Dashboard."""
+    form = LoginForm(request.form)
+    # Handle logging in
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            login_user(form.user)
+            flash('You are logged in.', 'success')
+            redirect_url = (request.args.get('next') or
+                            url_for('dashboard.dashboard'))
+            return redirect(redirect_url)
+        else:
+            flash_errors(form)
     players = Player.query.all()
     games = Game.query.all()
-    return render_template('dashboard/dashboard.html', players=players,
-                           games=games)
+    return render_template('dashboard/dashboard.html', login_form=form,
+                           players=players, games=games,
+                           episode_stats=Game.episode_stats())
 
 
 @blueprint.route('/players/', methods=['GET'])
@@ -58,11 +71,29 @@ def create_player():
 
 
 @blueprint.route('/players/<int:player_id>', methods=['GET'])
-@login_required
 def get_player(player_id):
-    """Get game history and statistics for player"""
+    """Get game history and statistics for player."""
+    form = LoginForm(request.form)
+    # Handle logging in
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            login_user(form.user)
+            flash('You are logged in.', 'success')
+            redirect_url = request.args.get('next') or url_for('public.home')
+            return redirect(redirect_url)
+        else:
+            flash_errors(form)
+
     player = Player.get_by_id(player_id)
-    return render_template('dashboard/player.html', player=player)
+
+    return render_template(
+        'dashboard/player.html',
+        player=player,
+        episode_stats=player.episode_stats(),
+        season_stats=player.season_stats(),
+        league_stats=player.league_stats(),
+        login_form=form
+    )
 
 
 @blueprint.route('/players/delete/', methods=['POST'])
