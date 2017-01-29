@@ -82,7 +82,6 @@
                 <th />
                 <th>White</th>
                 <th>Black</th>
-                <th>Winner</th>
                 <th>Handicap</th>
                 <th>Komi</th>
                 <th>Season</th>
@@ -96,21 +95,27 @@
                 <td />
                 <td>
                   <a href="{{ game.white.id }}">
+                    {% if game.winner.name == 'white' %}
+                    <strong>{{ game.white.full_name }}</strong>
+                    {% else %}
                     {{ game.white.full_name }}
+                    {% endif %}
                   </a>
                 </td>
                 <td>
                   <a href="{{ game.black.id }}">
+                    {% if game.winner.name == 'black' %}
+                    <strong>{{ game.black.full_name }}</strong>
+                    {% else %}
                     {{ game.black.full_name }}
+                    {% endif %}
                   </a>
                 </td>
-                <td>{{ game.winner.name }}</td>
                 <td>{{ game.handicap }}</td>
                 <td>{{ game.komi }}</td>
                 <td>{{ game.season }}</td>
                 <td>{{ game.episode }}</td>
                 <td>{{ game.played_at }}</td>
-                <td />
               </tr>
               {%- endfor %}
             </tbody>
