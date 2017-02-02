@@ -16,7 +16,7 @@ class PlayerCreateForm(FlaskForm):
     aga_id = IntegerField(
         'aga_id', validators=[NumberRange(0, 50000)])
     aga_rank = IntegerField(
-        'aga_rank', validators=[NumberRange(-30, 9)])
+        'aga_rank', validators=[NumberRange(-30, -1),NumberRange(1,9])
 
 
 class PlayerDeleteForm(FlaskForm):
