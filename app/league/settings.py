@@ -16,6 +16,8 @@ class Config(object):
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LEAGUE_ROOT_PASS = os.environ.get('LEAGUE_ROOT_PASS', 'root')
+    SLACK_WEBHOOK = os.environ.get('SLACK_WEBHOOK')
+    SLACK_CHANNEL = os.environ.get('SLACK_CHANNEL')
 
 
 class ProdConfig(Config):

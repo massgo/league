@@ -50,10 +50,10 @@ environment variables ::
 
 Then run the following commands to bootstrap your environment ::
 
-    git clone https://github.com/hndrewaall/league
+    git clone https://github.com/massgo/league
     cd league
     pyenv activate league
-    pip install -r requirements/dev.txt
+    pip install -r app/requirements/dev.txt
     flask run
 
 You will see a pretty welcome screen.
@@ -65,6 +65,12 @@ database tables and perform the initial migration ::
     flask db migrate
     flask db upgrade
     flask run
+
+    To add Slack integration, set the ``SLACK_WEBHOOK`` and ``SLACK_CHANNEL``
+    environmental variables ::
+
+        export SLACK_WEBHOOK='your-slack-webhook'
+        export SLACK_CHANNEL='your-slack-channel'
 
 
 Deployment
