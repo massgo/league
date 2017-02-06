@@ -2,6 +2,9 @@
 """Slack integration module."""
 import requests
 
+DEFAULT_USERNAME = 'leaguebot'
+DEFAULT_ICON = ':robot:'
+
 class SlackMessenger(object):
 
     def __init__(self, app=None):
@@ -13,8 +16,8 @@ class SlackMessenger(object):
         self.app = app
         self.url = app.config.get('SLACK_WEBHOOK')
         self.channel = app.config.get('SLACK_CHANNEL')
-        self.username = app.config.get('SLACK_USERNAME') or 'leaguebot'
-        self.icon_emoji = app.config.get('SLACK_ICON_EMOJI') or ':robot:'
+        self.username = app.config.get('SLACK_USERNAME') or DEFAULT_USERNAME
+        self.icon_emoji = app.config.get('SLACK_ICON_EMOJI') or DEFAULT_ICON
         app.extensions['messenger'] = self
 
     def notify_slack(self, msg):
