@@ -54,7 +54,6 @@ class DevConfig(Config):
     ASSETS_DEBUG = True  # Don't bundle/minify static assets
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
     LEAGUE_ROOT_PASS = 'root'
-    SLACK_NOTIFICATIONS_ENABLED = False
 
 
 class TestConfig(Config):
