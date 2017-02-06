@@ -24,7 +24,7 @@ class SlackMessenger(object):
                         'icon_emoji': self.icon_emoji,
                         'channel': self.channel,
                         'text': msg}
-            r = requests.post(self.url, json=self.payload)
+            r = requests.post(self.url, json=payload)
         except AttributeError as e:
             self.app.logger.warning('Environmental variables for Slack ' +
                 'integration are not configured: {0}'.format(e))
