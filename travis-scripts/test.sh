@@ -9,4 +9,4 @@ export FLASK_APP=$APP_FILE
 export FLASK_DEBUG=1
 flask lint && flask test
 
-exit ?!
+exit $?
