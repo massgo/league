@@ -173,7 +173,7 @@ def create_game():
             episode=form.episode.data,
             played_at=played_at
         )
-        messenger.notify_slack({'text':repr(game)})        
+        messenger.notify_slack(repr(game))
         return jsonify(game.to_dict()), 201
     else:
         return jsonify(**form.errors), 404

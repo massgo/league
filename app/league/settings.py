@@ -18,6 +18,8 @@ class Config(object):
     LEAGUE_ROOT_PASS = os.environ.get('LEAGUE_ROOT_PASS', 'root')
     SLACK_WEBHOOK = os.environ.get('SLACK_WEBHOOK')
     SLACK_CHANNEL = os.environ.get('SLACK_CHANNEL')
+    SLACK_USERNAME = os.environ.get('SLACK_USERNAME')
+    SLACK_ICON_EMOJI = os.environ.get('SLACK_ICON_EMOJI')
 
 
 class ProdConfig(Config):
