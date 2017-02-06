@@ -16,11 +16,14 @@ class Config(object):
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LEAGUE_ROOT_PASS = os.environ.get('LEAGUE_ROOT_PASS', 'root')
-    SLACK_WEBHOOK = os.environ.get('SLACK_WEBHOOK')
-    SLACK_CHANNEL = os.environ.get('SLACK_CHANNEL')
-    SLACK_USERNAME = os.environ.get('SLACK_USERNAME')
-    SLACK_ICON_EMOJI = os.environ.get('SLACK_ICON_EMOJI')
-
+    if 'SLACK_WEBHOOK' in os.environ:
+        SLACK_NOTIFICATIONS_ENABLED = True
+        SLACK_WEBHOOK = os.environ.get('SLACK_WEBHOOK')
+        SLACK_CHANNEL = os.environ.get('SLACK_CHANNEL', 'league')
+        SLACK_USERNAME = os.environ.get('SLACK_USERNAME', 'leaguebot')
+        SLACK_ICON_EMOJI = os.environ.get('SLACK_ICON_EMOJI', ':robot:')
+    else:
+        SLACK_NOTIFICATIONS_ENABLED = False
 
 class ProdConfig(Config):
     """Production configuration."""
@@ -51,6 +54,7 @@ class DevConfig(Config):
     ASSETS_DEBUG = True  # Don't bundle/minify static assets
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
     LEAGUE_ROOT_PASS = 'root'
+    SLACK_NOTIFICATIONS_ENABLED = False
 
 
 class TestConfig(Config):
@@ -65,3 +69,5 @@ class TestConfig(Config):
     BCRYPT_LOG_ROUNDS = 4
 
     WTF_CSRF_ENABLED = False  # Allows form testing
+
+    SLACK_NOTIFICATIONS_ENABLED = False

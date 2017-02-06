@@ -66,12 +66,6 @@ database tables and perform the initial migration ::
     flask db upgrade
     flask run
 
-To add Slack integration, set the ``SLACK_WEBHOOK`` and ``SLACK_CHANNEL``
-environmental variables ::
-
-    export SLACK_WEBHOOK='your-slack-webhook'
-    export SLACK_CHANNEL='your-slack-channel'
-
 
 Deployment
 ----------
@@ -112,3 +106,13 @@ This will generate a new migration script. Then run ::
 To apply the migration.
 
 For a full migration command reference, run ``flask db --help``.
+
+
+Slack integration
+-----------------
+
+To add Slack integration, set the ``SLACK_WEBHOOK`` and ``SLACK_CHANNEL``
+environmental variables ::
+
+    export SLACK_WEBHOOK='your-slack-webhook'
+    export SLACK_CHANNEL='your-slack-channel'

@@ -2,9 +2,6 @@
 """Slack integration module."""
 import requests
 
-DEFAULT_USERNAME = 'leaguebot'
-DEFAULT_ICON = ':robot:'
-
 class SlackMessenger(object):
 
     def __init__(self, app=None):
@@ -14,22 +11,19 @@ class SlackMessenger(object):
 
     def init_app(self, app):
         self.app = app
-        self.url = app.config.get('SLACK_WEBHOOK')
-        self.channel = app.config.get('SLACK_CHANNEL')
-        self.username = app.config.get('SLACK_USERNAME') or DEFAULT_USERNAME
-        self.icon_emoji = app.config.get('SLACK_ICON_EMOJI') or DEFAULT_ICON
+        self.enabled = app.config.get('SLACK_NOTIFICATIONS_ENABLED')
+        if self.enabled:
+            self.url = app.config.get('SLACK_WEBHOOK')
+            self.channel = app.config.get('SLACK_CHANNEL')
+            self.username = app.config.get('SLACK_USERNAME')
+            self.icon_emoji = app.config.get('SLACK_ICON_EMOJI')
         app.extensions['messenger'] = self
 
     def notify_slack(self, msg):
-        """Sends a simple notification to Slack."""
-        try:
+        """Send a simple notification to Slack."""
+        if self.enabled:
             payload = {'username': self.username,
                         'icon_emoji': self.icon_emoji,
                         'channel': self.channel,
                         'text': msg}
             r = requests.post(self.url, json=payload)
-        except AttributeError as e:
-            self.app.logger.warning('Environmental variables for Slack ' +
-                'integration are not configured: {0}'.format(e))
-        except requests.exceptions.RequestException as e:
-            self.app.logger.error(e)
