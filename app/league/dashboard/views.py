@@ -9,9 +9,9 @@ from flask_login import login_required, login_user
 from league.dashboard.forms import (GameCreateForm, GameUpdateForm,
                                     PlayerCreateForm, PlayerDeleteForm,
                                     ReportGenerateForm)
-from league.dashboard.models import Game, Player
+from league.dashboard.models import Color, Game, Player
 from league.dashboard.reports import Report
-from league.extensions import csrf_protect
+from league.extensions import csrf_protect, messenger
 from league.public.forms import LoginForm
 from league.utils import flash_errors
 
@@ -173,9 +173,23 @@ def create_game():
             episode=form.episode.data,
             played_at=played_at
         )
+        messenger.notify_slack(_game_result(game))
         return jsonify(game.to_dict()), 201
     else:
         return jsonify(**form.errors), 404
+
+
+def _game_result(game):
+    if game.winner is Color.white:
+        msg = '{white} (W) defeated {black} (B)'
+    else:
+        msg = '{black} (B) defeated {white} (W)'
+    result = msg + ' at {handicap} stones, {komi}.5 komi on {date}.'
+    return result.format(white=game.white.full_name,
+                         black=game.black.full_name,
+                         handicap=game.handicap,
+                         komi=game.komi,
+                         date=game.played_at)
 
 
 @blueprint.route('/games/', methods=['PATCH'])
