@@ -11,6 +11,7 @@ from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CsrfProtect
+
 from league.slack_messenger import SlackMessenger
 
 bcrypt = Bcrypt()

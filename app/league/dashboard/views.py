@@ -9,7 +9,7 @@ from flask_login import login_required, login_user
 from league.dashboard.forms import (GameCreateForm, GameUpdateForm,
                                     PlayerCreateForm, PlayerDeleteForm,
                                     ReportGenerateForm)
-from league.dashboard.models import Game, Player, Color
+from league.dashboard.models import Color, Game, Player
 from league.dashboard.reports import Report
 from league.extensions import csrf_protect, messenger
 from league.public.forms import LoginForm
@@ -173,21 +173,24 @@ def create_game():
             episode=form.episode.data,
             played_at=played_at
         )
-        messenger.notify_slack(_game_result_message(game))
+        messenger.notify_slack(_game_result(game))
         return jsonify(game.to_dict()), 201
     else:
         return jsonify(**form.errors), 404
 
-def _game_result_message(game):
+
+def _game_result(game):
     if game.winner is Color.white:
-        result = "{0} (W) defeated {1} (B)".format(white.full_name(),
-                                          black.full_name())
+        msg = '{white} (W) defeated {black} (B)'
     else:
-        result = "{0} (B) defeated {1} (W)".format(black.full_name(),
-                                          white.full_name())
-    game_info = "at {0} stones, {1}.5 komi".format(game.handicap, game.komi)
-    date = "on {0}".format(game.played_at)
-    return ' '.join(result, game_info, date)
+        msg = '{black} (B) defeated {white} (W)'
+    result = msg + ' at {handicap} stones, {komi}.5 komi on {date}.'
+    return result.format(white=game.white.full_name,
+                         black=game.black.full_name,
+                         handicap=game.handicap,
+                         komi=game.komi,
+                         date=game.played_at)
+
 
 @blueprint.route('/games/', methods=['PATCH'])
 @login_required

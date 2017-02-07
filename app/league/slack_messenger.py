@@ -1,15 +1,21 @@
 # -*- coding: utf-8 -*-
-"""Slack integration module."""
+"""Slack integration."""
+
 import requests
 
+
 class SlackMessenger(object):
+    """A Slack messenger."""
 
     def __init__(self, app=None):
+        """Initialize messenger."""
+        self.enabled = False
         if app:
             self.app = app
             self.init_app(app)
 
     def init_app(self, app):
+        """Initialize Slack Messenger."""
         self.app = app
         self.enabled = app.config.get('SLACK_NOTIFICATIONS_ENABLED')
         if self.enabled:
@@ -23,7 +29,7 @@ class SlackMessenger(object):
         """Send a simple notification to Slack."""
         if self.enabled:
             payload = {'username': self.username,
-                        'icon_emoji': self.icon_emoji,
-                        'channel': self.channel,
-                        'text': msg}
-            r = requests.post(self.url, json=payload)
+                       'icon_emoji': self.icon_emoji,
+                       'channel': self.channel,
+                       'text': msg}
+            requests.post(self.url, json=payload)
