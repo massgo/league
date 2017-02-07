@@ -20,7 +20,7 @@ class Config(object):
     SLACK_WEBHOOK = os.environ.get('SLACK_WEBHOOK')
     SLACK_CHANNEL = os.environ.get('SLACK_CHANNEL', 'league')
     SLACK_USERNAME = os.environ.get('SLACK_USERNAME', 'leaguebot')
-    SLACK_ICON_EMOJI = os.environ.get('SLACK_ICON_EMOJI', ':robot:')
+    SLACK_ICON_EMOJI = os.environ.get('SLACK_ICON_EMOJI', ':robot_face:')
 
 
 class ProdConfig(Config):
