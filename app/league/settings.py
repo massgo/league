@@ -18,7 +18,8 @@ class Config(object):
     LEAGUE_ROOT_PASS = os.environ.get('LEAGUE_ROOT_PASS', 'root')
     SLACK_NOTIFICATIONS_ENABLED = 'SLACK_WEBHOOK' in os.environ
     SLACK_WEBHOOK = os.environ.get('SLACK_WEBHOOK')
-    SLACK_BASE_URL = os.environ.get('SLACK_BASE_URL')
+    SLACK_BASE_URL = os.environ.get('SLACK_BASE_URL',
+                                    'https://league.massgo.org')
     SLACK_CHANNEL = os.environ.get('SLACK_CHANNEL')
     SLACK_USERNAME = os.environ.get('SLACK_USERNAME', 'leaguebot')
     SLACK_ICON_EMOJI = os.environ.get('SLACK_ICON_EMOJI', ':robot_face:')
