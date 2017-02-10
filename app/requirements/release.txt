@@ -1,4 +1,5 @@
 -r dev.txt
+-r prod.txt
 
 # Releasing
 bumpversion==0.5.3
