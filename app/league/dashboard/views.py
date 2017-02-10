@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Dashboard."""
 from datetime import timezone
+from urllib.parse import urljoin
 
 from flask import (Blueprint, flash, jsonify, redirect, render_template,
                    request, url_for)
@@ -181,22 +182,31 @@ def create_game():
 
 def _slack_game_msg(game):
     if game.winner is Color.white:
-        msg = '{white} (W) defeated {black} (B)'
+        msg = '<{w_url}|{w_name}> (W) defeated <{b_url}|{b_name}> (B)'
     else:
-        msg = '{black} (B) defeated {white} (W)'
+        msg = '<{b_url}|{b_name}> (B) defeated <{w_url}|{w_name}> (W)'
     result = (msg + ' at {handicap} stones, {komi}.5 komi at <!date^{date_val}'
-              '^{{time}} on {{date_num}}|{date_string}>.')
+              '^{{time}} on {{date_num}}|{date_string}> '
+              '(S{season:0>2}E{episode:0>2})')
 
     # Gross hack around the fact that we retrieve as naive DateTimes.
     # See: https://github.com/massgo/league/issues/93
     utc_time = int(game.played_at.replace(tzinfo=timezone.utc).timestamp())
 
-    return result.format(white=game.white.full_name,
-                         black=game.black.full_name,
+    return result.format(w_name=game.white.full_name,
+                         w_url=urljoin(messenger.base_url,
+                                       url_for('dashboard.get_player',
+                                               player_id=game.white.id)),
+                         b_name=game.black.full_name,
+                         b_url=urljoin(messenger.base_url,
+                                       url_for('dashboard.get_player',
+                                               player_id=game.black.id)),
                          handicap=game.handicap,
                          komi=game.komi,
                          date_string=game.played_at,
-                         date_val=utc_time)
+                         date_val=utc_time,
+                         season=game.season,
+                         episode=game.episode)
 
 
 @blueprint.route('/games/', methods=['PATCH'])

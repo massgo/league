@@ -21,6 +21,7 @@ class Config(object):
     SLACK_CHANNEL = os.environ.get('SLACK_CHANNEL', 'league')
     SLACK_USERNAME = os.environ.get('SLACK_USERNAME', 'leaguebot')
     SLACK_ICON_EMOJI = os.environ.get('SLACK_ICON_EMOJI', ':robot_face:')
+    SLACK_BASE_URL = os.environ.get('SLACK_BASE_URL', 'http://localhost:5000')
 
 
 class ProdConfig(Config):

@@ -23,6 +23,7 @@ class SlackMessenger(object):
             self.channel = app.config.get('SLACK_CHANNEL')
             self.username = app.config.get('SLACK_USERNAME')
             self.icon_emoji = app.config.get('SLACK_ICON_EMOJI')
+            self.base_url = app.config.get('SLACK_BASE_URL')
         app.extensions['messenger'] = self
 
     def notify_slack(self, msg):
