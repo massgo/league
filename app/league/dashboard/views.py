@@ -173,23 +173,30 @@ def create_game():
             episode=form.episode.data,
             played_at=played_at
         )
-        messenger.notify_slack(_game_result(game))
+        messenger.notify_slack(_slack_game_msg(game))
         return jsonify(game.to_dict()), 201
     else:
         return jsonify(**form.errors), 404
 
 
-def _game_result(game):
+def _slack_game_msg(game):
     if game.winner is Color.white:
         msg = '{white} (W) defeated {black} (B)'
     else:
         msg = '{black} (B) defeated {white} (W)'
-    result = msg + ' at {handicap} stones, {komi}.5 komi on {date}.'
+    result = (msg + ' at {handicap} stones, {komi}.5 komi at <!date^{date_val}'
+              '^{{time}} on {{date_num}}|{date_string}>.')
+
+    # Gross hack around the fact that we retrieve as naive DateTimes.
+    # See: https://github.com/massgo/league/issues/93
+    utc_time = int(game.played_at.replace(tzinfo=timezone.utc).timestamp())
+
     return result.format(white=game.white.full_name,
                          black=game.black.full_name,
                          handicap=game.handicap,
                          komi=game.komi,
-                         date=game.played_at)
+                         date_string=game.played_at,
+                         date_val=utc_time)
 
 
 @blueprint.route('/games/', methods=['PATCH'])
