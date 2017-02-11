@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Dashboard."""
 from datetime import timezone
-from urllib.parse import urljoin
 
 from flask import (Blueprint, flash, jsonify, redirect, render_template,
                    request, url_for)
