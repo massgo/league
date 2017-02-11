@@ -33,3 +33,6 @@ class SlackMessenger(object):
                        'channel': self.channel,
                        'text': msg}
             requests.post(self.url, json=payload)
+            self.app.logger.debug('Sent {} to {}'.format(msg, self.channel))
+        else:
+            self.app.logger.debug('Ignoring message request')

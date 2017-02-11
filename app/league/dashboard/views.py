@@ -173,23 +173,37 @@ def create_game():
             episode=form.episode.data,
             played_at=played_at
         )
-        messenger.notify_slack(_game_result(game))
+        messenger.notify_slack(_slack_game_msg(game))
         return jsonify(game.to_dict()), 201
     else:
         return jsonify(**form.errors), 404
 
 
-def _game_result(game):
+def _slack_game_msg(game):
     if game.winner is Color.white:
-        msg = '{white} (W) defeated {black} (B)'
+        msg = '<{w_url}|{w_name}> (W) defeated <{b_url}|{b_name}> (B)'
     else:
-        msg = '{black} (B) defeated {white} (W)'
-    result = msg + ' at {handicap} stones, {komi}.5 komi on {date}.'
-    return result.format(white=game.white.full_name,
-                         black=game.black.full_name,
+        msg = '<{b_url}|{b_name}> (B) defeated <{w_url}|{w_name}> (W)'
+    result = (msg + ' at {handicap} stones, {komi}.5 komi at <!date^{date_val}'
+              '^{{time}} on {{date_num}}|{date_string}> '
+              '(S{season:0>2}E{episode:0>2})')
+
+    # Gross hack around the fact that we retrieve as naive DateTimes.
+    # See: https://github.com/massgo/league/issues/93
+    utc_time = int(game.played_at.replace(tzinfo=timezone.utc).timestamp())
+
+    return result.format(w_name=game.white.full_name,
+                         w_url=url_for('dashboard.get_player',
+                                       player_id=game.white.id, _external=True),
+                         b_name=game.black.full_name,
+                         b_url=url_for('dashboard.get_player',
+                                       player_id=game.black.id, _external=True),
                          handicap=game.handicap,
                          komi=game.komi,
-                         date=game.played_at)
+                         date_string=game.played_at,
+                         date_val=utc_time,
+                         season=game.season,
+                         episode=game.episode)
 
 
 @blueprint.route('/games/', methods=['PATCH'])

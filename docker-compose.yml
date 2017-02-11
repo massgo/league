@@ -9,6 +9,9 @@ services:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
       - LEAGUE_ROOT_PASS
+      - SLACK_CHANNEL
+      - SLACK_WEBHOOK
+      - SERVER_NAME
     depends_on:
       - db
 
