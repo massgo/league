@@ -11,7 +11,7 @@ services:
       - LEAGUE_ROOT_PASS
       - SLACK_CHANNEL
       - SLACK_WEBHOOK
-      - SLACK_BASE_URL
+      - SERVER_NAME
     depends_on:
       - db
 

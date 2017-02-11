@@ -18,7 +18,6 @@ class SlackMessenger(object):
         """Initialize Slack Messenger."""
         self.app = app
         self.enabled = app.config.get('SLACK_NOTIFICATIONS_ENABLED')
-        self.base_url = app.config.get('SLACK_BASE_URL')
         if self.enabled:
             self.url = app.config.get('SLACK_WEBHOOK')
             self.channel = app.config.get('SLACK_CHANNEL')

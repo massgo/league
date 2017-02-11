@@ -6,6 +6,7 @@ import os
 class Config(object):
     """Base configuration."""
 
+    SERVER_NAME = os.environ.get('SERVER_NAME')
     SECRET_KEY = os.environ.get('LEAGUE_SECRET', 'secret-key')
     APP_DIR = os.path.abspath(os.path.dirname(__file__))  # This directory
     PROJECT_ROOT = os.path.abspath(os.path.join(APP_DIR, os.pardir))
@@ -18,8 +19,6 @@ class Config(object):
     LEAGUE_ROOT_PASS = os.environ.get('LEAGUE_ROOT_PASS', 'root')
     SLACK_NOTIFICATIONS_ENABLED = 'SLACK_WEBHOOK' in os.environ
     SLACK_WEBHOOK = os.environ.get('SLACK_WEBHOOK')
-    SLACK_BASE_URL = os.environ.get('SLACK_BASE_URL',
-                                    'https://league.massgo.org')
     SLACK_CHANNEL = os.environ.get('SLACK_CHANNEL')
     SLACK_USERNAME = os.environ.get('SLACK_USERNAME', 'leaguebot')
     SLACK_ICON_EMOJI = os.environ.get('SLACK_ICON_EMOJI', ':robot_face:')

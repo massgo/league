@@ -194,13 +194,11 @@ def _slack_game_msg(game):
     utc_time = int(game.played_at.replace(tzinfo=timezone.utc).timestamp())
 
     return result.format(w_name=game.white.full_name,
-                         w_url=urljoin(messenger.base_url,
-                                       url_for('dashboard.get_player',
-                                               player_id=game.white.id)),
+                         w_url=url_for('dashboard.get_player',
+                                       player_id=game.white.id, _external=True),
                          b_name=game.black.full_name,
-                         b_url=urljoin(messenger.base_url,
-                                       url_for('dashboard.get_player',
-                                               player_id=game.black.id)),
+                         b_url=url_for('dashboard.get_player',
+                                       player_id=game.black.id, _external=True),
                          handicap=game.handicap,
                          komi=game.komi,
                          date_string=game.played_at,
