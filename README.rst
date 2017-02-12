@@ -54,6 +54,7 @@ Then run the following commands to bootstrap your environment ::
     cd league
     pyenv activate league
     pip install -r app/requirements/dev.txt
+    bower install
     flask run
 
 You will see a pretty welcome screen.

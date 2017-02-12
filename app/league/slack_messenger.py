@@ -18,11 +18,10 @@ class SlackMessenger(object):
         """Initialize Slack Messenger."""
         self.app = app
         self.enabled = app.config.get('SLACK_NOTIFICATIONS_ENABLED')
-        if self.enabled:
-            self.url = app.config.get('SLACK_WEBHOOK')
-            self.channel = app.config.get('SLACK_CHANNEL')
-            self.username = app.config.get('SLACK_USERNAME')
-            self.icon_emoji = app.config.get('SLACK_ICON_EMOJI')
+        self.url = app.config.get('SLACK_WEBHOOK')
+        self.channel = app.config.get('SLACK_CHANNEL')
+        self.username = app.config.get('SLACK_USERNAME')
+        self.icon_emoji = app.config.get('SLACK_ICON_EMOJI')
         app.extensions['messenger'] = self
 
     def notify_slack(self, msg):

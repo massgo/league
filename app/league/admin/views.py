@@ -3,9 +3,11 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 
 from league.utils import admin_required, flash_errors
+from league.extensions import messenger
 
-from .forms import CreateUserForm, DeleteUsersForm
+from .forms import CreateUserForm, DeleteUsersForm, SlackIntegrationForm
 from .models import User
+
 
 blueprint = Blueprint('admin', __name__, url_prefix='/admin',
                       static_folder='../static')
@@ -45,6 +47,32 @@ def create_user():
     else:
         flash_errors(form)
     return render_template('admin/create_user.html', create_user_form=form)
+
+
+@blueprint.route('/slack_integration/', methods=['GET', 'POST'])
+@admin_required
+def manage_slack_integration():
+    """Manage Slack integration."""
+    form = SlackIntegrationForm()
+    if form.validate_on_submit():
+        messenger.enabled = form.enabled.data
+        messenger.url = form.webhook.data
+        messenger.channel = form.channel.data
+        messenger.username = form.username.data
+        messenger.icon_emoji = form.icon_emoji.data
+        flash('Slack integration updated!', 'success')
+        if form.test.data:
+            messenger.notify_slack('Test message sent.')
+            flash('Sending test message...', 'success')
+    else:
+        flash_errors(form)
+    return render_template('admin/slack_integration.html',
+                           slack_integration_form=form,
+                           messenger={'enabled': messenger.enabled,
+                                      'url': messenger.url,
+                                      'channel': messenger.channel,
+                                      'username': messenger.username,
+                                      'icon_emoji': messenger.icon_emoji})
 
 
 @blueprint.route('/')
