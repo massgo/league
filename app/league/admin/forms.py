@@ -5,7 +5,7 @@ from collections import OrderedDict
 from flask_login import current_user
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, StringField, SubmitField
-from wtforms.validators import DataRequired, Email, Length, URL
+from wtforms.validators import URL, DataRequired, Email, Length
 
 from league.forms import CheckboxTableField
 
@@ -93,8 +93,7 @@ class SlackIntegrationForm(FlaskForm):
                                       Length(min=1, max=22)])
     username = StringField('Username',
                            validators=[DataRequired(),
-                                       Length(min=3, max=25)])
-    # https://api.slack.com/methods/emoji.list may be useful
+                                       Length(min=1, max=21)])
     icon_emoji = StringField('Icon emoji',
                              validators=[DataRequired(),
                                          Length(min=3, max=25)])

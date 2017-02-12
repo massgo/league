@@ -2,12 +2,11 @@
 """User views."""
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 
-from league.utils import admin_required, flash_errors
 from league.extensions import messenger
+from league.utils import admin_required, flash_errors
 
 from .forms import CreateUserForm, DeleteUsersForm, SlackIntegrationForm
 from .models import User
-
 
 blueprint = Blueprint('admin', __name__, url_prefix='/admin',
                       static_folder='../static')
