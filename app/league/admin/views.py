@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """User views."""
-from flask import Blueprint, flash, redirect, render_template, request, url_for
+from flask import Blueprint, flash, redirect, render_template, request, \
+                  url_for, current_app
 
 from league.extensions import messenger
 from league.utils import admin_required, flash_errors
@@ -61,8 +62,11 @@ def manage_slack_integration():
         messenger.icon_emoji = form.icon_emoji.data
         flash('Slack integration updated!', 'success')
         if form.test.data:
-            messenger.notify_slack('Test message sent.')
             flash('Sending test message...', 'success')
+            try:
+                messenger.notify_slack('Test message sent.')
+            except Exception as e:
+                current_app.logger.info(e)
     else:
         flash_errors(form)
     return render_template('admin/slack_integration.html',

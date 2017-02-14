@@ -4,22 +4,32 @@
   <h1>Slack Integration</h1>
   <br/>
   <form id="slackIntegrationForm" class="form" method="POST" action="" role="form">
-  {% from "admin/_formhelpers.html" import render_field %}
     {{ slack_integration_form.csrf_token }}
-    {{ render_field(slack_integration_form.enabled,
-                    checked=messenger.enabled) }}
-    {{ render_field(slack_integration_form.webhook,
-                    value=messenger.url,
-                    class_="form-control") }}
-    {{ render_field(slack_integration_form.channel,
-                    value=messenger.channel,
-                    class_="form-control") }}
-    {{ render_field(slack_integration_form.username,
-                    value=messenger.username,
-                    class_="form-control") }}
-    {{ render_field(slack_integration_form.icon_emoji,
-                    value=messenger.icon_emoji,
-                    class_="form-control") }}
+    <div class="form-group">
+      {{ slack_integration_form.enabled.label }}
+      {{ slack_integration_form.enabled(class_="form-control",
+                                        checked=messenger.enabled)}}
+    </div>
+    <div class="form-group">
+      {{ slack_integration_form.webhook.label }}
+      {{slack_integration_form.webhook(class_="form-control",
+                                       value=messenger.url)}}
+    </div>
+    <div class="form-group">
+      {{ slack_integration_form.channel.label }}
+      {{ slack_integration_form.channel(class_="form-control",
+                                        value=messenger.channel) }}
+    </div>
+    <div class="form-group">
+      {{ slack_integration_form.username.label }}
+      {{ slack_integration_form.username(class_="form-control",
+                                         value=messenger.username) }}
+    </div>
+    <div class="form-group">
+      {{ slack_integration_form.icon_emoji.label }}
+      {{ slack_integration_form.icon_emoji(class_="form-control",
+                                           value=messenger.icon_emoji) }}
+    </div>
     {{ slack_integration_form.update(class="btn btn-default btn-submit") }}
     {{ slack_integration_form.test(class="btn btn-default btn-submit") }}
   </form>
