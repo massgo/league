@@ -36,7 +36,7 @@ Flask-Bcrypt==0.7.1
 Flask-Caching>=1.0.0
 
 # Debug toolbar
-Flask-DebugToolbar==0.10.0
+Flask-DebugToolbar==0.10.1
 
 # Requests
 requests==2.13.0
