@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """User views."""
-from flask import Blueprint, flash, redirect, render_template, request, \
-                  url_for, current_app
+from flask import (Blueprint, current_app, flash, redirect, render_template,
+                   request, url_for)
 
 from league.extensions import messenger
 from league.utils import admin_required, flash_errors
