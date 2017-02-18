@@ -18,6 +18,12 @@ class PlayerCreateForm(FlaskForm):
     aga_rank = IntegerField(
         'aga_rank', validators=[NumberRange(-30, 9)])
 
+    @staticmethod
+    def validate_aga_rank(form, field):
+        """Check that the input rank is an acceptable aga rank."""
+        if field.data < -30 or field.data > 9 or field.data == 0:
+            raise ValidationError('Rank must be -30 to -1 or 1 to 9')
+
 
 class PlayerDeleteForm(FlaskForm):
     """Player deletion form."""
