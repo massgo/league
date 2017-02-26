@@ -68,7 +68,8 @@ class Player(SurrogatePK, Model):
     def season_stats(self, season=None):
         """Get player statistics for a season."""
         if season is None:
-            season = self.latest_season()
+            season = Game.latest_season_episode()[0]
+
         wins, losses = 0, 0
         for game in ([game for game in self.games if game.season == season]):
             if ((game.winner == Color.white and game.white == self) or
@@ -79,20 +80,25 @@ class Player(SurrogatePK, Model):
 
         return {'wins': wins, 'losses': losses}
 
-    def latest_episode(self):
-        """Get latest episode player has played in."""
-        return sorted([game.episode for game in self.games])[-1]
+    def latest_season_episode(self):
+        """Get latest season and episode player has played in."""
+        games = self.games
+        if len(games) > 0:
+            return sorted([(game.season, game.episode)
+                           for game in games])[-1]
+        else:
+            return (0, 0)
 
-    def episode_stats(self, episode=None, season=None):
+    def episode_stats(self, season_episode=None):
         """Get player statistics for an episode."""
-        if episode is None:
-            episode = self.latest_episode()
-        if season is None:
-            season = self.latest_season()
+        latest_season_episode = Game.latest_season_episode()
+        if season_episode is None:
+            season_episode = latest_season_episode
         wins, losses = 0, 0
+
         for game in ([game for game in self.games
-                      if game.season == season and
-                      game.episode == episode]):
+                      if game.season == season_episode[0] and
+                      game.episode == season_episode[1]]):
             if ((game.winner == Color.white and game.white == self) or
                     (game.winner == Color.black and game.black == self)):
                 wins += 1
@@ -207,30 +213,22 @@ class Game(SurrogatePK, Model):
         return frozenset((self.white, self.black))
 
     @classmethod
-    def latest_episode(cls):
-        """Get latest episode."""
+    def latest_season_episode(cls):
+        """Get latest episode and season."""
         games = cls.query.all()
         if len(games) > 0:
-            return sorted([game.episode for game in games])[-1]
+            return sorted([(game.season, game.episode) for game in games])[-1]
         else:
-            return 1
-
-    @classmethod
-    def latest_season(cls):
-        """Get latest season."""
-        games = cls.query.all()
-        if len(games) > 0:
-            return sorted([game.season for game in games])[-1]
-        else:
-            return 1
+            return (0, 0)
 
     @classmethod
     def episode_stats(cls, episode=None, season=None, num_players=5):
         """Get statistics for an episode."""
+        latest_season_episode = cls.latest_season_episode()
         if episode is None:
-            episode = cls.latest_episode()
+            episode = latest_season_episode[1]
         if season is None:
-            season = cls.latest_season()
+            season = latest_season_episode[0]
         wins, games_played = {}, {}
         games = [game for game in cls.query.all()
                  if game.season == season and

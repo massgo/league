@@ -100,6 +100,13 @@ class TestGame:
     def test_get_max_season_ep(self, db):
         """Test calculation of maximum season and episode."""
         games = [GameFactory(season=s, episode=e)
-                 for (s, e) in [(1, 1), (1, 2)]]
+                 for (s, e) in [(1, 1), (1, 2), (2, 1)]]
         map(methodcaller('save'), games)
-        assert Game.get_max_season_ep() == (1, 2)
+        assert Game.get_max_season_ep() == (2, 2)
+
+    def test_latest_season_episode(self, db):
+        """Test calculation of latest (season, episode) tuple."""
+        games = [GameFactory(season=s, episode=e)
+                 for (s, e) in [(1, 1), (1, 2), (2, 1), (3, 1)]]
+        map(methodcaller('save'), games)
+        assert Game.latest_season_episode() == (3, 1)
