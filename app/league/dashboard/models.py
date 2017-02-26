@@ -68,7 +68,8 @@ class Player(SurrogatePK, Model):
     def season_stats(self, season=None):
         """Get player statistics for a season."""
         if season is None:
-            season = self.latest_season()
+            season = Game.latest_season_episode()[0]
+
         wins, losses = 0, 0
         for game in ([game for game in self.games if game.season == season]):
             if ((game.winner == Color.white and game.white == self) or
@@ -83,28 +84,26 @@ class Player(SurrogatePK, Model):
         """Get latest season and episode player has played in."""
         games = self.games
         if len(games) > 0:
-            return sorted([(game.episode, game.season)
+            return sorted([(game.season, game.episode)
                            for game in games])[-1]
         else:
             return (0, 0)
 
-    def episode_stats(self, episode=None, season=None):
+    def episode_stats(self, season_episode=None):
         """Get player statistics for an episode."""
-        if episode is None:
-            episode = self.latest_episode()
-        if season is None:
-            season = self.latest_season()
+        latest_season_episode = Game.latest_season_episode()
+        if season_episode is None:
+            season_episode = latest_season_episode
         wins, losses = 0, 0
 
-        if (season, episode) == Game.get_max_season_ep():
-            for game in ([game for game in self.games
-                          if game.season == season and
-                          game.episode == episode]):
-                if ((game.winner == Color.white and game.white == self) or
-                        (game.winner == Color.black and game.black == self)):
-                    wins += 1
-                else:
-                    losses += 1
+        for game in ([game for game in self.games
+                      if game.season == season_episode[0] and
+                      game.episode == season_episode[1]]):
+            if ((game.winner == Color.white and game.white == self) or
+                    (game.winner == Color.black and game.black == self)):
+                wins += 1
+            else:
+                losses += 1
 
         return {'wins': wins, 'losses': losses}
 
@@ -218,7 +217,7 @@ class Game(SurrogatePK, Model):
         """Get latest episode and season."""
         games = cls.query.all()
         if len(games) > 0:
-            return sorted([(game.episode, game.season) for game in games])[-1]
+            return sorted([(game.season, game.episode) for game in games])[-1]
         else:
             return (0, 0)
 

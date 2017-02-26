@@ -107,6 +107,6 @@ class TestGame:
     def test_latest_season_episode(self, db):
         """Test calculation of latest (season, episode) tuple."""
         games = [GameFactory(season=s, episode=e)
-                 for (s, e) in [(1, 1), (1, 2), (2, 1)]]
+                 for (s, e) in [(1, 1), (1, 2), (2, 1), (3, 1)]]
         map(methodcaller('save'), games)
-        assert Game.latest_season_episode() == (2, 1)
+        assert Game.latest_season_episode() == (3, 1)
