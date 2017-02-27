@@ -9,7 +9,7 @@ services:
 install:
   - ./travis-scripts/install.sh
 script:
-  - if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ -n "$TRAVIS_TAG" ]; then
+  - if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
       $(aws ecr get-login);
     fi
   - ./travis-scripts/build_assets.sh
