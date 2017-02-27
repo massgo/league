@@ -14,4 +14,8 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ -n "$TRAVIS_TAG" ]; then
     docker push $REPO/$APP:$VERSION
     docker push $REPO/$DB:$VERSION
     docker push $REPO/$WEB:$VERSION
+
+    docker push $REPO/$APP:latest
+    docker push $REPO/$DB:latest
+    docker push $REPO/$WEB:latest
 fi
