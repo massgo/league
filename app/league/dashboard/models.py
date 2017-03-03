@@ -229,13 +229,15 @@ class Game(SurrogatePK, Model):
             episode = latest_season_episode[1]
         if season is None:
             season = latest_season_episode[0]
-        wins, games_played = {}, {}
+        wins, games_played, stones_given = {}, {}, {}
         games = [game for game in cls.query.all()
                  if game.season == season and
                  game.episode == episode]
         for game in games:
             if game.winner is Color.white:
                 wins[game.white.id] = wins.get(game.white.id, 0) + 1
+                stones_given[game.white.id] = stones_given.get(game.white.id, 0)
+                + (game.white.handicap)
             else:
                 wins[game.black.id] = wins.get(game.black.id, 0) + 1
             games_played[game.white.id] = games_played.get(game.white.id, 0) + 1
@@ -255,7 +257,16 @@ class Game(SurrogatePK, Model):
             reverse=True
         )[0:num_players])
 
-        return {'wins': wins_list, 'games_played': games_played_list}
+        stones_given_list = enumerate(sorted(
+            [(Player.get_by_id(player_id), player_stones_given)
+             for player_id, player_stones_given in stones_given.items()],
+            key=lambda stat: stat[1],
+            reverse=True
+        )[0:num_players])
+
+        return {'wins': wins_list,
+                'games_played': games_played_list,
+                'stones_given': stones_given_list}
 
 
 class WhitePlayerGame(Model):
