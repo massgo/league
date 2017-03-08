@@ -290,10 +290,18 @@ class Game(SurrogatePK, Model):
             reverse=True
         )[0:num_players])
 
+        kyus_killed_list = enumerate(sorted(
+            [(Player.get_by_id(player_id), player_kyus_killed)
+             for player_id, player_kyus_killed in kyus_killed.items()],
+            key=lambda stat: stat[1],
+            reverse=True
+        )[0:num_players])
+
         return {'wins': wins_list,
                 'games_played': games_played_list,
                 'stones_given': stones_given_list,
-                'dans_slayed':  dans_slayed_list}
+                'dans_slayed':  dans_slayed_list,
+                'kyus_killed': kyus_killed_list}
 
 
 class WhitePlayerGame(Model):
