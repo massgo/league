@@ -61,7 +61,6 @@
             </div>
           </div>
         </div>
-
         <div class="col-sm-6">
           <div class="panel panel-default">
             <div class="panel-heading">
@@ -78,6 +77,33 @@
                 </thead>
                 <tbody>
                   {% for place, stat in episode_stats['stones_given'] -%}
+                  <tr>
+                    <td><strong>{{ place + 1 }}</strong></td>
+                    <td><a href="{{url_for('dashboard.get_player', player_id=stat[0].id)}}">{{ stat[0].full_name }}</a></td>
+                    <td>{{ stat[1] }}</td>
+                  </tr>
+                  {%- endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h2 class="panel-title">Dan Slayers in Current Episode</h2>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th class="col-sm-1"/>
+                    <th class="col-sm-8">Player</th>
+                    <th class="col-sm-3">Dans Slayed</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for place, stat in episode_stats['dans_slayed'] -%}
                   <tr>
                     <td><strong>{{ place + 1 }}</strong></td>
                     <td><a href="{{url_for('dashboard.get_player', player_id=stat[0].id)}}">{{ stat[0].full_name }}</a></td>

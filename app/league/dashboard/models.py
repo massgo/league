@@ -229,7 +229,8 @@ class Game(SurrogatePK, Model):
             episode = latest_season_episode[1]
         if season is None:
             season = latest_season_episode[0]
-        wins, games_played, stones_given = {}, {}, {}
+        wins, games_played, stones_given, dans_slayed, kyus_killed = \
+            {}, {}, {}, {}, {}
         games = [game for game in cls.query.all()
                  if game.season == season and
                  game.episode == episode]
@@ -242,6 +243,24 @@ class Game(SurrogatePK, Model):
             games_played[game.black.id] = games_played.get(game.black.id, 0) + 1
             stones_given[game.white.id] = stones_given.get(game.white.id, 0) \
                 + (game.handicap)
+            black_player = Player.get_by_id(game.black.id)
+            white_player = Player.get_by_id(game.white.id)
+            if (white_player.aga_rank > 0 and black_player.aga_rank < 0
+                    and game.winner is Color.black):
+                dans_slayed[game.black.id] = \
+                    dans_slayed.get(game.black.id, 0) + 1
+            elif (black_player.aga_rank > 0 and white_player.aga_rank < 0
+                    and game.winner is Color.white):
+                dans_slayed[game.white.id] = \
+                    dans_slayed.get(game.white.id, 0) + 1
+            if (white_player.aga_rank > 0 and black_player.aga_rank < 0
+                    and game.winner is Color.white):
+                kyus_killed[game.white.id] = \
+                    kyus_killed.get(game.white.id, 0) + 1
+            elif (black_player.aga_rank > 0 and white_player.aga_rank < 0
+                    and game.winner is Color.black):
+                kyus_killed[game.black.id] = \
+                    kyus_killed.get(game.black.id, 0) + 1
 
         wins_list = enumerate(sorted(
             [(Player.get_by_id(player_id), player_wins)
@@ -264,9 +283,17 @@ class Game(SurrogatePK, Model):
             reverse=True
         )[0:num_players])
 
+        dans_slayed_list = enumerate(sorted(
+            [(Player.get_by_id(player_id), player_dans_slayed)
+             for player_id, player_dans_slayed in dans_slayed.items()],
+            key=lambda stat: stat[1],
+            reverse=True
+        )[0:num_players])
+
         return {'wins': wins_list,
                 'games_played': games_played_list,
-                'stones_given': stones_given_list}
+                'stones_given': stones_given_list,
+                'dans_slayed':  dans_slayed_list}
 
 
 class WhitePlayerGame(Model):
