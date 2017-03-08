@@ -236,12 +236,12 @@ class Game(SurrogatePK, Model):
         for game in games:
             if game.winner is Color.white:
                 wins[game.white.id] = wins.get(game.white.id, 0) + 1
-                stones_given[game.white.id] = stones_given.get(game.white.id, 0)
-                + (game.white.handicap)
             else:
                 wins[game.black.id] = wins.get(game.black.id, 0) + 1
             games_played[game.white.id] = games_played.get(game.white.id, 0) + 1
             games_played[game.black.id] = games_played.get(game.black.id, 0) + 1
+            stones_given[game.white.id] = stones_given.get(game.white.id, 0) \
+                + (game.handicap)
 
         wins_list = enumerate(sorted(
             [(Player.get_by_id(player_id), player_wins)
