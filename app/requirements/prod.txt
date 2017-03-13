@@ -2,15 +2,15 @@
 
 # Flask
 Flask==0.12
-MarkupSafe==0.23
-Werkzeug==0.11.15
+MarkupSafe==1.0
+Werkzeug==0.12
 Jinja2==2.9.5
 itsdangerous==0.24
 click>=5.0
 
 # Database
 Flask-SQLAlchemy==2.2
-psycopg2==2.7
+psycopg2==2.7.1
 SQLAlchemy==1.1.6
 
 # Migrations
