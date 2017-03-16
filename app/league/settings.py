@@ -8,7 +8,6 @@ class Config(object):
 
     SERVER_NAME = os.environ.get('SERVER_NAME')
     SECRET_KEY = os.environ.get('LEAGUE_SECRET', 'secret-key')
-    CONFIG_FILE = os.environ.get('LEAGUE_CONFIG', 'settings.cfg')
     APP_DIR = os.path.abspath(os.path.dirname(__file__))  # This directory
     PROJECT_ROOT = os.path.abspath(os.path.join(APP_DIR, os.pardir))
     BCRYPT_LOG_ROUNDS = 13
@@ -18,11 +17,6 @@ class Config(object):
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LEAGUE_ROOT_PASS = os.environ.get('LEAGUE_ROOT_PASS', 'root')
-    SLACK_NOTIFICATIONS_ENABLED = 'SLACK_WEBHOOK' in os.environ
-    SLACK_WEBHOOK = os.environ.get('SLACK_WEBHOOK')
-    SLACK_CHANNEL = os.environ.get('SLACK_CHANNEL')
-    SLACK_USERNAME = os.environ.get('SLACK_USERNAME', 'leaguebot')
-    SLACK_ICON_EMOJI = os.environ.get('SLACK_ICON_EMOJI', ':robot_face:')
 
 
 class ProdConfig(Config):

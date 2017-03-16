@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 """Slack integration."""
-
 import requests
 
-from league.config_utils import update_config_file
+DEFAULT_CONFIG = {'enabled': False,
+                  'webhook': '',
+                  'channel': '',
+                  'username': 'leaguebot',
+                  'icon_emoji': ':robot_face:'}
+SLACK_ENABLED = 'slack_enabled'
 
 
 class SlackMessenger(object):
@@ -19,35 +23,21 @@ class SlackMessenger(object):
     def init_app(self, app):
         """Initialize Slack Messenger."""
         self.app = app
-        self.enabled = app.config.get('SLACK_NOTIFICATIONS_ENABLED')
-        self.url = app.config.get('SLACK_WEBHOOK')
-        self.channel = app.config.get('SLACK_CHANNEL')
-        self.username = app.config.get('SLACK_USERNAME')
-        self.icon_emoji = app.config.get('SLACK_ICON_EMOJI')
+        self.config = DEFAULT_CONFIG
         app.extensions['messenger'] = self
 
-    def update_configuration(self, enabled, url, channel, username, icon_emoji):
+    def update_configuration(self, config):
         """Update Slack Messenger configuration."""
-        self.enabled = enabled
-        self.url = url
-        self.channel = channel
-        self.username = username
-        self.icon_emoji = icon_emoji
-        update_config_file({'SLACK_NOTIFICATIONS_ENABLED': self.enabled,
-                            'SLACK_WEBHOOK': self.url,
-                            'SLACK_CHANNEL': self.channel,
-                            'SLACK_USERNAME': self.username,
-                            'SLACK_ICON_EMOJI': self.icon_emoji})
-        pass
+        self.config.update(config)
 
     def notify_slack(self, msg):
         """Send a simple notification to Slack."""
-        if self.enabled:
-            payload = {'username': self.username,
-                       'icon_emoji': self.icon_emoji,
-                       'channel': self.channel,
+        if self.config['enabled']:
+            payload = {'username': self.config['username'],
+                       'icon_emoji': self.config['icon_emoji'],
+                       'channel': self.config['channel'],
                        'text': msg}
-            requests.post(self.url, json=payload)
+            requests.post(self.config['webhook'], json=payload)
             self.app.logger.debug('Sent {} to {}'.format(msg, self.channel))
         else:
-            self.app.logger.debug('Ignoring message request')
+            self.app.logger.debug('Ignoring message request: webhook disabled.')

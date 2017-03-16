@@ -8,6 +8,7 @@ from league.utils import admin_required, flash_errors
 
 from .forms import CreateUserForm, DeleteUsersForm, SlackIntegrationForm
 from .models import User
+from .utils import update_messenger_config
 
 blueprint = Blueprint('admin', __name__, url_prefix='/admin',
                       static_folder='../static')
@@ -55,11 +56,13 @@ def manage_slack_integration():
     """Manage Slack integration."""
     form = SlackIntegrationForm()
     if form.validate_on_submit():
-        messenger.update_configuration(enabled=form.enabled.data,
-                                       url=form.webhook.data,
-                                       channel=form.channel.data,
-                                       username=form.username.data,
-                                       icon_emoji=form.icon_emoji.data)
+        update_messenger_config(app=current_app,
+                                enabled=form.enabled.data,
+                                url=form.webhook.data,
+                                channel=form.channel.data,
+                                username=form.username.data,
+                                icon_emoji=form.icon_emoji.data,
+                                update_db=True)
         flash('Slack integration updated!', 'success')
         if form.test.data:
             flash('Sending test message...', 'success')
@@ -71,11 +74,7 @@ def manage_slack_integration():
         flash_errors(form)
     return render_template('admin/slack_integration.html',
                            slack_integration_form=form,
-                           messenger={'enabled': messenger.enabled,
-                                      'url': messenger.url,
-                                      'channel': messenger.channel,
-                                      'username': messenger.username,
-                                      'icon_emoji': messenger.icon_emoji})
+                           messenger=messenger.config)
 
 
 @blueprint.route('/')

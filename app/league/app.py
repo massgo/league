@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 """The app module, containing the app factory function."""
-from os.path import exists, getsize, join
-
 from flask import Flask, render_template, request
 
 from league import admin, commands, dashboard, public
@@ -22,10 +20,6 @@ def create_app(config_object=ProdConfig):
     """
     app = Flask(__name__.split('.')[0])
     app.config.from_object(config_object)
-    config_file = join(app.config.get('APP_DIR'),
-                       app.config.get('CONFIG_FILE'))
-    if exists(config_file) and getsize(config_file) > 0:
-        app.config.from_json(config_file)
     register_extensions(app)
     register_blueprints(app)
     register_errorhandlers(app)
