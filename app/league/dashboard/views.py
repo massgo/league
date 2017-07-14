@@ -1,17 +1,14 @@
 # -*- coding: utf-8 -*-
 """Dashboard."""
-from datetime import timezone
-
-from flask import (Blueprint, current_app, flash, jsonify, redirect,
-                   render_template, request, url_for)
+from flask import (Blueprint, current_app, flash, redirect, render_template,
+                   request, url_for)
 from flask_login import login_required, login_user
 
-from league.dashboard.forms import (GameCreateForm, GameUpdateForm,
-                                    PlayerCreateForm, PlayerDeleteForm,
-                                    ReportGenerateForm)
-from league.dashboard.models import Color, Game, Player
+from league.dashboard.forms import (GameCreateForm, PlayerCreateForm,
+                                    PlayerDeleteForm, ReportGenerateForm)
 from league.dashboard.reports import Report
-from league.extensions import csrf_protect, messenger
+from league.extensions import csrf_protect
+from league.models import Game, Player
 from league.public.forms import LoginForm
 from league.utils import flash_errors
 
@@ -152,100 +149,6 @@ def list_games():
     games = Game.query.all()
     return render_template('dashboard/games.html', games=games,
                            game_create_form=form)
-
-
-@blueprint.route('/games/all', methods=['GET'])
-@login_required
-def get_games():
-    """Get all games."""
-    form = GameCreateForm(request.form, csrf_enabled=False)
-    _set_game_create_choices(form)
-
-    games = Game.query.all()
-    return jsonify([game.to_dict() for game in games]), 200
-
-
-@blueprint.route('/games/', methods=['POST'])
-@login_required
-def create_game():
-    """Create a new game."""
-    form = GameCreateForm(request.form)
-    _set_game_create_choices(form)
-    if form.validate_on_submit():
-        white = Player.get_by_id(form.white_id.data)
-        black = Player.get_by_id(form.black_id.data)
-        played_at = None
-        if form.played_at.data is not None:
-            played_at = form.played_at.data.astimezone(timezone.utc)
-        game = Game.create(
-            white=white,
-            black=black,
-            winner=form.winner.data,
-            handicap=form.handicap.data,
-            komi=form.komi.data,
-            season=form.season.data,
-            episode=form.episode.data,
-            played_at=played_at
-        )
-        messenger.notify_slack(_slack_game_msg(game))
-        return jsonify(game.to_dict()), 201
-    else:
-        return jsonify(**form.errors), 404
-
-
-def _slack_game_msg(game):
-    if game.winner is Color.white:
-        msg = '<{w_url}|{w_name}> (W) defeated <{b_url}|{b_name}> (B)'
-    else:
-        msg = '<{b_url}|{b_name}> (B) defeated <{w_url}|{w_name}> (W)'
-    result = (msg + ' at {handicap} stones, {komi}.5 komi at <!date^{date_val}'
-              '^{{time}} on {{date_num}}|{date_string}> '
-              '(S{season:0>2}E{episode:0>2})')
-
-    # Gross hack around the fact that we retrieve as naive DateTimes.
-    # See: https://github.com/massgo/league/issues/93
-    utc_time = int(game.played_at.replace(tzinfo=timezone.utc).timestamp())
-
-    return result.format(w_name=game.white.full_name,
-                         w_url=url_for('dashboard.get_player',
-                                       player_id=game.white.id, _external=True),
-                         b_name=game.black.full_name,
-                         b_url=url_for('dashboard.get_player',
-                                       player_id=game.black.id, _external=True),
-                         handicap=game.handicap,
-                         komi=game.komi,
-                         date_string=game.played_at,
-                         date_val=utc_time,
-                         season=game.season,
-                         episode=game.episode)
-
-
-@blueprint.route('/games/', methods=['PATCH'])
-@login_required
-def update_game():
-    """Update an existing game."""
-    form = GameUpdateForm(request.form)
-    _set_game_create_choices(form)
-    if form.validate_on_submit():
-        white = Player.get_by_id(form.white_id.data)
-        black = Player.get_by_id(form.black_id.data)
-        played_at = None
-        if form.played_at.data is not None:
-            played_at = form.played_at.data.astimezone(timezone.utc)
-        game = Game.get_by_id(form.game_id.data)
-        game.update(
-            white=white,
-            black=black,
-            winner=form.winner.data,
-            handicap=form.handicap.data,
-            komi=form.komi.data,
-            season=form.season.data,
-            episode=form.episode.data,
-            played_at=played_at
-        )
-        return jsonify(game.to_dict()), 200
-    else:
-        return jsonify(**form.errors), 404
 
 
 @blueprint.route('/games/<int:game_id>', methods=['DELETE'])

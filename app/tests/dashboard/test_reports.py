@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Model unit tests."""
 
-from league.dashboard.models import Game, Player
+from league.models import Game, Player
 from league.dashboard.reports import Report
 
 
