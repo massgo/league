@@ -5,7 +5,7 @@ See: http://webtest.readthedocs.org/
 """
 from flask import url_for
 
-from .factories import UserFactory
+from ..factories import UserFactory
 
 
 class TestLoggingIn:
