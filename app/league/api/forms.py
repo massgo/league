@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 """Public forms."""
 from flask_wtf import FlaskForm
-from wtforms import (DateTimeField, IntegerField, SelectField, StringField,
-                     ValidationError)
-from wtforms.validators import DataRequired, NumberRange
+from wtforms import DateTimeField, IntegerField, SelectField, ValidationError
+from wtforms.validators import NumberRange
 
-from league.models import Color, Game, Player
+from league.models import Color, Game
 
 
 class GameCreateForm(FlaskForm):
