@@ -2,6 +2,7 @@
 sudo: false  # http://docs.travis-ci.com/user/migrating-from-legacy/
 language: python
 cache: pip
+group: deprecated-2017Q3
 python:
   - 3.4.5
 services:
