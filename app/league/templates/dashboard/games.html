@@ -154,7 +154,7 @@ function format_date(value) {
 
 function create_game(values) {
   $.post({
-    url: '{{ url_for('dashboard.create_game') }}',
+    url: '{{ url_for('api.create_game') }}',
     data: {
       white_id: values.white_id,
       black_id: values.black_id,

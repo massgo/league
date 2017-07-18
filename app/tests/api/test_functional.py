@@ -5,7 +5,7 @@ from flask import url_for
 
 from league.models import Color
 
-from .factories import GameFactory
+from ..factories import GameFactory
 
 
 class TestGame:
@@ -17,7 +17,7 @@ class TestGame:
         second_game = GameFactory(winner=Color.black, handicap=0, komi=7)
         db.session.commit()
 
-        post_res = testapp.get(url_for('dashboard.get_games'))
+        post_res = testapp.get(url_for('api.get_games'))
         assert post_res.status_int == 200
 
         games = post_res.json
@@ -51,7 +51,7 @@ class TestGame:
             'episode': episode
         }
 
-        post_res = testapp.post(url_for('dashboard.create_game'), form)
+        post_res = testapp.post(url_for('api.create_game'), form)
 
         assert post_res.status_code == 201
         game = post_res.json
@@ -67,7 +67,7 @@ class TestGame:
 
     def test_delete_game(self, testapp, games):
         """Test game deletion."""
-        get_res = testapp.get(url_for('dashboard.get_games'))
+        get_res = testapp.get(url_for('api.get_games'))
         assert get_res.status_int == 200
 
         retrieved_games = get_res.json
@@ -77,7 +77,7 @@ class TestGame:
                                     retrieved_games[0]['game_id']))
         assert delete_res.status_int == 204
 
-        new_get_res = testapp.get(url_for('dashboard.get_games'))
+        new_get_res = testapp.get(url_for('api.get_games'))
         assert new_get_res.status_int == 200
 
         new_games = new_get_res.json

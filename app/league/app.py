@@ -5,7 +5,7 @@ from functools import partial
 
 from flask import Flask, render_template, request
 
-from league import admin, commands, dashboard, public
+from league import admin, api, commands, dashboard, public
 from league.assets import assets
 from league.extensions import (bcrypt, cache, csrf_protect, db, debug_toolbar,
                                login_manager, messenger, migrate)
@@ -48,6 +48,7 @@ def register_extensions(app):
 
 def register_blueprints(app):
     """Register Flask blueprints."""
+    app.register_blueprint(api.views.blueprint)
     app.register_blueprint(dashboard.views.blueprint)
     app.register_blueprint(public.views.blueprint)
     app.register_blueprint(admin.views.blueprint)

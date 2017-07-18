@@ -5,7 +5,7 @@ from operator import methodcaller
 
 from league.models import Color, Game, Player
 
-from .factories import GameFactory, PlayerFactory
+from ..factories import GameFactory, PlayerFactory
 
 
 class TestGame:
