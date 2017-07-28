@@ -245,20 +245,20 @@ class Game(SurrogatePK, Model):
                 + (game.handicap)
             black_player = Player.get_by_id(game.black.id)
             white_player = Player.get_by_id(game.white.id)
-            if (white_player.aga_rank > 0 and black_player.aga_rank < 0
-                    and game.winner is Color.black):
+            if (white_player.aga_rank > 0 and black_player.aga_rank < 0 and
+                    game.winner is Color.black):
                 dans_slayed[game.black.id] = \
                     dans_slayed.get(game.black.id, 0) + 1
-            elif (black_player.aga_rank > 0 and white_player.aga_rank < 0
-                    and game.winner is Color.white):
+            elif (black_player.aga_rank > 0 and white_player.aga_rank < 0 and
+                  game.winner is Color.white):
                 dans_slayed[game.white.id] = \
                     dans_slayed.get(game.white.id, 0) + 1
-            if (white_player.aga_rank > 0 and black_player.aga_rank < 0
-                    and game.winner is Color.white):
+            if (white_player.aga_rank > 0 and black_player.aga_rank < 0 and
+                    game.winner is Color.white):
                 kyus_killed[game.white.id] = \
                     kyus_killed.get(game.white.id, 0) + 1
-            elif (black_player.aga_rank > 0 and white_player.aga_rank < 0
-                    and game.winner is Color.black):
+            elif (black_player.aga_rank > 0 and white_player.aga_rank < 0 and
+                  game.winner is Color.black):
                 kyus_killed[game.black.id] = \
                     kyus_killed.get(game.black.id, 0) + 1
 
@@ -300,7 +300,7 @@ class Game(SurrogatePK, Model):
         return {'wins': wins_list,
                 'games_played': games_played_list,
                 'stones_given': stones_given_list,
-                'dans_slayed':  dans_slayed_list,
+                'dans_slayed': dans_slayed_list,
                 'kyus_killed': kyus_killed_list}
 
 
