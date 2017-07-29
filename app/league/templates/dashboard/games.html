@@ -189,7 +189,7 @@ function create_game(values) {
 
 function update_game(values) {
   $.ajax({
-    url: '{{ url_for('dashboard.update_game') }}',
+    url: '{{ url_for('api.update_game') }}',
     type: 'PATCH',
     data: {
       game_id: values.id,
