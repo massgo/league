@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Admin helper utilities."""
-from league.admin.models import ConfigData, User
+from league.admin.models import SiteSettings, User
 from league.slack_messenger import DEFAULT_CONFIG, SLACK_ENABLED
 
 
@@ -30,14 +30,14 @@ def get_load_messenger_config(app):
     """
     def load_messenger_config():
         """Load Slack messenger configuration."""
-        if ConfigData.get_by_key(SLACK_ENABLED) is None:
+        if SiteSettings.get_by_key(SLACK_ENABLED) is None:
             for k, v in DEFAULT_CONFIG.items():
                 if k == 'enabled':
                     v = 'True' if v else 'False'
-                config_item = ConfigData(key='slack_{}'.format(k), value=v)
+                config_item = SiteSettings(key='slack_{}'.format(k), value=v)
                 config_item.save()
         else:
-            new_config = {k: ConfigData.get_by_key('slack_{}'.format(k)).value
+            new_config = {k: SiteSettings.get_by_key('slack_{}'.format(k)).value
                           for k in DEFAULT_CONFIG.keys()}
             if new_config['enabled'] == 'True':
                 new_config['enabled'] = True
@@ -52,7 +52,7 @@ def update_messenger_config(app, **kwargs):
     for k, v in kwargs.items():
         if k == 'enabled':
             v = 'True' if v else 'False'
-        config_item = ConfigData.get_by_key(key='slack_{}'.format(k))
+        config_item = SiteSettings.get_by_key(key='slack_{}'.format(k))
         config_item.value = v
         config_item.update()
     app.extensions['messenger'].update_configuration(config=kwargs)

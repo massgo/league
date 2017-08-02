@@ -9,10 +9,10 @@ from league.database import (Column, Model, SurrogatePK, db, reference_col,
 from league.extensions import bcrypt
 
 
-class ConfigData(SurrogatePK, Model):
-    """Configuration data for app extensions."""
+class SiteSettings(SurrogatePK, Model):
+    """Configuration data for the webapp."""
 
-    __tablename__ = 'config_data'
+    __tablename__ = 'site_settings'
     key = Column(db.String(80), unique=True, nullable=False)
     value = Column(db.String(80), nullable=False)
 
@@ -22,16 +22,16 @@ class ConfigData(SurrogatePK, Model):
 
     def __repr__(self):
         """Represent instance as a unique string."""
-        return '<ConfigData({key})>'.format(key=self.key)
+        return '<SiteSettings({key})>'.format(key=self.key)
 
     @classmethod
     def get_by_key(cls, key):
-        """Get ConfigData by key."""
+        """Get SiteSettings by key."""
         return cls.query.filter_by(key=key).first()
 
     @classmethod
     def get_all(cls):
-        """Get all ConfigData."""
+        """Get all SiteSettings."""
         return cls.query.all()
 
 
