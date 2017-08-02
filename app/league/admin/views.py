@@ -58,11 +58,10 @@ def manage_slack_integration():
     if form.validate_on_submit():
         update_messenger_config(app=current_app,
                                 enabled=form.enabled.data,
-                                url=form.webhook.data,
+                                webhook=form.webhook.data,
                                 channel=form.channel.data,
                                 username=form.username.data,
-                                icon_emoji=form.icon_emoji.data,
-                                update_db=True)
+                                icon_emoji=form.icon_emoji.data)
         flash('Slack integration updated!', 'success')
         if form.test.data:
             flash('Sending test message...', 'success')

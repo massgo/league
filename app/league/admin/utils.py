@@ -28,11 +28,14 @@ def get_load_messenger_config(app):
 
     A hack around circular import issues.
     """
-    def load_messenger_config(app):
+    def load_messenger_config():
         """Load Slack messenger configuration."""
         if ConfigData.get_by_key(SLACK_ENABLED) is None:
-            new_config = DEFAULT_CONFIG
-            update = True
+            for k, v in DEFAULT_CONFIG.items():
+                if k == 'enabled':
+                    v = 'True' if v else 'False'
+                config_item = ConfigData(key='slack_{}'.format(k), value=v)
+                config_item.save()
         else:
             new_config = {k: ConfigData.get_by_key('slack_{}'.format(k)).value
                           for k in DEFAULT_CONFIG.keys()}
@@ -40,17 +43,16 @@ def get_load_messenger_config(app):
                 new_config['enabled'] = True
             else:
                 new_config['enabled'] = False
-            update = False
-        app.extensions['messenger'].update_configuration(config=new_config,
-                                                         update_db=update)
+            app.extensions['messenger'].update_configuration(config=new_config)
+    return load_messenger_config
 
 
-def update_messenger_config(app, update_db=False, **kwargs):
+def update_messenger_config(app, **kwargs):
     """Update Slack messenger configuration."""
-    if update_db:
-        for k, v in kwargs.items():
-            if k == 'enabled':
-                v = 'True' if v else 'False'
-            config_item = ConfigData(key='slack_{}'.format(k), value=v)
-            config_item.save()
+    for k, v in kwargs.items():
+        if k == 'enabled':
+            v = 'True' if v else 'False'
+        config_item = ConfigData.get_by_key(key='slack_{}'.format(k))
+        config_item.value = v
+        config_item.update()
     app.extensions['messenger'].update_configuration(config=kwargs)

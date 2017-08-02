@@ -38,6 +38,8 @@ class SlackMessenger(object):
                        'channel': self.config['channel'],
                        'text': msg}
             requests.post(self.config['webhook'], json=payload)
-            self.app.logger.debug('Sent {} to {}'.format(msg, self.channel))
+            self.app.logger.debug(
+                'Sent "{}" to {}'.format(msg,
+                                         self.config['channel']))
         else:
             self.app.logger.debug('Ignoring message request: webhook disabled.')
