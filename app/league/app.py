@@ -88,3 +88,5 @@ def register_commands(app):
 def register_before_first(app):
     """Register functions to run before first request."""
     app.before_first_request_funcs.append(admin.utils.get_create_root_user(app))
+    app.before_first_request_funcs.append(
+        admin.utils.get_load_messenger_config(app))

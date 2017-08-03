@@ -9,6 +9,32 @@ from league.database import (Column, Model, SurrogatePK, db, reference_col,
 from league.extensions import bcrypt
 
 
+class SiteSettings(SurrogatePK, Model):
+    """Configuration data for the webapp."""
+
+    __tablename__ = 'site_settings'
+    key = Column(db.String(80), unique=True, nullable=False)
+    value = Column(db.String(80), nullable=False)
+
+    def __init__(self, key, value, **kwargs):
+        """Create instance."""
+        db.Model.__init__(self, key=key, value=value, **kwargs)
+
+    def __repr__(self):
+        """Represent instance as a unique string."""
+        return '<SiteSettings({key})>'.format(key=self.key)
+
+    @classmethod
+    def get_by_key(cls, key):
+        """Get SiteSettings by key."""
+        return cls.query.filter_by(key=key).first()
+
+    @classmethod
+    def get_all(cls):
+        """Get all SiteSettings."""
+        return cls.query.all()
+
+
 class Role(SurrogatePK, Model):
     """A role for a user."""
 

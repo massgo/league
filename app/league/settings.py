@@ -17,11 +17,6 @@ class Config(object):
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LEAGUE_ROOT_PASS = os.environ.get('LEAGUE_ROOT_PASS', 'root')
-    SLACK_NOTIFICATIONS_ENABLED = 'SLACK_WEBHOOK' in os.environ
-    SLACK_WEBHOOK = os.environ.get('SLACK_WEBHOOK')
-    SLACK_CHANNEL = os.environ.get('SLACK_CHANNEL')
-    SLACK_USERNAME = os.environ.get('SLACK_USERNAME', 'leaguebot')
-    SLACK_ICON_EMOJI = os.environ.get('SLACK_ICON_EMOJI', ':robot_face:')
 
 
 class ProdConfig(Config):

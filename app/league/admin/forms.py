@@ -4,8 +4,8 @@ from collections import OrderedDict
 
 from flask_login import current_user
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, StringField
-from wtforms.validators import DataRequired, Email, Length
+from wtforms import BooleanField, StringField, SubmitField
+from wtforms.validators import URL, DataRequired, Email, Length
 
 from league.forms import CheckboxTableField
 
@@ -78,3 +78,32 @@ class DeleteUsersForm(FlaskForm):
                 valid = False
 
         return valid
+
+
+class SlackIntegrationForm(FlaskForm):
+    """Create Slack integration form."""
+
+    enabled = BooleanField('Enable Slack integration?')
+    webhook = StringField('Webhook',
+                          validators=[DataRequired(),
+                                      URL(),
+                                      Length(min=3, max=77)])
+    channel = StringField('Channel',
+                          validators=[DataRequired(),
+                                      Length(min=1, max=22)])
+    username = StringField('Username',
+                           validators=[DataRequired(),
+                                       Length(min=1, max=21)])
+    icon_emoji = StringField('Icon emoji',
+                             validators=[DataRequired(),
+                                         Length(min=3, max=25)])
+    update = SubmitField('Update Configuration')
+    test = SubmitField('Test Configuration')
+
+    def validate(self):
+        """Validate the form."""
+        initial_validation = super().validate()
+        if not initial_validation:
+            return False
+        # do stuff
+        return True
