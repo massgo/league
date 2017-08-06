@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container-narrow">
+  <h1>Site Settings</h1>
+  <br/>
+  <form id="siteSettingsForm" class="form" method="POST" action="" role="form">
+    {{ site_settings_form.csrf_token }}
+    <div class="form-group">
+      {{ site_settings_form.dashboard_title.label }}
+      {{ site_settings_form.dashboard_title(class_="form-control",
+                                    value=config.dashboard_title)}}
+    </div>
+
+    {{ site_settings_form.update(class="btn btn-default btn-submit") }}
+  </form>
+</div>
+{% endblock %}

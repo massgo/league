@@ -18,49 +18,52 @@ def load_messenger_config(app):
     """Load Slack messenger configuration."""
     if SiteSettings.get_by_key(SLACK_ENABLED) is None:
         for k, v in DEFAULT_CONFIG.items():
-            if k == 'enabled':
-                v = 'True' if v else 'False'
             config_item = SiteSettings(key='slack_{}'.format(k), value=v)
             config_item.save()
     else:
         new_config = {k: SiteSettings.get_by_key('slack_{}'.format(k)).value
                       for k in DEFAULT_CONFIG.keys()}
-        if new_config['enabled'] == 'True':
-            new_config['enabled'] = True
-        else:
-            new_config['enabled'] = False
         app.extensions['messenger'].update_configuration(config=new_config)
 
 
 def update_messenger_config(app, **kwargs):
     """Update Slack messenger configuration."""
-    for k, v in kwargs.items():
-        if k == 'enabled':
-            v = 'True' if v else 'False'
-        config_item = SiteSettings.get_by_key(key='slack_{}'.format(k))
-        config_item.value = v
+    for key, value in kwargs.items():
+        if type(value) == bool:
+            value = 'True' if value else 'False'
+        config_item = SiteSettings.get_by_key(key='slack_{}'.format(key))
+        config_item.value = value
         config_item.update()
     app.extensions['messenger'].update_configuration(config=kwargs)
 
 
-def load_extension_config(app, extension_name):
-    """Load an extension's configuration from the database."""
-    extension = app.extensions[extension_name]
-    new_config = {key: SiteSettings.get_by_key('{}_{}'.format(extension_name, key)).value
-                  for key in extension.config.keys()}
-    extension.update_config(new_config)
-    new_config
+def load_site_config(app):
+    """Load site settings from the database."""
+    config = app.config['SITE_SETTINGS']
+    new_config = dict()
+    for key in config:
+        config_item = SiteSettings.get_by_key(
+            key='site_settings_{}'.format(key))
+        if config_item is not None:
+            new_config[key] = config_item.value
+    config.update(new_config)
+    app.config.update(SITE_SETTINGS=config)
 
 
-def update_extension_config(app, extension_name, **kwargs):
-    for key, value in league_config.items():
+def update_site_config(app, **kwargs):
+    """Update site settings."""
+    config = app.config['SITE_SETTINGS']
+    for key, value in kwargs.items():
         if type(value) == bool:
             value = 'True' if value else 'False'
         config_item = SiteSettings.get_by_key(
-            key='{extension}_{key}'.format(extension=extension_name, key=key))
-        config_item.value = value
-        config_item.update()
-    league_config.update(kwargs)
-    return kwargs
-
-
+            key='site_settings_{key}'.format(key=key))
+        if config_item is not None:
+            config_item.value = value
+            config_item.update()
+        else:
+            config_item = SiteSettings(
+                key='site_settings_{}'.format(key), value=value)
+            config_item.save()
+    config.update(**kwargs)
+    app.config.update(SITE_SETTINGS=config)

@@ -107,3 +107,20 @@ class SlackIntegrationForm(FlaskForm):
             return False
         # do stuff
         return True
+
+
+class SiteSettingsForm(FlaskForm):
+    """Create Site settings form."""
+
+    dashboard_title = StringField('Dashboard title',
+                                  validators=[DataRequired(),
+                                              Length(min=1, max=22)])
+    update = SubmitField('Update Site Settings')
+
+    def validate(self):
+        """Validate the form."""
+        initial_validation = super().validate()
+        if not initial_validation:
+            return False
+        # do stuff
+        return True

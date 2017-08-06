@@ -2,8 +2,8 @@
 """Dashboard."""
 from datetime import timezone
 
-from flask import (Blueprint, flash, jsonify, redirect, render_template,
-                   request, url_for)
+from flask import (Blueprint, current_app, flash, jsonify, redirect,
+                   render_template, request, url_for)
 from flask_login import login_required, login_user
 
 from league.dashboard.forms import (GameCreateForm, GameUpdateForm,
@@ -22,6 +22,8 @@ blueprint = Blueprint('dashboard', __name__, url_prefix='/dashboard',
 @blueprint.route('/', methods=['GET', 'POST'])
 def dashboard():
     """Dashboard."""
+    site_settings = current_app.config['SITE_SETTINGS']
+    dashboard_title = site_settings['dashboard_title']
     form = LoginForm(request.form)
     # Handle logging in
     if request.method == 'POST':
@@ -35,7 +37,9 @@ def dashboard():
             flash_errors(form)
     players = Player.query.all()
     games = Game.query.all()
-    return render_template('dashboard/dashboard.html', login_form=form,
+    return render_template('dashboard/dashboard.html',
+                           dashboard_title=dashboard_title,
+                           login_form=form,
                            players=players, games=games,
                            episode_stats=Game.episode_stats())
 

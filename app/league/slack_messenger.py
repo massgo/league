@@ -15,9 +15,7 @@ class SlackMessenger(object):
 
     def __init__(self, app=None):
         """Initialize messenger."""
-        self.enabled = False
         if app:
-            self.app = app
             self.init_app(app)
 
     def init_app(self, app):
@@ -28,6 +26,9 @@ class SlackMessenger(object):
 
     def update_configuration(self, config):
         """Update Slack Messenger configuration."""
+        assert 'enabled' in config
+        if type(config['enabled']) == str:
+            config['enabled'] = (config['enabled'] == 'True')
         self.config.update(config)
 
     def notify_slack(self, msg):
