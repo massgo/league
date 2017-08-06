@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """The app module, containing the app factory function."""
 from flask import Flask, render_template, request
+from functools import partial
 
 from league import admin, commands, dashboard, public
 from league.assets import assets
@@ -87,6 +88,5 @@ def register_commands(app):
 
 def register_before_first(app):
     """Register functions to run before first request."""
-    app.before_first_request_funcs.append(admin.utils.get_create_root_user(app))
-    app.before_first_request_funcs.append(
-        admin.utils.get_load_messenger_config(app))
+    app.before_first_request_funcs.append(partial(admin.utils.create_root_user, app))
+    app.before_first_request_funcs.append(partial(admin.utils.load_messenger_config, app))
