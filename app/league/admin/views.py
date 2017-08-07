@@ -6,9 +6,10 @@ from flask import (Blueprint, current_app, flash, redirect, render_template,
 from league.extensions import messenger
 from league.utils import admin_required, flash_errors
 
-from .forms import CreateUserForm, DeleteUsersForm, SlackIntegrationForm
+from .forms import (CreateUserForm, DeleteUsersForm, SiteSettingsForm,
+                    SlackIntegrationForm)
 from .models import User
-from .utils import update_messenger_config
+from .utils import update_messenger_config, update_site_config
 
 blueprint = Blueprint('admin', __name__, url_prefix='/admin',
                       static_folder='../static')
@@ -81,3 +82,19 @@ def manage_slack_integration():
 def settings():
     """Admin settings."""
     return render_template('admin/settings.html')
+
+
+@blueprint.route('/site_settings/', methods=['GET', 'POST'])
+@admin_required
+def manage_site_settings():
+    """Manage site settings."""
+    form = SiteSettingsForm()
+    config = current_app.config['SITE_SETTINGS']
+    if form.validate_on_submit():
+        update_site_config(app=current_app,
+                           dashboard_title=form.dashboard_title.data)
+        flash('Site settings updated!', 'success')
+
+    return render_template('admin/site_settings.html',
+                           site_settings_form=form,
+                           config=config)

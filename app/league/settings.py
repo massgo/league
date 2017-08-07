@@ -17,6 +17,8 @@ class Config(object):
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LEAGUE_ROOT_PASS = os.environ.get('LEAGUE_ROOT_PASS', 'root')
+    SITE_SETTINGS = {'dashboard_title': 'Dashboard',
+                     'contact_email': 'hndrewaall@gmail.com'}
 
 
 class ProdConfig(Config):
