@@ -114,7 +114,7 @@ class SiteSettingsForm(FlaskForm):
 
     dashboard_title = StringField('Dashboard title',
                                   validators=[DataRequired(),
-                                              Length(min=1, max=22)])
+                                              Length(min=1, max=40)])
     update = SubmitField('Update Site Settings')
 
     def validate(self):
