@@ -89,7 +89,7 @@ def settings():
 def manage_site_settings():
     """Manage site settings."""
     form = SiteSettingsForm()
-    config = current_app.config['SITE_SETTINGS']
+    site_settings = current_app.config['SITE_SETTINGS']
     if form.validate_on_submit():
         update_site_config(app=current_app,
                            dashboard_title=form.dashboard_title.data)
@@ -99,4 +99,4 @@ def manage_site_settings():
 
     return render_template('admin/site_settings.html',
                            site_settings_form=form,
-                           config=config)
+                           site_settings=site_settings)

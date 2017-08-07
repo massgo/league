@@ -8,7 +8,7 @@
     <div class="form-group">
       {{ site_settings_form.dashboard_title.label }}
       {{ site_settings_form.dashboard_title(class_="form-control",
-                                    value=config.dashboard_title)}}
+                                    value=site_settings.dashboard_title)}}
     </div>
 
     {{ site_settings_form.update(class="btn btn-default btn-submit") }}
