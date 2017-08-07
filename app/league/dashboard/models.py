@@ -229,7 +229,7 @@ class Game(SurrogatePK, Model):
             episode = latest_season_episode[1]
         if season is None:
             season = latest_season_episode[0]
-        wins, games_played, stones_given, dans_slayed, kyus_killed = \
+        wins, games_played, stones_given, dans_slain, kyus_killed = \
             {}, {}, {}, {}, {}
         games = [game for game in cls.query.all()
                  if game.season == season and
@@ -247,12 +247,12 @@ class Game(SurrogatePK, Model):
             white_player = Player.get_by_id(game.white.id)
             if (white_player.aga_rank > 0 and black_player.aga_rank < 0 and
                     game.winner is Color.black):
-                dans_slayed[game.black.id] = \
-                    dans_slayed.get(game.black.id, 0) + 1
+                dans_slain[game.black.id] = \
+                    dans_slain.get(game.black.id, 0) + 1
             elif (black_player.aga_rank > 0 and white_player.aga_rank < 0 and
                   game.winner is Color.white):
-                dans_slayed[game.white.id] = \
-                    dans_slayed.get(game.white.id, 0) + 1
+                dans_slain[game.white.id] = \
+                    dans_slain.get(game.white.id, 0) + 1
             if (white_player.aga_rank > 0 and black_player.aga_rank < 0 and
                     game.winner is Color.white):
                 kyus_killed[game.white.id] = \
@@ -283,9 +283,9 @@ class Game(SurrogatePK, Model):
             reverse=True
         )[0:num_players])
 
-        dans_slayed_list = enumerate(sorted(
-            [(Player.get_by_id(player_id), player_dans_slayed)
-             for player_id, player_dans_slayed in dans_slayed.items()],
+        dans_slain_list = enumerate(sorted(
+            [(Player.get_by_id(player_id), player_dans_slain)
+             for player_id, player_dans_slain in dans_slain.items()],
             key=lambda stat: stat[1],
             reverse=True
         )[0:num_players])
@@ -300,7 +300,7 @@ class Game(SurrogatePK, Model):
         return {'wins': wins_list,
                 'games_played': games_played_list,
                 'stones_given': stones_given_list,
-                'dans_slayed': dans_slayed_list,
+                'dans_slain': dans_slain_list,
                 'kyus_killed': kyus_killed_list}
 
 
