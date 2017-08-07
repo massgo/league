@@ -94,6 +94,8 @@ def manage_site_settings():
         update_site_config(app=current_app,
                            dashboard_title=form.dashboard_title.data)
         flash('Site settings updated!', 'success')
+    else:
+        flash_errors(form)
 
     return render_template('admin/site_settings.html',
                            site_settings_form=form,
