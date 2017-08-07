@@ -229,8 +229,14 @@ class Game(SurrogatePK, Model):
             episode = latest_season_episode[1]
         if season is None:
             season = latest_season_episode[0]
-        wins, games_played, stones_given, dans_slain, kyus_killed = \
-            {}, {}, {}, {}, {}
+
+        players = Player.query.all()
+        wins = {p.id: 0 for p in players}
+        games_played = {p.id: 0 for p in players}
+        stones_given = {p.id: 0 for p in players}
+        dans_slain = {p.id: 0 for p in players}
+        kyus_killed = {p.id: 0 for p in players}
+
         games = [game for game in cls.query.all()
                  if game.season == season and
                  game.episode == episode]
