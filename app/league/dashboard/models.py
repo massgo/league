@@ -245,10 +245,13 @@ class Game(SurrogatePK, Model):
                 wins[game.white.id] = wins.get(game.white.id, 0) + 1
             else:
                 wins[game.black.id] = wins.get(game.black.id, 0) + 1
+
             games_played[game.white.id] = games_played.get(game.white.id, 0) + 1
             games_played[game.black.id] = games_played.get(game.black.id, 0) + 1
-            stones_given[game.white.id] = stones_given.get(game.white.id, 0) \
-                + (game.handicap)
+
+            stones_given[game.white.id] = \
+                stones_given[game.white.id] + (game.handicap)
+
             black_player = Player.get_by_id(game.black.id)
             white_player = Player.get_by_id(game.white.id)
             if (white_player.aga_rank > 0 and black_player.aga_rank < 0 and
@@ -259,6 +262,7 @@ class Game(SurrogatePK, Model):
                   game.winner is Color.white):
                 dans_slain[game.white.id] = \
                     dans_slain.get(game.white.id, 0) + 1
+
             if (white_player.aga_rank > 0 and black_player.aga_rank < 0 and
                     game.winner is Color.white):
                 kyus_killed[game.white.id] = \
@@ -267,6 +271,8 @@ class Game(SurrogatePK, Model):
                   game.winner is Color.black):
                 kyus_killed[game.black.id] = \
                     kyus_killed.get(game.black.id, 0) + 1
+
+        win_ratios = {p.id: wins[p.id] / games_played[p.id] for p in players}
 
         wins_list = enumerate(sorted(
             [(Player.get_by_id(player_id), player_wins)
@@ -278,6 +284,13 @@ class Game(SurrogatePK, Model):
         games_played_list = enumerate(sorted(
             [(Player.get_by_id(player_id), player_games_played)
              for player_id, player_games_played in games_played.items()],
+            key=lambda stat: stat[1],
+            reverse=True
+        )[0:num_players])
+
+        win_ratios_list = enumerate(sorted(
+            [(Player.get_by_id(player_id), player_win_ratio)
+             for player_id, player_win_ratio in win_ratios.items()],
             key=lambda stat: stat[1],
             reverse=True
         )[0:num_players])
@@ -305,6 +318,7 @@ class Game(SurrogatePK, Model):
 
         return {'wins': wins_list,
                 'games_played': games_played_list,
+                'win_ratios': win_ratios_list,
                 'stones_given': stones_given_list,
                 'dans_slain': dans_slain_list,
                 'kyus_killed': kyus_killed_list}
