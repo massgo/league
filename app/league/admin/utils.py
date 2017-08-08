@@ -50,7 +50,7 @@ def load_site_config(app):
     app.config.update(SITE_SETTINGS=config)
 
 
-def update_site_config(app, **kwargs):
+def update_site_settings(app, **kwargs):
     """Update site settings."""
     config = app.config['SITE_SETTINGS']
     for key, value in kwargs.items():
