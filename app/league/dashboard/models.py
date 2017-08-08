@@ -272,7 +272,8 @@ class Game(SurrogatePK, Model):
                 kyus_killed[game.black.id] = \
                     kyus_killed.get(game.black.id, 0) + 1
 
-        win_ratios = {p.id: wins[p.id] / games_played[p.id] for p in players}
+        win_ratios = {p.id: wins[p.id] / games_played[p.id]
+                      for p in players if games_played[p.id] > 0}
 
         wins_list = enumerate(sorted(
             [(Player.get_by_id(player_id), player_wins)
