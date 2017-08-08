@@ -23,7 +23,6 @@ blueprint = Blueprint('dashboard', __name__, url_prefix='/dashboard',
 def dashboard():
     """Dashboard."""
     site_settings = current_app.config['SITE_SETTINGS']
-    dashboard_title = site_settings['dashboard_title']
     form = LoginForm(request.form)
     # Handle logging in
     if request.method == 'POST':
@@ -38,7 +37,7 @@ def dashboard():
     players = Player.query.all()
     games = Game.query.all()
     return render_template('dashboard/dashboard.html',
-                           dashboard_title=dashboard_title,
+                           site_settings=site_settings,
                            login_form=form,
                            players=players, games=games,
                            episode_stats=Game.episode_stats())

@@ -18,6 +18,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LEAGUE_ROOT_PASS = os.environ.get('LEAGUE_ROOT_PASS', 'root')
     SITE_SETTINGS = {'dashboard_title': 'Dashboard',
+                     'this_episode_phrase': 'in Current Episode',
                      'contact_email': 'hndrewaall@gmail.com'}
 
 

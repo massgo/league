@@ -9,7 +9,7 @@ from league.utils import admin_required, flash_errors
 from .forms import (CreateUserForm, DeleteUsersForm, SiteSettingsForm,
                     SlackIntegrationForm)
 from .models import User
-from .utils import update_messenger_config, update_site_config
+from .utils import update_messenger_config, update_site_settings
 
 blueprint = Blueprint('admin', __name__, url_prefix='/admin',
                       static_folder='../static')
@@ -89,12 +89,17 @@ def settings():
 def manage_site_settings():
     """Manage site settings."""
     form = SiteSettingsForm()
-    config = current_app.config['SITE_SETTINGS']
+    site_settings = current_app.config['SITE_SETTINGS']
     if form.validate_on_submit():
-        update_site_config(app=current_app,
-                           dashboard_title=form.dashboard_title.data)
+        update_site_settings(
+            app=current_app,
+            dashboard_title=form.dashboard_title.data,
+            this_episode_phrase=form.this_episode_phrase.data
+        )
         flash('Site settings updated!', 'success')
+    else:
+        flash_errors(form)
 
     return render_template('admin/site_settings.html',
                            site_settings_form=form,
-                           config=config)
+                           site_settings=site_settings)
