@@ -43,6 +43,17 @@ def dashboard():
                            episode_stats=Game.episode_stats())
 
 
+@blueprint.route('/prizes/', methods=['GET', 'POST'])
+def prizes():
+    """Prizes and achievements."""
+    site_settings = current_app.config['SITE_SETTINGS']
+    players = Player.query.all()
+    games = Game.query.all()
+    return render_template('dashboard/prizes.html', site_settings=site_settings,
+                           players=players, games=games,
+                           season_stats=Game.season_stats())
+
+
 @blueprint.route('/players/', methods=['GET'])
 @login_required
 def get_players():
