@@ -15,10 +15,10 @@
   <!-- Collect the nav links, forms, and other content for toggling -->
   <div class="collapse navbar-collapse navbar-ex1-collapse">
     <ul class="nav navbar-nav">
+      <li><a href="{{ url_for('dashboard.prizes') }}">Prizes</a></li>
       {% if current_user and current_user.is_authenticated %}
       <li><a href="{{ url_for('dashboard.get_players') }}">Players</a></li>
       <li><a href="{{ url_for('dashboard.list_games') }}">Games</a></li>
-      <li><a href="{{ url_for('dashboard.prizes') }}">Prizes</a></li>
       <li><a href="{{ url_for('dashboard.get_reports') }}">Reports</a></li>
       {% endif %}
     </ul>
