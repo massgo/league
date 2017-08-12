@@ -324,6 +324,125 @@ class Game(SurrogatePK, Model):
                 'dans_slain': dans_slain_list,
                 'kyus_killed': kyus_killed_list}
 
+    @classmethod
+    def season_stats(cls, season=None, num_players=5):
+        """Get statistics for a season."""
+        latest_season_episode = cls.latest_season_episode()
+        if season is None:
+            season = latest_season_episode[0]
+
+        players = Player.query.all()
+        wins_minus_losses = {p.id: 0 for p in players}
+        wins = {p.id: 0 for p in players}
+        games_played = {p.id: 0 for p in players}
+        games_played_one_ep = {p.id: 0 for p in players}
+        dans_slain = {p.id: 0 for p in players}
+        kyus_killed = {p.id: 0 for p in players}
+        games_against_weaker = {p.id: 0 for p in players}
+        losses = {p.id: 0 for p in players}
+
+        games = [game for game in cls.query.all()
+                 if game.season == season]
+        for game in games:
+            if game.winner is Color.white:
+                wins[game.white.id] = wins.get(game.white.id, 0) + 1
+            else:
+                wins[game.black.id] = wins.get(game.black.id, 0) + 1
+
+            games_played[game.white.id] = games_played.get(game.white.id, 0) + 1
+            games_played[game.black.id] = games_played.get(game.black.id, 0) + 1
+
+            black_player = Player.get_by_id(game.black.id)
+            white_player = Player.get_by_id(game.white.id)
+            if (white_player.aga_rank > 0 and black_player.aga_rank < 0 and
+                    game.winner is Color.black):
+                dans_slain[game.black.id] = \
+                    dans_slain.get(game.black.id, 0) + 1
+            elif (black_player.aga_rank > 0 and white_player.aga_rank < 0 and
+                  game.winner is Color.white):
+                dans_slain[game.white.id] = \
+                    dans_slain.get(game.white.id, 0) + 1
+
+            if (white_player.aga_rank > 0 and black_player.aga_rank < 0 and
+                    game.winner is Color.white):
+                kyus_killed[game.white.id] = \
+                    kyus_killed.get(game.white.id, 0) + 1
+            elif (black_player.aga_rank > 0 and white_player.aga_rank < 0 and
+                  game.winner is Color.black):
+                kyus_killed[game.black.id] = \
+                    kyus_killed.get(game.black.id, 0) + 1
+
+        wins_minus_losses = {p.id: 2 * wins[p.id] - games_played[p.id]
+                             for p in players if games_played[p.id] > 0}
+
+        wins_list = enumerate(sorted(
+            [(Player.get_by_id(player_id), player_wins)
+             for player_id, player_wins in wins.items()],
+            key=lambda stat: stat[1],
+            reverse=True
+        )[0:num_players])
+
+        games_played_list = enumerate(sorted(
+            [(Player.get_by_id(player_id), player_games_played)
+             for player_id, player_games_played in games_played.items()],
+            key=lambda stat: stat[1],
+            reverse=True
+        )[0:num_players])
+
+        games_played_one_ep_list = enumerate(sorted(
+            [(Player.get_by_id(player_id), player_games_played_one_ep)
+             for player_id, player_games_played_one_ep
+             in games_played_one_ep.items()],
+            key=lambda stat: stat[1],
+            reverse=True
+        )[0:num_players])
+
+        wins_minus_losses_list = enumerate(sorted(
+            [(Player.get_by_id(player_id), player_wins_minus_losses)
+             for player_id, player_wins_minus_losses
+             in wins_minus_losses.items()],
+            key=lambda stat: stat[1],
+            reverse=True
+        )[0:num_players])
+
+        games_against_weaker_list = enumerate(sorted(
+            [(Player.get_by_id(player_id), player_games_against_weaker)
+             for player_id, player_games_against_weaker
+             in games_against_weaker.items()],
+            key=lambda stat: stat[1],
+            reverse=True
+        )[0:num_players])
+
+        dans_slain_list = enumerate(sorted(
+            [(Player.get_by_id(player_id), player_dans_slain)
+             for player_id, player_dans_slain in dans_slain.items()],
+            key=lambda stat: stat[1],
+            reverse=True
+        )[0:num_players])
+
+        kyus_killed_list = enumerate(sorted(
+            [(Player.get_by_id(player_id), player_kyus_killed)
+             for player_id, player_kyus_killed in kyus_killed.items()],
+            key=lambda stat: stat[1],
+            reverse=True
+        )[0:num_players])
+
+        losses_list = enumerate(sorted(
+            [(Player.get_by_id(player_id), player_losses)
+             for player_id, player_losses in losses.items()],
+            key=lambda stat: stat[1],
+            reverse=True
+        )[0:num_players])
+
+        return {'wins': wins_list,
+                'games_played': games_played_list,
+                'games_played_one_ep': games_played_one_ep_list,
+                'wins_minus_losses': wins_minus_losses_list,
+                'games_against_weaker': games_against_weaker_list,
+                'dans_slain': dans_slain_list,
+                'kyus_killed': kyus_killed_list,
+                'losses': losses_list}
+
 
 class WhitePlayerGame(Model):
     """A map between players and the games they've played as white."""
