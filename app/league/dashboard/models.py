@@ -344,16 +344,32 @@ class Game(SurrogatePK, Model):
         games_per_ep = {p.id: {ep: 0 for ep
                                in range(1, latest_season_episode[1] + 1)}
                         for p in players}
+        wins_per_ep = {p.id: {ep: 0 for ep
+                              in range(1, latest_season_episode[1] + 1)}
+                       for p in players}
+        losses_per_ep = {p.id: {ep: 0 for ep
+                                in range(1, latest_season_episode[1] + 1)}
+                         for p in players}
 
         games = [game for game in cls.query.all()
                  if game.season == season]
         for game in games:
             if game.winner is Color.white:
                 wins[game.white.id] = wins.get(game.white.id, 0) + 1
+                wins_per_ep[game.white.id][game.episode] = \
+                    wins_per_ep[game.white.id][game.episode] + 1
+
                 losses[game.black.id] = losses.get(game.black.id, 0) + 1
+                losses_per_ep[game.black.id][game.episode] = \
+                    losses_per_ep[game.black.id][game.episode] + 1
             else:
                 wins[game.black.id] = wins.get(game.black.id, 0) + 1
+                wins_per_ep[game.black.id][game.episode] = \
+                    wins_per_ep[game.black.id][game.episode] + 1
+
                 losses[game.white.id] = losses.get(game.white.id, 0) + 1
+                losses_per_ep[game.white.id][game.episode] = \
+                    losses_per_ep[game.white.id][game.episode] + 1
 
             games_played[game.white.id] = games_played.get(game.white.id, 0) + 1
             games_played[game.black.id] = games_played.get(game.black.id, 0) + 1
@@ -457,9 +473,25 @@ class Game(SurrogatePK, Model):
             reverse=True
         )[0:num_players])
 
-        game_every_ep = [
+        steady_freddy = [
             p for p in players
             if min([g for (d, g) in games_per_ep[p.id].items()]) > 0
+        ]
+
+        fifteen_min_fame = [
+            p for p in players
+            if len([g for (d, g)
+                    in games_per_ep[p.id].items()
+                    if (wins_per_ep[p.id][d] >= 3 and
+                        losses_per_ep[p.id][d] == 0)]) > 0
+        ]
+
+        rock_bottom = [
+            p for p in players
+            if len([g for (d, g)
+                    in games_per_ep[p.id].items()
+                    if (losses_per_ep[p.id][d] >= 3 and
+                        wins_per_ep[p.id][d] == 0)]) > 0
         ]
 
         return {'wins': wins_list,
@@ -470,7 +502,9 @@ class Game(SurrogatePK, Model):
                 'dans_slain': dans_slain_list,
                 'kyus_killed': kyus_killed_list,
                 'losses': losses_list,
-                'game_every_ep': game_every_ep}
+                'steady_freddy': steady_freddy,
+                'fifteen_min_fame': fifteen_min_fame,
+                'rock_bottom': rock_bottom}
 
 
 class WhitePlayerGame(Model):

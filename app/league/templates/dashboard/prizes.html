@@ -229,7 +229,7 @@
         <div class="col-sm-4">
           <div class="panel panel-default">
             <div class="panel-heading">
-              <h2 class="panel-title">Game Every Night</h2>
+              <h2 class="panel-title">Steady Freddy</h2>
             </div>
             <div class="table-responsive">
               <table class="table table-striped">
@@ -240,7 +240,57 @@
                   </tr>
                 </thead>
                 <tbody>
-                  {% for player in season_stats['game_every_ep'] -%}
+                  {% for player in season_stats['steady_freddy'] -%}
+                  <tr>
+                    <td></td>
+                    <td><a href="{{url_for('dashboard.get_player', player_id=player.id)}}">{{ player.full_name }}</a></td>
+                  </tr>
+                  {%- endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h2 class="panel-title">15 Minutes of Fame</h2>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th class="col-sm-1"/>
+                    <th class="col-sm-11">Player</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for player in season_stats['fifteen_min_fame'] -%}
+                  <tr>
+                    <td></td>
+                    <td><a href="{{url_for('dashboard.get_player', player_id=player.id)}}">{{ player.full_name }}</a></td>
+                  </tr>
+                  {%- endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h2 class="panel-title">Rock Bottom</h2>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th class="col-sm-1"/>
+                    <th class="col-sm-11">Player</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for player in season_stats['rock_bottom'] -%}
                   <tr>
                     <td></td>
                     <td><a href="{{url_for('dashboard.get_player', player_id=player.id)}}">{{ player.full_name }}</a></td>
