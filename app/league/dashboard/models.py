@@ -457,6 +457,11 @@ class Game(SurrogatePK, Model):
             reverse=True
         )[0:num_players])
 
+        game_every_ep = [
+            p for p in players
+            if min([g for (d, g) in games_per_ep[p.id].items()]) > 0
+        ]
+
         return {'wins': wins_list,
                 'games_played': games_played_list,
                 'games_played_one_ep': games_played_one_ep_list,
@@ -464,7 +469,8 @@ class Game(SurrogatePK, Model):
                 'games_against_weaker': games_against_weaker_list,
                 'dans_slain': dans_slain_list,
                 'kyus_killed': kyus_killed_list,
-                'losses': losses_list}
+                'losses': losses_list,
+                'game_every_ep': game_every_ep}
 
 
 class WhitePlayerGame(Model):

@@ -5,7 +5,7 @@
 <div class="container-narrow">
   <div class="row">
     <div class="main">
-      <h1 class="page-header">Prizes and Achievements</h1>
+      <h1 class="page-header">Prizes</h1>
       <div class="row">
         <div class="col-sm-6">
           <div class="panel panel-default">
@@ -216,6 +216,34 @@
                     <td><strong>{{ place + 1 }}</strong></td>
                     <td><a href="{{url_for('dashboard.get_player', player_id=stat[0].id)}}">{{ stat[0].full_name }}</a></td>
                     <td>{{ stat[1] }}</td>
+                  </tr>
+                  {%- endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h1 class="page-header">Achievements</h1>
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h2 class="panel-title">Game Every Night</h2>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th class="col-sm-1"/>
+                    <th class="col-sm-11">Player</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for player in season_stats['game_every_ep'] -%}
+                  <tr>
+                    <td></td>
+                    <td><a href="{{url_for('dashboard.get_player', player_id=player.id)}}">{{ player.full_name }}</a></td>
                   </tr>
                   {%- endfor %}
                 </tbody>
