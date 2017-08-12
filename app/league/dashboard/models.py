@@ -341,16 +341,27 @@ class Game(SurrogatePK, Model):
         games_against_weaker = {p.id: 0 for p in players}
         losses = {p.id: 0 for p in players}
 
+        games_per_ep = {p.id: {ep: 0 for ep
+                               in range(1, latest_season_episode[1] + 1)}
+                        for p in players}
+
         games = [game for game in cls.query.all()
                  if game.season == season]
         for game in games:
             if game.winner is Color.white:
                 wins[game.white.id] = wins.get(game.white.id, 0) + 1
+                losses[game.black.id] = losses.get(game.black.id, 0) + 1
             else:
                 wins[game.black.id] = wins.get(game.black.id, 0) + 1
+                losses[game.white.id] = losses.get(game.white.id, 0) + 1
 
             games_played[game.white.id] = games_played.get(game.white.id, 0) + 1
             games_played[game.black.id] = games_played.get(game.black.id, 0) + 1
+
+            games_per_ep[game.white.id][game.episode] = \
+                games_per_ep[game.white.id][game.episode] + 1
+            games_per_ep[game.black.id][game.episode] = \
+                games_per_ep[game.black.id][game.episode] + 1
 
             black_player = Player.get_by_id(game.black.id)
             white_player = Player.get_by_id(game.white.id)
@@ -371,6 +382,18 @@ class Game(SurrogatePK, Model):
                   game.winner is Color.black):
                 kyus_killed[game.black.id] = \
                     kyus_killed.get(game.black.id, 0) + 1
+
+            if (white_player.aga_rank > black_player.aga_rank):
+                games_against_weaker[game.white.id] = \
+                    games_against_weaker[game.white.id] + 1
+
+            if (black_player.aga_rank > white_player.aga_rank):
+                games_against_weaker[game.black.id] = \
+                    games_against_weaker[game.black.id] + 1
+
+        games_played_one_ep = {p.id: max([g for (d, g)
+                                          in games_per_ep[p.id].items()])
+                               for p in players}
 
         wins_minus_losses = {p.id: 2 * wins[p.id] - games_played[p.id]
                              for p in players if games_played[p.id] > 0}
