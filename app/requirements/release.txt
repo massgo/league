@@ -5,4 +5,4 @@
 bumpversion==0.5.3
 
 # AWS
-awscli==1.11.129
+awscli==1.11.154
