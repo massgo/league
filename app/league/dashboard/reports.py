@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """Dashboard reports."""
-from league.dashboard.models import Game
+from league.models import Game
 
 
 class Report(object):
