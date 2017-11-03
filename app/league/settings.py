@@ -30,9 +30,11 @@ class ProdConfig(Config):
     POSTGRES_DB = os.environ.get('POSTGRES_DB', 'postgresql')
     POSTGRES_USER = os.environ.get('POSTGRES_USER', 'postgresql')
     POSTGRES_PASSWORD = os.environ.get('POSTGRES_PASSWORD', '')
-    SQLALCHEMY_DATABASE_URI = ('postgresql://{}:{}@db/{}').format(
+    POSTGRES_ADDRESS = os.environ.get('POSTGRES_ADDRESS', 'db')
+    SQLALCHEMY_DATABASE_URI = ('postgresql://{}:{}@{}/{}').format(
         POSTGRES_USER,
         POSTGRES_PASSWORD,
+        POSTGRES_ADDRESS,
         POSTGRES_DB
     )
     DEBUG_TB_ENABLED = False  # Disable Debug toolbar
