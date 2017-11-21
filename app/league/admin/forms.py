@@ -120,7 +120,7 @@ class SiteSettingsForm(FlaskForm):
                                                   Length(min=1, max=10)])
     about_page_text = StringField('About Page text',
                                   validators=[DataRequired(),
-                                              Length(min=1, max=40)])
+                                              Length(min=1, max=1000)])
 
     update = SubmitField('Update Site Settings')
 

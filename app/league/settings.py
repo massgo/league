@@ -19,7 +19,8 @@ class Config(object):
     LEAGUE_ROOT_PASS = os.environ.get('LEAGUE_ROOT_PASS', 'root')
     SITE_SETTINGS = {'dashboard_title': 'Dashboard',
                      'this_episode_phrase': 'in Current Episode',
-                     'contact_email': 'hndrewaall@gmail.com'}
+                     'contact_email': 'hndrewaall@gmail.com',
+                     'about_page_text': 'default'}
 
 
 class ProdConfig(Config):
