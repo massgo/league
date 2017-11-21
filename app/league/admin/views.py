@@ -94,7 +94,8 @@ def manage_site_settings():
         update_site_settings(
             app=current_app,
             dashboard_title=form.dashboard_title.data,
-            this_episode_phrase=form.this_episode_phrase.data
+            this_episode_phrase=form.this_episode_phrase.data,
+            about_page_text=form.about_page_text.data
         )
         flash('Site settings updated!', 'success')
     else:

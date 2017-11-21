@@ -16,6 +16,12 @@
                                     value=site_settings.this_episode_phrase)}}
     </div>
 
+    <div class="form-group">
+      {{ site_settings_form.about_page_text.label }}
+      {{ site_settings_form.about_page_text(class_="form-control",
+                                value=site_settings.about_page_text) }}
+    </div>
+
     {{ site_settings_form.update(class="btn btn-default btn-submit") }}
   </form>
 </div>
