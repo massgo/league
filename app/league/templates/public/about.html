@@ -4,7 +4,7 @@
 {% block content %}
 <div class="body-content">
     <div class="row">
-      {{ site_settings.about_page_text }}
+      {{ site_settings.about_page_text|safe }}
     </div>
 </div>
 {% endblock %}

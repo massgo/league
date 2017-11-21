@@ -17,10 +17,15 @@ class Config(object):
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     LEAGUE_ROOT_PASS = os.environ.get('LEAGUE_ROOT_PASS', 'root')
-    SITE_SETTINGS = {'dashboard_title': 'Dashboard',
-                     'this_episode_phrase': 'in Current Episode',
-                     'contact_email': 'hndrewaall@gmail.com',
-                     'about_page_text': 'default'}
+    SITE_SETTINGS = {
+        'dashboard_title': 'Dashboard',
+        'this_episode_phrase': 'in Current Episode',
+        'contact_email': 'hndrewaall@gmail.com',
+        'about_page_text': (
+            'An app for managing Go leagues. Learn more and contribute on '
+            '<a href="https://github.com/massgo/league">GitHub</a>.'
+        )
+    }
 
 
 class ProdConfig(Config):
