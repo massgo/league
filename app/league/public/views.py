@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Public section, including homepage and signup."""
-from flask import (Blueprint, flash, redirect, render_template, request,
-                   url_for, current_app)
+from flask import (Blueprint, current_app, flash, redirect, render_template,
+                   request, url_for)
 from flask_login import login_required, logout_user
 
 from league.admin.models import User
