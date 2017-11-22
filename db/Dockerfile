@@ -1,4 +1,4 @@
-FROM kiasaki/alpine-postgres:9.5
+FROM postgres:9.6.6-alpine
 
 ENV PGDATA /var/lib/league/db
 
