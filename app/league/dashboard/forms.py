@@ -106,4 +106,4 @@ class ReportGenerateForm(FlaskForm):
     """Report generation form."""
 
     season = IntegerField('season', validators=[NumberRange(1, 10000)])
-    episode = IntegerField('episode', validators=[NumberRange(1, 10000)])
+    episode = IntegerField('episode', validators=[NumberRange(0, 10000)])
