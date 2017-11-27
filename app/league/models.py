@@ -197,6 +197,11 @@ class Game(SurrogatePK, Model):
         return cls.query.filter_by(season=season, episode=episode)
 
     @classmethod
+    def get_by_season(cls, season):
+        """Get games by season."""
+        return cls.query.filter_by(season=season)
+
+    @classmethod
     def get_max_season_ep(cls):
         """Get maximum season and episode."""
         max_season, max_episode = session.query(func.max(cls.season),
